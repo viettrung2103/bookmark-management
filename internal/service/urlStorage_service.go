@@ -14,19 +14,21 @@ const (
 // ShortenUrl represents the shorten url service
 type ShortenUrl interface {
 	ShortenUrl(ctx context.Context, url string) (string, error)
+	ShortenUrlWithExpiringTime(ctx context.Context, url string, expireTime int) (string, error)
 }
 
-type shortenUrl struct {
+type shortenUrlService struct {
 	repo repository.UrlStorage
 }
 
 // NewShortenUrl returns a new ShortenUrl
 func NewShortenUrl(repo repository.UrlStorage) ShortenUrl {
-	return &shortenUrl{repo: repo}
+	return &shortenUrlService{repo: repo}
 }
 
 // ShortenUrl shortens a url
-func (s *shortenUrl) ShortenUrl(ctx context.Context, url string) (string, error) {
+func (s *shortenUrlService) ShortenUrl(ctx context.Context, url string) (string, error) {
+
 	// tao key
 	urlCode, err := stringutils.GenerateCode(urlCodeLength)
 	if err != nil {
@@ -40,4 +42,26 @@ func (s *shortenUrl) ShortenUrl(ctx context.Context, url string) (string, error)
 
 	// tra ve key
 	return urlCode, nil
+}
+
+func (s *shortenUrlService) ShortenUrlWithExpiringTime(ctx context.Context, url string, expireTime int) (string, error) {
+
+	for {
+		// tao key
+		urlCode, err := stringutils.GenerateCode(urlCodeLength)
+		if err != nil {
+			return "", err
+		}
+		// add vao repo
+		isUnique, err := s.repo.StoreUrlIfUniqueCode(ctx, urlCode, url, expireTime)
+		if err != nil {
+			return "", nil
+		}
+
+		// tra ve key
+		if isUnique == true {
+			return urlCode, nil
+		}
+
+	}
 }

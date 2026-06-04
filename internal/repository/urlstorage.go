@@ -15,6 +15,7 @@ const (
 type UrlStorage interface {
 	StoreURL(ctx context.Context, code, url string) error
 	GetURL(ctx context.Context, code string) (string, error)
+	StoreUrlIfUniqueCode(ctx context.Context, code string, url string, expireTime int) (bool, error)
 }
 
 type urlStorage struct {
@@ -29,9 +30,22 @@ func NewUrlStorage(c *redis.Client) UrlStorage {
 // StoreURL stores a URL in the cache
 func (s *urlStorage) StoreURL(ctx context.Context, code, url string) error {
 	return s.c.Set(ctx, code, url, urlExpTime).Err()
+
 }
 
 // GetURL retrieves a URL from the cache
 func (s *urlStorage) GetURL(ctx context.Context, code string) (string, error) {
 	return s.c.Get(ctx, code).Result()
+}
+
+// check for unique Code and save with expire time
+func (s *urlStorage) StoreUrlIfUniqueCode(ctx context.Context, code string, url string, expireTime int) (bool, error) {
+	//	// Key structure, e.g., "code:XYZ123"
+	//	returnUrl, err := GetURL(ctx, code)
+	timeDuration := time.Duration(expireTime) * time.Second
+	success, err := s.c.SetNX(ctx, code, url, timeDuration).Result()
+	if err != nil {
+		return false, err
+	}
+	return success, nil
 }
