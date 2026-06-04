@@ -1,9 +1,9 @@
-package api
+package config
 
 import "github.com/kelseyhightower/envconfig"
 
 type Config struct {
-	//AppPort string `default:"8080" envconfig:"APP_PORT"`
+	AppPort     string `default:"8080" envconfig:"APP_PORT"`
 	ServiceName string `default:"bookmark_service" envconfig:"SERVICE_NAME""`
 	InstanceId  string `default:""  envconfig:"INSTANCE_ID"`
 }
