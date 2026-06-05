@@ -16,6 +16,7 @@ type UrlStorage interface {
 	StoreURL(ctx context.Context, code, url string) error
 	GetURL(ctx context.Context, code string) (string, error)
 	StoreUrlIfUniqueCode(ctx context.Context, code string, url string, expireTime int) (bool, error)
+	CheckHealth(ctx context.Context) error
 }
 
 type urlStorage struct {
@@ -48,4 +49,7 @@ func (s *urlStorage) StoreUrlIfUniqueCode(ctx context.Context, code string, url 
 		return false, err
 	}
 	return success, nil
+}
+func (s *urlStorage) CheckHealth(ctx context.Context) error {
+	return s.c.Ping(ctx).Err()
 }

@@ -18,6 +18,7 @@ import (
 
 // var testErr = errors.New("test error")
 var testCode = "abc1235"
+var basePath = "/v1/links"
 
 func TestShortenLinkHandler(t *testing.T) {
 	t.Parallel()
@@ -49,7 +50,7 @@ func TestShortenLinkHandler(t *testing.T) {
 					t.Fatalf("failed to marshal body: %v", err)
 				}
 
-				ctx.Request = httptest.NewRequest(http.MethodPost, "/shorten", bytes.NewReader(jsonBody))
+				ctx.Request = httptest.NewRequest(http.MethodPost, "v1/links/shorten", bytes.NewReader(jsonBody))
 			},
 			setupMockService: func(ctx context.Context) *mocks.ShortenUrl {
 				serviceMock := mocks.NewShortenUrl(t)
@@ -75,7 +76,7 @@ func TestShortenLinkHandler(t *testing.T) {
 					t.Fatalf("failed to marshal body: %v", err)
 				}
 
-				ctx.Request = httptest.NewRequest(http.MethodPost, "/shorten", bytes.NewReader(jsonBody))
+				ctx.Request = httptest.NewRequest(http.MethodPost, "v1/links//shorten", bytes.NewReader(jsonBody))
 			},
 			setupMockService: func(ctx context.Context) *mocks.ShortenUrl {
 				serviceMock := mocks.NewShortenUrl(t)

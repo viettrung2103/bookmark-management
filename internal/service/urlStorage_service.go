@@ -17,6 +17,7 @@ const (
 type ShortenUrl interface {
 	ShortenUrl(ctx context.Context, url string) (string, error)
 	ShortenUrlWithExpiringTime(ctx context.Context, url string, expireTime int) (string, error)
+	CheckHealth(ctx context.Context) error
 }
 
 type shortenUrlService struct {
@@ -66,4 +67,8 @@ func (s *shortenUrlService) ShortenUrlWithExpiringTime(ctx context.Context, url 
 		}
 
 	}
+}
+
+func (s *shortenUrlService) CheckHealth(ctx context.Context) error {
+	return s.repo.CheckHealth(ctx)
 }

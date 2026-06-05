@@ -12,6 +12,8 @@ import (
 	"github.com/viettrung2103/bookmark-management/internal/service"
 )
 
+const version = 1
+
 // Engine represents the application engine
 type Engine interface {
 	Start() error
@@ -54,12 +56,16 @@ func (e *engine) initRoutes() {
 	//redis := e.redis
 	shortenUrlRepo := repository.NewUrlStorage(e.redis)
 
-	genIdSvc := service.NewGenId()
+	//genIdSvc := service.NewGenId()
 	shortenUrlSvc := service.NewShortenUrl(shortenUrlRepo)
 
-	genIdHanlder := handler.NewGenId(genIdSvc, e.cfg)
+	//genIdHanlder := handler.NewGenId(genIdSvc, e.cfg)
 	shortenUrlHandler := handler.NewShortenLink(shortenUrlSvc, e.cfg)
+	basePath := fmt.Sprintf("/v%d/links", version)
+	baseLink := e.app.Group(basePath)
+	{
+		baseLink.GET("/health-check", shortenUrlHandler.CheckHealth)
 
-	e.app.GET("/health-check", genIdHanlder.GenerateId)
-	e.app.POST("/shorten", shortenUrlHandler.ShortenUrlLink)
+		baseLink.POST("/shorten", shortenUrlHandler.ShortenUrlLink)
+	}
 }

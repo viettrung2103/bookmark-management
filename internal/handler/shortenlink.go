@@ -11,6 +11,7 @@ import (
 // ShortenLink represents the shorten url handler
 type ShortenLink interface {
 	ShortenUrlLink(c *gin.Context)
+	CheckHealth(c *gin.Context)
 }
 type shortenLinkHandler struct {
 	shortenLinkService service.ShortenUrl
@@ -54,5 +55,22 @@ func (h *shortenLinkHandler) ShortenUrlLink(c *gin.Context) {
 		gin.H{
 			"code":    code,
 			"message": "Shorten URL generated successfully",
+		})
+}
+
+func (h *shortenLinkHandler) CheckHealth(c *gin.Context) {
+	err := h.shortenLinkService.CheckHealth(c)
+	if err != nil {
+		c.JSON(http.StatusServiceUnavailable, gin.H{
+			"status": "DOWN",
+			"redis":  "unreachable",
+			"error":  "Service Unavailable",
+		})
+		return
+	}
+	c.JSON(
+		http.StatusOK, gin.H{
+			"status": "UP",
+			"redis":  "reachable",
 		})
 }

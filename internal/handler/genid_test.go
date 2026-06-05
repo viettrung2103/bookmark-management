@@ -35,7 +35,7 @@ func TestGenPassHandler_GeneratePassword(t *testing.T) {
 			name: "success",
 
 			setupRequest: func(ctx *gin.Context) {
-				ctx.Request = httptest.NewRequest(http.MethodGet, "/health-check", nil)
+				ctx.Request = httptest.NewRequest(http.MethodGet, "v1/links//health-check", nil)
 			},
 			setupMockService: func(ctx context.Context) *mocks.GenId {
 				serviceMock := mocks.NewGenId(t)
@@ -50,7 +50,7 @@ func TestGenPassHandler_GeneratePassword(t *testing.T) {
 			name: "service failed",
 
 			setupRequest: func(ctx *gin.Context) {
-				ctx.Request = httptest.NewRequest(http.MethodGet, "/health-check", nil)
+				ctx.Request = httptest.NewRequest(http.MethodGet, "v1/links//health-check", nil)
 			},
 			setupMockService: func(ctx context.Context) *mocks.GenId {
 				serviceMock := mocks.NewGenId(t)
