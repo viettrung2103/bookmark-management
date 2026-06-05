@@ -13,26 +13,30 @@ func TestUrlStorage_StoreUrl(t *testing.T) {
 	t.Parallel()
 
 	testCases := []struct {
-		name string
+		name           string
+		expireDuration int
 
 		setupMock func() *redis.Client
 
-		expectErr  error
-		verifyFunc func(ctx context.Context, r *redis.Client)
+		verifyFunc   func(ctx context.Context, r *redis.Client)
+		expectErr    error
+		expectedBool bool
 	}{
 		{
-			name: "normal case",
+			name:           "normal case",
+			expireDuration: 1000,
 
 			setupMock: func() *redis.Client {
 				mock := redigPkg.InitMockRedis(t)
 				return mock
 			},
-			expectErr: nil,
 			verifyFunc: func(ctx context.Context, r *redis.Client) {
 				url, err := r.Get(ctx, "1234567").Result()
 				assert.Nil(t, err)
 				assert.Equal(t, url, "https://google.com")
 			},
+			expectErr:    nil,
+			expectedBool: true,
 		},
 	}
 
@@ -44,11 +48,12 @@ func TestUrlStorage_StoreUrl(t *testing.T) {
 			redisMock := tc.setupMock()
 			testRepo := NewUrlStorage(redisMock)
 
-			err := testRepo.StoreURL(ctx, "1234567", "https://google.com")
+			bool, err := testRepo.StoreUrlIfUniqueCode(ctx, "1234567", "https://google.com", tc.expireDuration)
 			assert.Equal(t, tc.expectErr, err)
 			if err == nil {
 				tc.verifyFunc(ctx, redisMock)
 			}
+			assert.Equal(t, tc.expectedBool, bool, tc.expectedBool)
 		})
 
 	}

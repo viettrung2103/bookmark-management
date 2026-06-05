@@ -11,7 +11,8 @@ import (
 // ShortenLink represents the shorten url handler
 type ShortenLink interface {
 	ShortenUrlLink(c *gin.Context)
-	CheckHealth(c *gin.Context)
+	//CheckHealth(c *gin.Context)
+	RedirectUrl(c *gin.Context)
 }
 type shortenLinkHandler struct {
 	shortenLinkService service.ShortenUrl
@@ -20,8 +21,8 @@ type shortenLinkHandler struct {
 
 // ShortenRequest represents the shorten url request
 type ShortenRequest struct {
-	Url              string `json:"url"`
-	ExpiringDuration int    `json:"exp"`
+	Url              string `json:"url" binding:"required,url"`
+	ExpiringDuration int    `json:"exp" binding:"required"`
 }
 
 // NewShortenLink creates a new ShortenLink
@@ -37,7 +38,7 @@ func NewShortenLink(shortenLinkSvc service.ShortenUrl, cfg *config.Config) Short
 // @Description receive a link, return a code
 // @Tags shorten-url
 // @Success 200 {object} map[string]interface{}
-// @Router /shorten [post]
+// @Router /v1/links/shorten [post]
 func (h *shortenLinkHandler) ShortenUrlLink(c *gin.Context) {
 	var req ShortenRequest
 
@@ -63,25 +64,6 @@ func (h *shortenLinkHandler) ShortenUrlLink(c *gin.Context) {
 		})
 }
 
-// CheckHealth checks the health of the service
-// @Summary check redis health
-// @Description ping and pong with redis server
-// @Tags shorten-url
-// @Success 200 {object} map[string]interface{}
-// @Router /check-health [get]
-func (h *shortenLinkHandler) CheckHealth(c *gin.Context) {
-	err := h.shortenLinkService.CheckHealth(c)
-	if err != nil {
-		c.JSON(http.StatusServiceUnavailable, gin.H{
-			"status": "DOWN",
-			"redis":  "unreachable",
-			"error":  "Service Unavailable",
-		})
-		return
-	}
-	c.JSON(
-		http.StatusOK, gin.H{
-			"status": "UP",
-			"redis":  "reachable",
-		})
+func (h *shortenLinkHandler) RedirectUrl(c *gin.Context) {
+
 }

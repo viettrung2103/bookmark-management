@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -16,9 +15,7 @@ import (
 	"github.com/viettrung2103/bookmark-management/internal/service/mocks"
 )
 
-// var testErr = errors.New("test error")
 var testCode = "abc1235"
-var basePath = "/v1/links"
 
 func TestShortenLinkHandler(t *testing.T) {
 	t.Parallel()
@@ -50,7 +47,7 @@ func TestShortenLinkHandler(t *testing.T) {
 					t.Fatalf("failed to marshal body: %v", err)
 				}
 
-				ctx.Request = httptest.NewRequest(http.MethodPost, "v1/links/shorten", bytes.NewReader(jsonBody))
+				ctx.Request = httptest.NewRequest(http.MethodPost, "/v1/links/shorten", bytes.NewReader(jsonBody))
 			},
 			setupMockService: func(ctx context.Context) *mocks.ShortenUrl {
 				serviceMock := mocks.NewShortenUrl(t)
@@ -67,7 +64,6 @@ func TestShortenLinkHandler(t *testing.T) {
 			setupRequest: func(ctx *gin.Context) {
 				body := map[string]any{
 					"exp": 10,
-					//"url": "https://www.google.com",
 				}
 
 				// 2. Convert the map to JSON bytes
@@ -76,16 +72,15 @@ func TestShortenLinkHandler(t *testing.T) {
 					t.Fatalf("failed to marshal body: %v", err)
 				}
 
-				ctx.Request = httptest.NewRequest(http.MethodPost, "v1/links//shorten", bytes.NewReader(jsonBody))
+				ctx.Request = httptest.NewRequest(http.MethodPost, "/v1/links/shorten", bytes.NewReader(jsonBody))
 			},
 			setupMockService: func(ctx context.Context) *mocks.ShortenUrl {
-				serviceMock := mocks.NewShortenUrl(t)
-				serviceMock.On("ShortenUrlWithExpiringTime", mock.Anything, "", 10).Return("", errors.New("Internal Server Err"))
-				return serviceMock
+				return mocks.NewShortenUrl(t)
+
 			},
 
-			expectedStatus:   http.StatusInternalServerError,
-			expectedResponse: `{"error":"Internal Server Err"}`,
+			expectedStatus:   http.StatusBadRequest,
+			expectedResponse: `{"error":"Invalid request body"}`,
 		},
 	}
 

@@ -11,13 +11,11 @@ const (
 	urlCodeLength = 7
 )
 
-//go:generate mockery --name=ShortenUrl --filename=shortenurl.go
-
 // ShortenUrl represents the shorten url service
+//
+//go:generate mockery --name=ShortenUrl --filename=shortenurl.go
 type ShortenUrl interface {
-	ShortenUrl(ctx context.Context, url string) (string, error)
 	ShortenUrlWithExpiringTime(ctx context.Context, url string, expireTime int) (string, error)
-	CheckHealth(ctx context.Context) error
 }
 
 type shortenUrlService struct {
@@ -29,24 +27,7 @@ func NewShortenUrl(repo repository.UrlStorage) ShortenUrl {
 	return &shortenUrlService{repo: repo}
 }
 
-// ShortenUrl shortens a url
-func (s *shortenUrlService) ShortenUrl(ctx context.Context, url string) (string, error) {
-
-	// tao key
-	urlCode, err := stringutils.GenerateCode(urlCodeLength)
-	if err != nil {
-		return "", err
-	}
-	// add vao repo
-	err = s.repo.StoreURL(ctx, urlCode, url)
-	if err != nil {
-		return "", nil
-	}
-
-	// tra ve key
-	return urlCode, nil
-}
-
+// ShortenUrlWithExpiringTime shortens a url with expiring time
 func (s *shortenUrlService) ShortenUrlWithExpiringTime(ctx context.Context, url string, expireTime int) (string, error) {
 
 	for {
@@ -67,8 +48,4 @@ func (s *shortenUrlService) ShortenUrlWithExpiringTime(ctx context.Context, url 
 		}
 
 	}
-}
-
-func (s *shortenUrlService) CheckHealth(ctx context.Context) error {
-	return s.repo.CheckHealth(ctx)
 }

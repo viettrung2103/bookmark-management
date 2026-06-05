@@ -6,6 +6,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	_ "github.com/viettrung2103/bookmark-management/docs"
+
 	"github.com/viettrung2103/bookmark-management/internal/config"
 	"github.com/viettrung2103/bookmark-management/internal/handler"
 	"github.com/viettrung2103/bookmark-management/internal/repository"
@@ -53,23 +57,24 @@ func (e *engine) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 func (e *engine) initRoutes() {
 	// genpass svc, handle and route
 
-	//redis := e.redis
 	shortenUrlRepo := repository.NewUrlStorage(e.redis)
+	healthCheckRepo := repository.NewHealthCheck(e.redis)
 
-	//genIdSvc := service.NewGenId()
 	shortenUrlSvc := service.NewShortenUrl(shortenUrlRepo)
+	healthCheckSvc := service.NewHealthCheck(healthCheckRepo)
 
-	//genIdHanlder := handler.NewGenId(genIdSvc, e.cfg)
 	shortenUrlHandler := handler.NewShortenLink(shortenUrlSvc, e.cfg)
-	basePath := fmt.Sprintf("/v%d/links", version)
-	baseLink := e.app.Group(basePath)
-	{
-		// get instance id, app info
-		//baseLink.GET("/health-check", genIdHanlder.GenerateId)
+	healthCheckHandler := handler.NewHealthCheck(healthCheckSvc)
 
-		// check redis health
-		baseLink.GET("/health-check", shortenUrlHandler.CheckHealth)
+	e.app.GET("/health-check", healthCheckHandler.CheckHealth)
+	e.app.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	apiPath := fmt.Sprintf("/v%d/links", version)
+
+	apiBase := e.app.Group(apiPath)
+	{
 		// shorten link post
-		baseLink.POST("/shorten", shortenUrlHandler.ShortenUrlLink)
+		apiBase.POST("/shorten", shortenUrlHandler.ShortenUrlLink)
+
 	}
 }

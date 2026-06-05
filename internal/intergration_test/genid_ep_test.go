@@ -14,7 +14,7 @@ import (
 	"github.com/viettrung2103/bookmark-management/internal/config"
 )
 
-func TestGenPassEndpoint(t *testing.T) {
+func TestHealthCheckEndpoint(t *testing.T) {
 	t.Parallel()
 
 	testCases := []struct {
@@ -28,19 +28,19 @@ func TestGenPassEndpoint(t *testing.T) {
 		{
 			name: "normal case",
 			setupTestHTTP: func(api api.Engine) *httptest.ResponseRecorder {
-				req, _ := http.NewRequest("GET", "/v1/links/health-check", nil)
+				req, _ := http.NewRequest("GET", "/health-check", nil)
 				respRecorder := httptest.NewRecorder()
 				api.ServeHTTP(respRecorder, req)
 				return respRecorder
 			},
 
 			expectedStatusCode:   http.StatusOK,
-			expectedResponseBody: `{"instance_id":`,
+			expectedResponseBody: `{"redis":`,
 		},
 		{
 			name: "wrong endpoint",
 			setupTestHTTP: func(api api.Engine) *httptest.ResponseRecorder {
-				req, _ := http.NewRequest("POST", "/v1/links/health-check", nil)
+				req, _ := http.NewRequest("POST", "/health-check", nil)
 				respRecorder := httptest.NewRecorder()
 				api.ServeHTTP(respRecorder, req)
 				return respRecorder
@@ -55,7 +55,23 @@ func TestGenPassEndpoint(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
-			testApi := api.NewEngine(&config.Config{}, &redis.Client{})
+			mr, err := miniredis.Run()
+			if err != nil {
+				t.Fatalf("failed to start miniredis: %v", err)
+			}
+			defer mr.Close() // Wipes the database clean when the test finishes
+
+			// 2. Point your redis client ONLY to this local mini instance
+			realRedisClient := redis.NewClient(&redis.Options{
+				Addr: mr.Addr(), // This is something local like 127.0.0.1:XXXXX
+			})
+			//time.Sleep(50 * time.Millisecond)
+			//ctx := context.Background()
+			//if err := realRedisClient.Ping(ctx).Err(); err != nil {
+			//	t.Fatalf("failed to connect to miniredis pool: %v", err)
+			//}
+
+			testApi := api.NewEngine(&config.Config{}, realRedisClient)
 			recorder := tc.setupTestHTTP(testApi)
 
 			assert.Equal(t, tc.expectedStatusCode, recorder.Code)
@@ -66,19 +82,6 @@ func TestGenPassEndpoint(t *testing.T) {
 
 func TestShortenUrlEndpoint(t *testing.T) {
 	t.Parallel()
-
-	// start an test redis server
-	// 1. Start an isolated, completely separate local Redis in memory
-	mr, err := miniredis.Run()
-	if err != nil {
-		t.Fatalf("failed to start miniredis: %v", err)
-	}
-	defer mr.Close() // Wipes the database clean when the test finishes
-
-	// 2. Point your redis client ONLY to this local mini instance
-	realRedisClient := redis.NewClient(&redis.Options{
-		Addr: mr.Addr(), // This is something local like 127.0.0.1:XXXXX
-	})
 
 	testCases := []struct {
 		name string
@@ -129,6 +132,19 @@ func TestShortenUrlEndpoint(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
+
+			// start an test redis server
+			// 1. Start an isolated, completely separate local Redis in memory
+			mr, err := miniredis.Run()
+			if err != nil {
+				t.Fatalf("failed to start miniredis: %v", err)
+			}
+			defer mr.Close() // Wipes the database clean when the test finishes
+
+			// 2. Point your redis client ONLY to this local mini instance
+			realRedisClient := redis.NewClient(&redis.Options{
+				Addr: mr.Addr(), // This is something local like 127.0.0.1:XXXXX
+			})
 
 			testApi := api.NewEngine(&config.Config{}, realRedisClient)
 			recorder := tc.setupTestHTTP(testApi)

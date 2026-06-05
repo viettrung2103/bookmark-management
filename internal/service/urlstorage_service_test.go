@@ -11,7 +11,8 @@ import (
 )
 
 const (
-	testUrl = "https://google.com"
+	testUrl        = "https://google.com"
+	expireDuration = 1000
 )
 
 func TestShortenUrl(t *testing.T) {
@@ -39,7 +40,7 @@ func TestShortenUrl(t *testing.T) {
 			testMock := tc.setupMock()
 			testRepo := repository.NewUrlStorage(testMock)
 			testSvc := NewShortenUrl(testRepo)
-			result, err := testSvc.ShortenUrl(context.Background(), testUrl)
+			result, err := testSvc.ShortenUrlWithExpiringTime(context.Background(), testUrl, expireDuration)
 			returnUrl, err := testRepo.GetURL(context.Background(), result)
 			assert.NoError(t, err)
 			assert.Equal(t, tc.expectedUrl, returnUrl)

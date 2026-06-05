@@ -1,8 +1,8 @@
 package config
 
 import (
+	"github.com/google/uuid"
 	"github.com/kelseyhightower/envconfig"
-	"github.com/viettrung2103/bookmark-management/internal/service"
 )
 
 type Config struct {
@@ -20,8 +20,8 @@ func NewConfig() (*Config, error) {
 	}
 
 	if cfg.InstanceId == "" {
-		genIdSvc := service.NewGenId()
-		cfg.InstanceId = genIdSvc.GenerateId()
+
+		cfg.InstanceId = uuid.New().String()
 	}
 
 	return cfg, err

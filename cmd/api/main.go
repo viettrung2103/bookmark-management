@@ -10,7 +10,7 @@ import (
 // @version 1.0
 // @description API for bookmark management
 // @host localhost:8080
-// @BasePath /v1/links/
+// @BasePath /
 func main() {
 	//create app config
 	cfg, err := config.NewConfig()
