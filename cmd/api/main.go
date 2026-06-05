@@ -3,6 +3,7 @@ package main
 import (
 	api "github.com/viettrung2103/bookmark-management/internal/api"
 	"github.com/viettrung2103/bookmark-management/internal/config"
+	redispkg "github.com/viettrung2103/bookmark-management/pkg/redis"
 )
 
 // @title Bookmark API
@@ -16,7 +17,12 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	app := api.NewEngine(cfg)
+	redisClient, err := redispkg.NewClient("")
+	if err != nil {
+		panic(err)
+	}
+
+	app := api.NewEngine(cfg, redisClient)
 	err = app.Start()
 	if err != nil {
 		panic(err)

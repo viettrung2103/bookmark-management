@@ -1,4 +1,4 @@
-package service
+package stringutils
 
 import (
 	"testing"
@@ -6,29 +6,30 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-const testUUID = "123e4567-e89b-12d3-a456-426614174000"
-
-func TestGeneratePassword(t *testing.T) {
+func TestGenerateCode(t *testing.T) {
 	t.Parallel()
 
 	testCases := []struct {
 		name string
 
 		expectedLength int
+		expectedError  error
 	}{
 		{
 			name:           "success",
-			expectedLength: len(testUUID),
+			expectedLength: 10,
+			expectedError:  nil,
 		},
+
 	}
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
-			testSvc := NewGenId()
-			password := testSvc.GenerateId()
-			//assert.ErrorIs(t, err, tc.expectedError)
+			//testSvc := NewCode()
+			password, err := GenerateCode(tc.expectedLength)
+			assert.ErrorIs(t, err, tc.expectedError)
 			assert.Equal(t, tc.expectedLength, len(password))
 		})
 	}
