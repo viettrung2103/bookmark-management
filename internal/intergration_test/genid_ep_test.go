@@ -5,6 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/redis/go-redis/v9"
 	"github.com/stretchr/testify/assert"
 	"github.com/viettrung2103/bookmark-management/internal/api"
 	"github.com/viettrung2103/bookmark-management/internal/config"
@@ -51,7 +52,7 @@ func TestGenPassEndpoint(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
-			testApi := api.NewEngine(&config.Config{})
+			testApi := api.NewEngine(&config.Config{}, &redis.Client{})
 			recorder := tc.setupTestHTTP(testApi)
 
 			assert.Equal(t, tc.expectedStatusCode, recorder.Code)

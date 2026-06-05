@@ -8,6 +8,7 @@ import (
 	"github.com/viettrung2103/bookmark-management/internal/service"
 )
 
+// ShortenLink represents the shorten url handler
 type ShortenLink interface {
 	ShortenUrlLink(c *gin.Context)
 }
@@ -16,11 +17,13 @@ type shortenLinkHandler struct {
 	cfg                *config.Config
 }
 
+// ShortenRequest represents the shorten url request
 type ShortenRequest struct {
 	Url              string `json:"url"`
 	ExpiringDuration int    `json:"exp"`
 }
 
+// NewShortenLink creates a new ShortenLink
 func NewShortenLink(shortenLinkSvc service.ShortenUrl, cfg *config.Config) ShortenLink {
 	return &shortenLinkHandler{
 		shortenLinkService: shortenLinkSvc,
@@ -28,6 +31,7 @@ func NewShortenLink(shortenLinkSvc service.ShortenUrl, cfg *config.Config) Short
 	}
 }
 
+// ShortenUrlLink shortens a url
 func (h *shortenLinkHandler) ShortenUrlLink(c *gin.Context) {
 	var req ShortenRequest
 

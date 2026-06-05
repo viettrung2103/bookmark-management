@@ -8,15 +8,15 @@ const (
 
 // GenPass represents the genpass service
 //
-//go:generate mockery --name=Code --filename=gencode.go
-type Code interface {
+//go:generate mockery --name=GenCode --filename=gencode.go
+type GenCode interface {
 	GenerateCode() (string, error)
 }
 
 type codeService struct{}
 
 // NewGenPass return a GenPassService
-func NewCode() Code {
+func NewCode() GenCode {
 	return &codeService{}
 }
 

@@ -8,6 +8,7 @@ import (
 
 const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
+// GenerateCode generates a random code of the specified length
 func GenerateCode(length int) (string, error) {
 
 	var strBuilder bytes.Buffer

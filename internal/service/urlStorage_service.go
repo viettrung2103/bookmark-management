@@ -11,6 +11,8 @@ const (
 	urlCodeLength = 7
 )
 
+//go:generate mockery --name=ShortenUrl --filename=shortenurl.go
+
 // ShortenUrl represents the shorten url service
 type ShortenUrl interface {
 	ShortenUrl(ctx context.Context, url string) (string, error)
