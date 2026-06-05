@@ -30,7 +30,7 @@ func NewGenId(genIdSvc service.GenId, cfg *config.Config) GenId {
 // @Description Generate a new ID
 // @Tags genid
 // @Success 200 {object} map[string]interface{}
-// @Router /genid [get]
+// @Router /health-check [get]
 func (s *genIdHandler) GenerateId(c *gin.Context) {
 	service_name := s.cfg.ServiceName
 	instance_id := s.cfg.InstanceId

@@ -64,8 +64,12 @@ func (e *engine) initRoutes() {
 	basePath := fmt.Sprintf("/v%d/links", version)
 	baseLink := e.app.Group(basePath)
 	{
-		baseLink.GET("/health-check", shortenUrlHandler.CheckHealth)
+		// get instance id, app info
+		//baseLink.GET("/health-check", genIdHanlder.GenerateId)
 
+		// check redis health
+		baseLink.GET("/health-check", shortenUrlHandler.CheckHealth)
+		// shorten link post
 		baseLink.POST("/shorten", shortenUrlHandler.ShortenUrlLink)
 	}
 }
