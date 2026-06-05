@@ -33,6 +33,11 @@ func NewShortenLink(shortenLinkSvc service.ShortenUrl, cfg *config.Config) Short
 }
 
 // ShortenUrlLink shortens a url
+// @Summary shorten a linkn
+// @Description receive a link, return a code
+// @Tags shorten-url
+// @Success 200 {object} map[string]interface{}
+// @Router /shorten [post]
 func (h *shortenLinkHandler) ShortenUrlLink(c *gin.Context) {
 	var req ShortenRequest
 
@@ -58,6 +63,12 @@ func (h *shortenLinkHandler) ShortenUrlLink(c *gin.Context) {
 		})
 }
 
+// CheckHealth checks the health of the service
+// @Summary check redis health
+// @Description ping and pong with redis server
+// @Tags shorten-url
+// @Success 200 {object} map[string]interface{}
+// @Router /check-health [get]
 func (h *shortenLinkHandler) CheckHealth(c *gin.Context) {
 	err := h.shortenLinkService.CheckHealth(c)
 	if err != nil {
