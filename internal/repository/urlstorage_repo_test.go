@@ -6,37 +6,33 @@ import (
 
 	"github.com/redis/go-redis/v9"
 	"github.com/stretchr/testify/assert"
-	redigPkg "github.com/viettrung2103/bookmark-management/pkg/redis"
+	redisPkg "github.com/viettrung2103/bookmark-management/pkg/redis"
 )
 
 func TestUrlStorage_StoreUrl(t *testing.T) {
 	t.Parallel()
 
 	testCases := []struct {
-		name           string
-		expireDuration int
+		name string
 
 		setupMock func() *redis.Client
 
-		verifyFunc   func(ctx context.Context, r *redis.Client)
-		expectErr    error
-		expectedBool bool
+		expectErr  error
+		verifyFunc func(ctx context.Context, r *redis.Client)
 	}{
 		{
-			name:           "normal case",
-			expireDuration: 1000,
+			name: "normal case",
 
 			setupMock: func() *redis.Client {
-				mock := redigPkg.InitMockRedis(t)
+				mock := redisPkg.InitMockRedis(t)
 				return mock
 			},
+			expectErr: nil,
 			verifyFunc: func(ctx context.Context, r *redis.Client) {
 				url, err := r.Get(ctx, "1234567").Result()
 				assert.Nil(t, err)
 				assert.Equal(t, url, "https://google.com")
 			},
-			expectErr:    nil,
-			expectedBool: true,
 		},
 	}
 
@@ -48,12 +44,11 @@ func TestUrlStorage_StoreUrl(t *testing.T) {
 			redisMock := tc.setupMock()
 			testRepo := NewUrlStorage(redisMock)
 
-			bool, err := testRepo.StoreUrlIfUniqueCode(ctx, "1234567", "https://google.com", tc.expireDuration)
+			err := testRepo.StoreURL(ctx, "1234567", "https://google.com", 100)
 			assert.Equal(t, tc.expectErr, err)
 			if err == nil {
 				tc.verifyFunc(ctx, redisMock)
 			}
-			assert.Equal(t, tc.expectedBool, bool, tc.expectedBool)
 		})
 
 	}

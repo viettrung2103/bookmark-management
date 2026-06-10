@@ -24,9 +24,9 @@ func NewHealthCheck(healthCheckSvc service.HealthCheck) HealthCheck {
 // CheckHealth checks the health of the service
 // @Summary check redis health
 // @Description ping and pong with redis server
-// @Tags shorten-url
+// @Tags health check
 // @Success 200 {object} map[string]interface{}
-// @Router /check-health [get]
+// @Router /health-check [get]
 func (h *healthCheckHandler) CheckHealth(c *gin.Context) {
 	err := h.healthCheckSvc.CheckHealth(c)
 	if err != nil {

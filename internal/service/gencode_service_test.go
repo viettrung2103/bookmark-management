@@ -13,12 +13,12 @@ func TestGenerateCode(t *testing.T) {
 		name string
 
 		expectedLength int
-		expectedError  error
+		//expectedError  error
 	}{
 		{
 			name:           "success",
 			expectedLength: 10,
-			expectedError:  nil,
+			//expectedError:  nil,
 		},
 	}
 
@@ -27,8 +27,8 @@ func TestGenerateCode(t *testing.T) {
 			t.Parallel()
 
 			testSvc := NewCode()
-			password, err := testSvc.GenerateCode()
-			assert.ErrorIs(t, err, tc.expectedError)
+			password := testSvc.GenerateCode()
+			//assert.ErrorIs(t, err, tc.expectedError)
 			assert.Equal(t, tc.expectedLength, len(password))
 		})
 	}
