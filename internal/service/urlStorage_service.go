@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/redis/go-redis/v9"
+	"github.com/rs/zerolog/log"
 	"github.com/viettrung2103/bookmark-management/internal/repository"
 	"github.com/viettrung2103/bookmark-management/pkg/stringutils"
 )
@@ -47,12 +48,15 @@ func (s *shortenUrlService) ShortenUrlWithExpiringTime(ctx context.Context, url 
 	}
 
 	if res != "" {
+
 		return s.ShortenUrlWithExpiringTime(ctx, url, expireTime)
 	}
 
 	// put key into redis
 	err = s.repo.StoreURL(ctx, key, url, time.Duration(expireTime)*time.Second)
 	if err != nil {
+		log.Error().Err(err).Str("from", "service.shortenUrlService.ShortenUrlWithExpiringTime").Msg("failed to store url")
+
 		return "", err
 	}
 	return key, nil
@@ -63,6 +67,8 @@ var ErrCodeDoesNotExist = errors.New("code does not exist")
 func (s *shortenUrlService) GetLinkFromCode(ctx context.Context, urlCode string) (string, error) {
 	url, err := s.repo.GetURL(ctx, urlCode)
 	if errors.Is(err, redis.Nil) {
+		log.Error().Err(err).Str("from", "service.shortenUrlService.GetLinkFromCode").Msg("failed to get url from code")
+
 		return "", ErrCodeDoesNotExist
 	}
 

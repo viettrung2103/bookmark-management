@@ -3,6 +3,7 @@ package config
 import (
 	"github.com/google/uuid"
 	"github.com/kelseyhightower/envconfig"
+	"github.com/rs/zerolog/log"
 )
 
 type Config struct {
@@ -20,6 +21,7 @@ func NewConfig() (*Config, error) {
 	}
 
 	if cfg.InstanceId == "" {
+		log.Error().Err(err).Str("from", "config.Newconfig").Msg("failed to create config")
 
 		cfg.InstanceId = uuid.New().String()
 	}

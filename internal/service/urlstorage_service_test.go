@@ -8,16 +8,9 @@ import (
 
 	"github.com/redis/go-redis/v9"
 	"github.com/stretchr/testify/assert"
-	//"github.com/viettrung2103/bookmark-management/internal/repository/mocks"
 
 	repoMocks "github.com/viettrung2103/bookmark-management/internal/repository/mocks"
 	keygenMock "github.com/viettrung2103/bookmark-management/pkg/stringutils/mocks"
-	//"github.com/viettrung2103/bookmark-management/internal/service/mocks"
-)
-
-const (
-	testUrl        = "https://google.com"
-	expireDuration = 1000
 )
 
 var redisTestErr = errors.New("test error")
@@ -28,9 +21,7 @@ func TestService_GetLinkFromKey(t *testing.T) {
 	testCases := []struct {
 		name string
 
-		setupRepo func(ctx context.Context) *repoMocks.UrlStorage
-		//setupKeyGen func() *keygenMock.KeyGenerator
-
+		setupRepo   func(ctx context.Context) *repoMocks.UrlStorage
 		expectedUrl string
 		expectedErr error
 	}{
@@ -41,12 +32,6 @@ func TestService_GetLinkFromKey(t *testing.T) {
 				mock.On("GetURL", ctx, "test").Return("https://test.com", nil)
 				return mock
 			},
-			//setupKeyGen: func() *keygenMock.KeyGenerator {
-			//	mockKeyGen := keygenMock.NewKeyGenerator(t)
-			//	mockKeyGen.On("GenerateKey", linkKeyLength).Return("1234567")
-			//
-			//	return mockKeyGen
-			//},
 
 			expectedUrl: "https://test.com",
 			expectedErr: nil,
@@ -58,12 +43,6 @@ func TestService_GetLinkFromKey(t *testing.T) {
 				mock.On("GetURL", ctx, "test").Return("", redisTestErr)
 				return mock
 			},
-			//setupKeyGen: func() *keygenMock.KeyGenerator {
-			//	mockKeyGen := keygenMock.NewKeyGenerator(t)
-			//	mockKeyGen.On("GenerateKey", linkKeyLength).Return("1234567")
-			//
-			//	return mockKeyGen
-			//},
 			expectedUrl: "",
 			expectedErr: redisTestErr,
 		},
@@ -74,12 +53,7 @@ func TestService_GetLinkFromKey(t *testing.T) {
 				mock.On("GetURL", ctx, "test").Return("", redisTestErr)
 				return mock
 			},
-			//setupKeyGen: func() *keygenMock.KeyGenerator {
-			//	mockKeyGen := keygenMock.NewKeyGenerator(t)
-			//	mockKeyGen.On("GenerateKey", linkKeyLength).Return("1234567")
-			//
-			//	return mockKeyGen
-			//},
+
 			expectedUrl: "",
 			expectedErr: redisTestErr,
 		},
@@ -92,7 +66,6 @@ func TestService_GetLinkFromKey(t *testing.T) {
 			ctx := context.Background()
 
 			mockRepo := tc.setupRepo(ctx)
-			//mockKeygen := tc.setupKeyGen()
 			testService := NewShortenUrl(mockRepo, nil)
 			result, err := testService.GetLinkFromCode(ctx, "test")
 			assert.Equal(t, result, tc.expectedUrl)
@@ -101,8 +74,6 @@ func TestService_GetLinkFromKey(t *testing.T) {
 		})
 	}
 }
-
-var testErr = errors.New("test error")
 
 const testExpTime = 60 * time.Second
 

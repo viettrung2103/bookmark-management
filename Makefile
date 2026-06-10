@@ -6,9 +6,13 @@ run:
 swagger:
 	swag init -g cmd/api/main.go
 
-dev-run: swagger run
+docker:
+	docker build -t test_img:latest .
+	docker run --rm -p 8080:8080 test_img:latest
 
-COVERAGE_EXCLUDE=mocks|main.go|test|docs.go
+dev-run: docker swagger run
+
+COVERAGE_EXCLUDE=mocks|main.go|test|docs
 COVERAGE_THRESHOLD = 50
 
 test:
