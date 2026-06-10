@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/rs/zerolog/log"
 	"github.com/viettrung2103/bookmark-management/internal/service"
 )
 
@@ -30,6 +31,8 @@ func NewHealthCheck(healthCheckSvc service.HealthCheck) HealthCheck {
 func (h *healthCheckHandler) CheckHealth(c *gin.Context) {
 	err := h.healthCheckSvc.CheckHealth(c)
 	if err != nil {
+		log.Error().Err(err).Str("from", "handler.healthCheckHandler.CheckHealth").Msg("redis server is down")
+
 		c.JSON(http.StatusServiceUnavailable, gin.H{
 			"status": "DOWN",
 			"redis":  "unreachable",

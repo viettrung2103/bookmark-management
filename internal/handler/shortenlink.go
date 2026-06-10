@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/rs/zerolog/log"
 	"github.com/viettrung2103/bookmark-management/internal/config"
 	"github.com/viettrung2103/bookmark-management/internal/service"
 )
@@ -24,6 +25,10 @@ type shortenLinkHandler struct {
 type shortenUrlRequest struct {
 	Url              string `json:"url" binding:"required,url"`
 	ExpiringDuration int    `json:"exp" binding:"required"`
+}
+
+type shortenUrlResponse struct {
+	Code string `json:"code"`
 }
 
 // NewShortenLink creates a new ShortenLink
@@ -48,6 +53,8 @@ func (h *shortenLinkHandler) ShortenUrlLink(c *gin.Context) {
 	// bind the incoming request with our struct
 	err := c.ShouldBindJSON(&req)
 	if err != nil {
+		log.Error().Err(err).Str("from", "handler.shortenurl.ShortenUrlLink").Msg("failed to get req body from code")
+
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
 		return
 	}
@@ -67,11 +74,8 @@ func (h *shortenLinkHandler) ShortenUrlLink(c *gin.Context) {
 		})
 }
 
-//func (h *shortenLinkHandler) RedirectUrl(c *gin.Context) {
-//
-//}
-
 // Redirect Forward the request to the original url
+// @Summary Redirect Forward the request to the original url
 // @Tags link
 // @Accept application/json
 // @Produce application/json
@@ -91,7 +95,7 @@ func (h *shortenLinkHandler) RedirectUrl(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "url not found"})
 			return
 		}
-		//log.Error().Err(err).Str("from", "handler.shortenurl.Redirect").Msg("failed to get url from code")
+		log.Error().Err(err).Str("from", "handler.shortenurl.Redirect").Msg("failed to get url from code")
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "Internal server error"})
 		return
 	}
