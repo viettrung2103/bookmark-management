@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/rs/zerolog/log"
 	"github.com/viettrung2103/bookmark-management/internal/service"
 )
 
@@ -24,12 +25,14 @@ func NewHealthCheck(healthCheckSvc service.HealthCheck) HealthCheck {
 // CheckHealth checks the health of the service
 // @Summary check redis health
 // @Description ping and pong with redis server
-// @Tags shorten-url
+// @Tags health check
 // @Success 200 {object} map[string]interface{}
-// @Router /check-health [get]
+// @Router /health-check [get]
 func (h *healthCheckHandler) CheckHealth(c *gin.Context) {
 	err := h.healthCheckSvc.CheckHealth(c)
 	if err != nil {
+		log.Error().Err(err).Str("from", "handler.healthCheckHandler.CheckHealth").Msg("redis server is down")
+
 		c.JSON(http.StatusServiceUnavailable, gin.H{
 			"status": "DOWN",
 			"redis":  "unreachable",

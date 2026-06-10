@@ -9,6 +9,7 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	_ "github.com/viettrung2103/bookmark-management/docs"
+	"github.com/viettrung2103/bookmark-management/pkg/stringutils"
 
 	"github.com/viettrung2103/bookmark-management/internal/config"
 	"github.com/viettrung2103/bookmark-management/internal/handler"
@@ -59,8 +60,9 @@ func (e *engine) initRoutes() {
 
 	shortenUrlRepo := repository.NewUrlStorage(e.redis)
 	healthCheckRepo := repository.NewHealthCheck(e.redis)
+	keyGen := stringutils.NewKeyGenerator()
 
-	shortenUrlSvc := service.NewShortenUrl(shortenUrlRepo)
+	shortenUrlSvc := service.NewShortenUrl(shortenUrlRepo, keyGen)
 	healthCheckSvc := service.NewHealthCheck(healthCheckRepo)
 
 	shortenUrlHandler := handler.NewShortenLink(shortenUrlSvc, e.cfg)
@@ -75,6 +77,7 @@ func (e *engine) initRoutes() {
 	{
 		// shorten link post
 		apiBase.POST("/shorten", shortenUrlHandler.ShortenUrlLink)
+		apiBase.GET("/shorten/:code", shortenUrlHandler.RedirectUrl)
 
 	}
 }

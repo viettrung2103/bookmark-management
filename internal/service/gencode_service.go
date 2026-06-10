@@ -10,7 +10,7 @@ const (
 //
 //go:generate mockery --name=GenCode --filename=gencode.go
 type GenCode interface {
-	GenerateCode() (string, error)
+	GenerateCode() string
 }
 
 type codeService struct{}
@@ -21,8 +21,8 @@ func NewCode() GenCode {
 }
 
 // GeneratePassword generates a random password
-func (s *codeService) GenerateCode() (string, error) {
+func (s *codeService) GenerateCode() string {
 
-	return stringutils.GenerateCode(passLength)
+	return stringutils.GenerateRandomString(passLength)
 
 }

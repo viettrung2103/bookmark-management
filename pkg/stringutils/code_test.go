@@ -18,9 +18,8 @@ func TestGenerateCode(t *testing.T) {
 		{
 			name:           "success",
 			expectedLength: 10,
-			expectedError:  nil,
+			//expectedError:  nil,
 		},
-
 	}
 
 	for _, tc := range testCases {
@@ -28,8 +27,8 @@ func TestGenerateCode(t *testing.T) {
 			t.Parallel()
 
 			//testSvc := NewCode()
-			password, err := GenerateCode(tc.expectedLength)
-			assert.ErrorIs(t, err, tc.expectedError)
+			password := GenerateRandomString(tc.expectedLength)
+			//assert.ErrorIs(t, err, tc.expectedError)
 			assert.Equal(t, tc.expectedLength, len(password))
 		})
 	}
