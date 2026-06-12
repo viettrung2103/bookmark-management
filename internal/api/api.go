@@ -8,6 +8,7 @@ import (
 	"github.com/redis/go-redis/v9"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/viettrung2103/bookmark-management/docs"
 	_ "github.com/viettrung2103/bookmark-management/docs"
 	"github.com/viettrung2103/bookmark-management/pkg/stringutils"
 
@@ -69,6 +70,8 @@ func (e *engine) initRoutes() {
 	healthCheckHandler := handler.NewHealthCheck(healthCheckSvc)
 
 	e.app.GET("/health-check", healthCheckHandler.CheckHealth)
+
+	docs.SwaggerInfo.Host = e.cfg.Hostname
 	e.app.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	apiPath := fmt.Sprintf("/v%d/links", version)
