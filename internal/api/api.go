@@ -77,7 +77,7 @@ func (e *engine) initRoutes() {
 	{
 		// shorten link post
 		apiBase.POST("/shorten", shortenUrlHandler.ShortenUrlLink)
-		apiBase.GET("/shorten/:code", shortenUrlHandler.RedirectUrl)
+		apiBase.GET("/redirect/:code", shortenUrlHandler.RedirectUrl)
 
 	}
 }
