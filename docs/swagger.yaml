@@ -15,7 +15,7 @@ info:
   contact: {}
   description: API for bookmark management
   title: Bookmark API
-  version: "1.0"
+  version: "1.5"
 paths:
   /health-check:
     get:
