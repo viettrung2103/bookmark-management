@@ -55,19 +55,6 @@ func TestHealthCheckEndpoint(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
-
-			//mr, err := miniredis.Run()
-			//if err != nil {
-			//	t.Fatalf("failed to start miniredis: %v", err)
-			//}
-			//defer mr.Close() // Wipes the database clean when the test finishes
-			//
-			//// 2. Point your redis client ONLY to this local mini instance
-			//realRedisClient := redis.NewClient(&redis.Options{
-			//	Addr: mr.Addr(), // This is something local like 127.0.0.1:XXXXX
-			//})
-			//
-			//testApi := api.NewEngine(&config.Config{}, realRedisClient)
 			redisMocks := pkgRedis.InitMockRedis(t)
 
 			testApi := api.NewEngine(&config.Config{}, redisMocks)
@@ -132,23 +119,9 @@ func TestShortenUrlEndpoint(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
-			// start an test redis server
-			// 1. Start an isolated, completely separate local Redis in memory
-			//mr, err := miniredis.Run()
-			//if err != nil {
-			//	t.Fatalf("failed to start miniredis: %v", err)
-			//}
-			//defer mr.Close() // Wipes the database clean when the test finishes
-			//
-			//// 2. Point your redis client ONLY to this local mini instance
-			//realRedisClient := redis.NewClient(&redis.Options{
-			//	Addr: mr.Addr(), // This is something local like 127.0.0.1:XXXXX
-			//})
-
 			redisMocks := pkgRedis.InitMockRedis(t)
 
 			testApi := api.NewEngine(&config.Config{}, redisMocks)
-			//testApi := api.NewEngine(&config.Config{}, realRedisClient)
 			recorder := tc.setupTestHTTP(testApi)
 
 			assert.Equal(t, tc.expectedStatusCode, recorder.Code)
