@@ -81,7 +81,7 @@ func (h *shortenLinkHandler) ShortenUrlLink(c *gin.Context) {
 // @Produce application/json
 // @Param code path string true "code"
 // @Success	302
-// @Router /v1/links/shorten/{code} [get]
+// @Router /v1/links/redirect/{code} [get]
 func (h *shortenLinkHandler) RedirectUrl(c *gin.Context) {
 	code := c.Param("code")
 	if code == "" {

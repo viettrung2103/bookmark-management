@@ -4,7 +4,7 @@
         "description": "API for bookmark management",
         "title": "Bookmark API",
         "contact": {},
-        "version": "1.0"
+        "version": "1.5"
     },
     "host": "localhost:8080",
     "basePath": "/",
@@ -23,6 +23,34 @@
                             "type": "object",
                             "additionalProperties": true
                         }
+                    }
+                }
+            }
+        },
+        "/v1/links/redirect/{code}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "link"
+                ],
+                "summary": "Redirect Forward the request to the original url",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "code",
+                        "name": "code",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "302": {
+                        "description": "Found"
                     }
                 }
             }
@@ -56,34 +84,6 @@
                         "schema": {
                             "type": "string"
                         }
-                    }
-                }
-            }
-        },
-        "/v1/links/shorten/{code}": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "link"
-                ],
-                "summary": "Redirect Forward the request to the original url",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "code",
-                        "name": "code",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "302": {
-                        "description": "Found"
                     }
                 }
             }
