@@ -1,0 +1,71 @@
+basePath: /
+definitions:
+  handler.shortenUrlRequest:
+    properties:
+      exp:
+        type: integer
+      url:
+        type: string
+    required:
+    - exp
+    - url
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API for bookmark management
+  title: Bookmark API
+  version: "1.0"
+paths:
+  /health-check:
+    get:
+      description: ping and pong with redis server
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+      summary: check redis health
+      tags:
+      - health check
+  /v1/links/shorten:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Shorten URL Input payload
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.shortenUrlRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: receive the url, return the code
+      tags:
+      - link
+  /v1/links/shorten/{code}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: code
+        in: path
+        name: code
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "302":
+          description: Found
+      summary: Redirect Forward the request to the original url
+      tags:
+      - link
+swagger: "2.0"

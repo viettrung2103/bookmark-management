@@ -1,5 +1,2 @@
 coverage*
-go.mod
-go.sum
 .idea/
-docs/
