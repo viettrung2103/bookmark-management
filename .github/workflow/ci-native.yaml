@@ -33,7 +33,7 @@ jobs:
         if: ${{ github.event_name != 'pull_request' }}
         id: meta
         with:
-          images: ${{ secrets.DOCKER_USERNAME }}/bookmark-service-lesson
+          images: ${{ secrets.DOCKER_USERNAME }}/bookmark-service
           tags: |
             type=ref,event=tag
             type=raw,value=dev, enable = ${{ github.ref_name == 'main' }}
