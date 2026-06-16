@@ -17,7 +17,6 @@ func main() {
 
 	logger.SetLogLevel()
 
-	//log.Debug().Str("name", "debug").Int("run-time", 1000).Msg("log nay chi hien thi o debug level")
 	cfg, err := config.NewConfig()
 	if err != nil {
 		panic(err)

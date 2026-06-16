@@ -33,6 +33,34 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/links/redirect/{code}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "link"
+                ],
+                "summary": "Redirect Forward the request to the original url",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "code",
+                        "name": "code",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "302": {
+                        "description": "Found"
+                    }
+                }
+            }
+        },
         "/v1/links/shorten": {
             "post": {
                 "consumes": [
@@ -62,34 +90,6 @@ const docTemplate = `{
                         "schema": {
                             "type": "string"
                         }
-                    }
-                }
-            }
-        },
-        "/v1/links/shorten/{code}": {
-            "get": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "link"
-                ],
-                "summary": "Redirect Forward the request to the original url",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "code",
-                        "name": "code",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "302": {
-                        "description": "Found"
                     }
                 }
             }
