@@ -183,7 +183,7 @@ func TestRedirectEndpoint(t *testing.T) {
 			},
 
 			setupTestHTTP: func(api api.Engine) *httptest.ResponseRecorder {
-				req, _ := http.NewRequest("GET", "/v1/links/shorten/1234567", nil)
+				req, _ := http.NewRequest("GET", "/v1/links/redirect/1234567", nil)
 				respRecorder := httptest.NewRecorder()
 				api.ServeHTTP(respRecorder, req)
 				return respRecorder
@@ -201,7 +201,7 @@ func TestRedirectEndpoint(t *testing.T) {
 				return mock
 			},
 			setupTestHTTP: func(api api.Engine) *httptest.ResponseRecorder {
-				req, _ := http.NewRequest("POST", "/v1/links/shorten/1234567", nil)
+				req, _ := http.NewRequest("POST", "/v1/links/redirect/1234567", nil)
 				respRecorder := httptest.NewRecorder()
 				api.ServeHTTP(respRecorder, req)
 				return respRecorder
@@ -219,7 +219,7 @@ func TestRedirectEndpoint(t *testing.T) {
 				return mock
 			},
 			setupTestHTTP: func(api api.Engine) *httptest.ResponseRecorder {
-				req, _ := http.NewRequest("POST", "/v1/links/shorten/234567", nil)
+				req, _ := http.NewRequest("POST", "/v1/links/redirect/234567", nil)
 				respRecorder := httptest.NewRecorder()
 				api.ServeHTTP(respRecorder, req)
 				return respRecorder
