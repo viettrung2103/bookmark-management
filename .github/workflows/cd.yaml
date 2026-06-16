@@ -1,0 +1,23 @@
+name: cd-pipeline
+
+on:
+  workflow_run:
+    workflows: ['ci-pipeline']
+    types: ['completed']
+
+jobs:
+  cd_pipeline:
+    if: >
+      github.event.workflow_run.conclussion == 'success' &&
+      github.event.workflow.run.event == 'push' &&
+      github.event.workflow.run.head_branch != 'main'
+    runs-on: self-hosted
+    steps:
+      - name: Deploy
+        working-directory: /root/go-deployment
+        run: |
+          docker rm -f bookmark_service
+          docker compose pull bookmark_service
+          docker compose up -d
+          docker system prune -f
+      
