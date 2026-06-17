@@ -16,10 +16,6 @@ jobs:
       - name: Deploy
         working-directory: /root/go-deployment
         run: |
-#          docker rm -f bookmark_service
-#          docker compose pull --no-cache bookmark_service
-#          docker compose up -d
-#          docker system prune -f
           docker compose pull bookmark_service
           docker compose up -d --force-recreate bookmark_service
           docker image prune -f
