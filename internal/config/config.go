@@ -9,7 +9,7 @@ import (
 // Config struct for configuration
 type Config struct {
 	AppPort     string `default:"8080" envconfig:"APP_PORT"`
-	ServiceName string `default:"bookmark_service" envconfig:"SERVICE_NAME""`
+	ServiceName string `default:"bookmark_service" envconfig:"SERVICE_NAME"`
 	InstanceId  string `default:""  envconfig:"INSTANCE_ID"`
 	Hostname    string `default:"localhost:8080" envconfig:"APP_HOSTNAME"`
 }
