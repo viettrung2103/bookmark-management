@@ -7,14 +7,17 @@ on:
 
 jobs:
   cd_pipeline:
+    if: >
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch != 'main'
     runs-on: self-hosted
     steps:
       - name: Deploy
         working-directory: /root/go-deployment
         run: |
-          docker rm -f bookmark_service || true
-          docker image rm viettrung21/bookmark-service:dev || true
           docker compose pull bookmark_service
-          docker compose up -d bookmark_service
+          docker compose up -d --force-recreate bookmark_service
           docker image prune -f
+
       

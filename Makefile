@@ -80,10 +80,16 @@ docker-test:
 	fi
 
 docker-build:
-	docker build -t $(IMG_NAME):$(IMG_TAG) .
+    docker build -t $(IMG_NAME):$(IMG_TAG) .
+
+docker-build-multiarch:
+	docker buildx create --use --name multiarch-builder || true
+	docker buildx build --platform linux/amd64,linux/arm64 -t $(IMG_NAME):$(IMG_TAG) --push .
+	docker buildx rm multiarch-builder
+
 
 docker-release:
-	docker push $(IMG_NAME):$(IMG_TAG)
+    docker push $(IMG_NAME):$(IMG_TAG)
 
 DOCKER_USERNAME ?=
 DOCKER_PASSWORD ?=

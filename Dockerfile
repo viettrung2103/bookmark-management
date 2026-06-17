@@ -39,8 +39,9 @@ RUN go mod download
 COPY . .
 
 FROM base AS build
+ARG TARGETARCH
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=${TARGETARCH} go build -ldflags "-w -s" -o bookmark_service cmd/api/main.go
 
-RUN GOOS=linux go build -tags musl -ldflags "-w -s" -o bookmark_service cmd/api/main.go
 
 FROM base AS test-exec
 
