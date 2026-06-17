@@ -9,7 +9,6 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/viettrung2103/bookmark-management/docs"
-	_ "github.com/viettrung2103/bookmark-management/docs"
 	appHandler "github.com/viettrung2103/bookmark-management/internal/app/handler"
 	userHandler "github.com/viettrung2103/bookmark-management/internal/app/handler/user"
 	repo "github.com/viettrung2103/bookmark-management/internal/app/repository"
@@ -114,16 +113,19 @@ func (e *engine) initRoutes() {
 	docs.SwaggerInfo.Host = e.cfg.Hostname
 	e.eng.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	apiPath := fmt.Sprintf("/v%d/links", version)
+	apiPath := fmt.Sprintf("/v%d", version)
 
 	apiBase := e.eng.Group(apiPath)
 	{
 		// link route
-		apiBase.POST("/shorten", allHandlers.linkHandler.ShortenUrlLink)
-		apiBase.GET("/redirect/:code", allHandlers.linkHandler.RedirectUrl)
+		linkBase := apiBase.Group("/links")
+
+		linkBase.POST("/shorten", allHandlers.linkHandler.ShortenUrlLink)
+		linkBase.GET("/redirect/:code", allHandlers.linkHandler.RedirectUrl)
 
 		//user route
-		apiBase.POST("/users/register", allHandlers.userHandler.Register)
+		userBase := apiBase.Group("/users")
+		userBase.POST("/register", allHandlers.userHandler.Register)
 
 	}
 }
