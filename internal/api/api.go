@@ -45,6 +45,7 @@ type EngineOpts struct {
 	SqlDB  *gorm.DB
 }
 
+// New creates a new engine
 func New(opts *EngineOpts) Engine {
 	eng := &engine{
 		eng:   opts.Engine,
@@ -113,17 +114,6 @@ func (e *engine) initHandlers() *handlers {
 
 // initRoutes initializes the routes
 func (e *engine) initRoutes() {
-	// genpass svc, handle and route
-
-	//shortenUrlRepo := repo.NewUrlStorage(e.redis)
-	//healthCheckRepo := repo.NewHealthCheck(e.redis)
-	//keyGen := stringutils.NewKeyGenerator()
-	//
-	//shortenUrlSvc := svc.NewShortenUrl(shortenUrlRepo, keyGen)
-	//healthCheckSvc := svc.NewHealthCheck(healthCheckRepo)
-	//
-	//shortenUrlHdlr := appHandler.NewShortenLink(shortenUrlSvc, e.cfg)
-	//healthCheckHandler := appHandler.NewHealthCheck(healthCheckSvc)
 
 	allHandlers := e.initHandlers()
 

@@ -9,6 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// TestUserRepo_CreateUser tests the CreateUser method
 func TestUserRepo_CreateUser(t *testing.T) {
 	t.Parallel()
 

@@ -15,6 +15,7 @@ import (
 
 var redisTestErr = errors.New("test error")
 
+// TestService_GetLinkFromKey tests the GetLinkFromKey method
 func TestService_GetLinkFromKey(t *testing.T) {
 	t.Parallel()
 
@@ -79,6 +80,7 @@ const testExpTime = 60 * time.Second
 
 const linkKeyLength = 7
 
+// TestService_CreateShortenLink tests the CreateShortenLink method
 func TestService_CreateShortenLink(t *testing.T) {
 	testCases := []struct {
 		name        string

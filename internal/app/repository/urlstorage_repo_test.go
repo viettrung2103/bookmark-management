@@ -9,6 +9,7 @@ import (
 	redisPkg "github.com/viettrung2103/bookmark-management/pkg/redis"
 )
 
+// TestUrlStorage_StoreUrl tests the StoreUrl method
 func TestUrlStorage_StoreUrl(t *testing.T) {
 	t.Parallel()
 

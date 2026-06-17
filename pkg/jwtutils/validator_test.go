@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// TestNewJWTValidator tests the NewJWTValidator function
 func TestNewJWTValidator(t *testing.T) {
 	t.Parallel()
 
@@ -47,6 +48,7 @@ func TestNewJWTValidator(t *testing.T) {
 	}
 }
 
+// TestValidator_ValidateJWT tests the ValidateJWT method
 func TestValidator_ValidateJWT(t *testing.T) {
 	expectedToken := "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0In0.OSrRquH2kdcpUWZu9YyWPj-iUZIYBNNi_mkZ3X6D1D9UYcFKJZFBUS-h0KEHOyhs3yGpEXqYBa1sC7cw3NDdmD1KVUh-LunkNX3swo8Dydi8HcXth6V6k8ztqUle-X5lh9MVsaVT9nMliW-UbCwceJugZmqdZoSEKYwmv9gyQX8WouHonglAtnrE7ejz8pIf04Gq0lSTQuApgmPgwhKbH7fUAzW2QLD_O7HGBsxzauaz9S0UWSNck2xGVZxPSMnw2CtsocJ6m0ZEUwnJivomwt_LnNLjD2B5k3dHU8b_FQ0aqyaIfs9fNfDZZCeosamMpKvYmDYWa24mJoUJ6jwYqg"
 	t.Parallel()

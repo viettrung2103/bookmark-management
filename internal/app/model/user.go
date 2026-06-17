@@ -5,6 +5,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// User struct for user model
 type User struct {
 	ID          string `gorm:"type:uuid;primarykey;column:id" json:"id"`
 	DisplayName string `gorm:"column:display_name" json:"display_name"`

@@ -7,8 +7,9 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
+// JWTGenerator interface for JWT generation
+//
 //go:generate mockery --name JEWGenerator --filename generator.go
-
 type JWTGenerator interface {
 	GenerateJWT(jwtContent jwt.MapClaims) (string, error)
 }
@@ -32,6 +33,7 @@ func NewJWTGenerator(privateKeyPath string) (JWTGenerator, error) {
 	}, nil
 }
 
+// GenerateJWT generates a JWT token
 func (g *generator) GenerateJWT(jwtContent jwt.MapClaims) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodRS256, jwtContent)
 	tokenString, err := token.SignedString(g.privateKey)

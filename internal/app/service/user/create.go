@@ -7,6 +7,7 @@ import (
 	"github.com/viettrung2103/bookmark-management/pkg/stringutils"
 )
 
+// CreateUser creates a new user
 func (s *userService) CreateUser(ctx context.Context, displayName, username, password, email string) (*model.User, error) {
 	hashedPwd := stringutils.Hastring(password)
 

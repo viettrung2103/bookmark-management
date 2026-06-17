@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// Repository interface
+// user Repository interface
 type Repository interface {
 	CreateUser(ctx context.Context, user *model.User) error
 }

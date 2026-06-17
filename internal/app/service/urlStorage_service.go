@@ -64,6 +64,7 @@ func (s *shortenUrlService) ShortenUrlWithExpiringTime(ctx context.Context, url 
 
 var ErrCodeDoesNotExist = errors.New("code does not exist")
 
+// GetLinkFromCode gets the url from the code
 func (s *shortenUrlService) GetLinkFromCode(ctx context.Context, urlCode string) (string, error) {
 	url, err := s.repo.GetURL(ctx, urlCode)
 	if errors.Is(err, redis.Nil) {

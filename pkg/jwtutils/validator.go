@@ -13,6 +13,7 @@ var (
 	ErrExtractToken = errors.New("failed to extract token")
 )
 
+// JWTValidator interface for JWT validation
 type JWTValidator interface {
 	ValidateJWT(tokenStr string) (jwt.MapClaims, error)
 }
@@ -21,6 +22,7 @@ type validator struct {
 	publicKey *rsa.PublicKey
 }
 
+// NewJWTValidator creates a new JWT validator
 func NewJWTValidator(publicKeyPath string) (JWTValidator, error) {
 	publicKeyData, err := os.ReadFile(publicKeyPath)
 	if err != nil {
@@ -38,6 +40,7 @@ func NewJWTValidator(publicKeyPath string) (JWTValidator, error) {
 
 }
 
+// ValidateJWT validates a JWT token
 func (v *validator) ValidateJWT(tokenStr string) (jwt.MapClaims, error) {
 	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (any, error) {
 		return v.publicKey, nil

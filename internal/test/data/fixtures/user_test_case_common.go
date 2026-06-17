@@ -5,14 +5,18 @@ import (
 	"gorm.io/gorm"
 )
 
+// UserCommonTestDB struct for user test data
+
 type UserCommonTestDB struct {
 	base
 }
 
+// Migrate migrates the user table
 func (u *UserCommonTestDB) Migrate() error {
 	return u.db.AutoMigrate(&model.User{})
 }
 
+// GenerateData generates test data for users
 func (u *UserCommonTestDB) GenerateData() error {
 	db := u.db.Session(&gorm.Session{SkipHooks: true})
 

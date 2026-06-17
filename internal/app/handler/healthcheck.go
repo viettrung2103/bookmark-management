@@ -8,14 +8,15 @@ import (
 	"github.com/viettrung2103/bookmark-management/internal/app/service"
 )
 
+// HealthCheck interface for health check
 type HealthCheck interface {
 	CheckHealth(c *gin.Context)
 }
 type healthCheckHandler struct {
 	healthCheckSvc service.HealthCheck
-	//cfg                *config.Config
 }
 
+// NewHealthCheck creates a new health check handler
 func NewHealthCheck(healthCheckSvc service.HealthCheck) HealthCheck {
 	return &healthCheckHandler{
 		healthCheckSvc: healthCheckSvc,

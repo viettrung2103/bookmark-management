@@ -18,6 +18,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// TestHealthCheckEndpoint tests the health check endpoint
 func TestHealthCheckEndpoint(t *testing.T) {
 	t.Parallel()
 
@@ -79,6 +80,7 @@ func TestHealthCheckEndpoint(t *testing.T) {
 	}
 }
 
+// TestShortenUrlEndpoint tests the shorten url endpoint
 func TestShortenUrlEndpoint(t *testing.T) {
 	t.Parallel()
 
@@ -155,6 +157,7 @@ func TestShortenUrlEndpoint(t *testing.T) {
 
 const testExpTime = 1000
 
+// TestRedirectEndpoint tests the redirect endpoint
 func TestRedirectEndpoint(t *testing.T) {
 	t.Parallel()
 	ctx := context.Background()

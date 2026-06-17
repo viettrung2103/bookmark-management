@@ -14,6 +14,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// TestRegisterEndpoint tests the register endpoint
 func TestRegisterEndpoint(t *testing.T) {
 	t.Parallel()
 

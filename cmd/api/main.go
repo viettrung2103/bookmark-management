@@ -22,30 +22,6 @@ func main() {
 
 	logger.SetLogLevel()
 
-	//engine := gin.New()
-	//
-	//cfg, err := config.NewConfig()
-	//if err != nil {
-	//	panic(err)
-	//}
-	//
-	//redisClient, err := redispkg.NewClient("")
-	//if err != nil {
-	//	panic(err)
-	//}
-	//
-	//dbClient, err := sqldb.NewClient("")
-	//if err != nil {
-	//	panic(err)
-	//}
-	//dbClient.AutoMigrate(&model.User{})
-	//
-	//app := api.NewEngine(engine, cfg, redisClient, dbClient)
-	//err = app.Start()
-	//if err != nil {
-	//	panic(err)
-	//}
-
 	// init app config
 	cfg := createAPIConfig()
 

@@ -17,6 +17,7 @@ import (
 
 var testCode = "abc1235"
 
+// TestShortenLinkHandler tests the ShortenLinkHandler function
 func TestShortenLinkHandler(t *testing.T) {
 	t.Parallel()
 	cfg, err := config.NewConfig()
@@ -102,6 +103,7 @@ func TestShortenLinkHandler(t *testing.T) {
 	}
 }
 
+// TestShortenUrlHandler_Redirect tests the Redirect function
 func TestShortenUrlHandler_Redirect(t *testing.T) {
 	t.Parallel()
 	cfg, err := config.NewConfig()
