@@ -32,4 +32,4 @@ jobs:
 
       - name: Push docker image
         if: ${{ github.event_name != 'pull_request' }}
-        run: make docker-release
+        run: make docker-build-multiarch
