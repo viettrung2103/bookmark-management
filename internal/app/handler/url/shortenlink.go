@@ -1,4 +1,4 @@
-package handler
+package url
 
 import (
 	"errors"
@@ -6,20 +6,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
-	"github.com/viettrung2103/bookmark-management/internal/app/service"
-	"github.com/viettrung2103/bookmark-management/internal/config"
+	"github.com/viettrung2103/bookmark-management/internal/app/service/urlstorage"
 )
-
-// ShortenLink represents the shorten url handler
-type ShortenLink interface {
-	ShortenUrlLink(c *gin.Context)
-	//CheckHealth(c *gin.Context)
-	RedirectUrl(c *gin.Context)
-}
-type shortenLinkHandler struct {
-	shortenLinkService service.ShortenUrl
-	cfg                *config.Config
-}
 
 // shortenUrlRequest represents the shorten url request
 type shortenUrlRequest struct {
@@ -31,17 +19,9 @@ type shortenUrlResponse struct {
 	Code string `json:"code"`
 }
 
-// NewShortenLink creates a new ShortenLink
-func NewShortenLink(shortenLinkSvc service.ShortenUrl, cfg *config.Config) ShortenLink {
-	return &shortenLinkHandler{
-		shortenLinkService: shortenLinkSvc,
-		cfg:                cfg,
-	}
-}
-
 // ShortenUrlLink shorten the url to code
 // @Summary receive the url, return the code
-// @Tags link
+// @Tags url
 // @Accept application/json
 // @Produce application/json
 // @Param request body shortenUrlRequest true "Shorten URL Input payload"
@@ -76,7 +56,7 @@ func (h *shortenLinkHandler) ShortenUrlLink(c *gin.Context) {
 
 // Redirect Forward the request to the original url
 // @Summary Redirect Forward the request to the original url
-// @Tags link
+// @Tags url
 // @Accept application/json
 // @Produce application/json
 // @Param code path string true "code"
@@ -91,7 +71,7 @@ func (h *shortenLinkHandler) RedirectUrl(c *gin.Context) {
 	// call service to get url from code
 	url, err := h.shortenLinkService.GetLinkFromCode(c, code)
 	if err != nil {
-		if errors.Is(err, service.ErrCodeDoesNotExist) {
+		if errors.Is(err, urlstorage.ErrCodeDoesNotExist) {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "url not found"})
 			return
 		}

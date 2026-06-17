@@ -1,4 +1,4 @@
-package repository
+package urlstorage
 
 import (
 	"context"
@@ -43,7 +43,7 @@ func TestUrlStorage_StoreUrl(t *testing.T) {
 			ctx := t.Context()
 
 			redisMock := tc.setupMock()
-			testRepo := NewUrlStorage(redisMock)
+			testRepo := NewRepository(redisMock)
 
 			err := testRepo.StoreURL(ctx, "1234567", "https://google.com", 100)
 			assert.Equal(t, tc.expectErr, err)

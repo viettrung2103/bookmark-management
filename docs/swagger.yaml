@@ -75,7 +75,7 @@ paths:
           description: Found
       summary: Redirect Forward the request to the original url
       tags:
-      - link
+      - url
   /v1/links/shorten:
     post:
       consumes:
@@ -96,7 +96,7 @@ paths:
             type: string
       summary: receive the url, return the code
       tags:
-      - link
+      - url
   /v1/users/register:
     post:
       consumes:

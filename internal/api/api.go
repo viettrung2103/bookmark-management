@@ -9,11 +9,14 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/viettrung2103/bookmark-management/docs"
-	appHandler "github.com/viettrung2103/bookmark-management/internal/app/handler"
+	healthCheckHandler "github.com/viettrung2103/bookmark-management/internal/app/handler/healthcheck"
+	urlHandler "github.com/viettrung2103/bookmark-management/internal/app/handler/url"
 	userHandler "github.com/viettrung2103/bookmark-management/internal/app/handler/user"
-	repo "github.com/viettrung2103/bookmark-management/internal/app/repository"
+	healthCheckRepository "github.com/viettrung2103/bookmark-management/internal/app/repository/healthcheck"
+	urlRepository "github.com/viettrung2103/bookmark-management/internal/app/repository/urlstorage"
 	userRepository "github.com/viettrung2103/bookmark-management/internal/app/repository/user"
-	svc "github.com/viettrung2103/bookmark-management/internal/app/service"
+	healthCheckService "github.com/viettrung2103/bookmark-management/internal/app/service/healthcheck"
+	urlService "github.com/viettrung2103/bookmark-management/internal/app/service/urlstorage"
 	userService "github.com/viettrung2103/bookmark-management/internal/app/service/user"
 	"github.com/viettrung2103/bookmark-management/pkg/stringutils"
 	"gorm.io/gorm"
@@ -46,31 +49,31 @@ type EngineOpts struct {
 }
 
 // New creates a new engine
-func New(opts *EngineOpts) Engine {
-	eng := &engine{
+func NewEngine(opts *EngineOpts) Engine {
+	app := &engine{
 		eng:   opts.Engine,
 		cfg:   opts.Cfg,
 		redis: opts.Redis,
 		db:    opts.SqlDB,
 	}
-	eng.initRoutes()
-
-	return eng
-}
-
-// NewEngine creates a new engine
-func NewEngine(eng *gin.Engine, cfg *config.Config, redis *redis.Client, db *gorm.DB) Engine {
-	app := &engine{
-		//app:   gin.Default(),
-		eng:   eng,
-		cfg:   cfg,
-		redis: redis,
-		db:    db,
-	}
 	app.initRoutes()
 
 	return app
 }
+
+// NewEngine creates a new engine
+//func NewEngine(eng *gin.Engine, cfg *config.Config, redis *redis.Client, db *gorm.DB) Engine {
+//	app := &engine{
+//		//app:   gin.Default(),
+//		eng:   eng,
+//		cfg:   cfg,
+//		redis: redis,
+//		db:    db,
+//	}
+//	app.initRoutes()
+//
+//	return app
+//}
 
 // Start starts the engine
 func (e *engine) Start() error {
@@ -83,22 +86,22 @@ func (e *engine) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 }
 
 type handlers struct {
-	healthCheckHandler appHandler.HealthCheck
-	linkHandler        appHandler.ShortenLink
+	healthCheckHandler healthCheckHandler.Handler
+	linkHandler        urlHandler.Handler
 	userHandler        userHandler.Handler
 }
 
 func (e *engine) initHandlers() *handlers {
-	healthCheckRepo := repo.NewHealthCheck(e.redis)
-	shortenUrlRepo := repo.NewUrlStorage(e.redis)
+	healthCheckRepo := healthCheckRepository.NewRepository(e.redis)
+	shortenUrlRepo := urlRepository.NewRepository(e.redis)
 
 	keyGen := stringutils.NewKeyGenerator()
 
-	shortenUrlSvc := svc.NewShortenUrl(shortenUrlRepo, keyGen)
-	healthCheckSvc := svc.NewHealthCheck(healthCheckRepo)
+	shortenUrlSvc := urlService.NewService(shortenUrlRepo, keyGen)
+	healthCheckSvc := healthCheckService.NewService(healthCheckRepo)
 
-	shortenUrlHdlr := appHandler.NewShortenLink(shortenUrlSvc, e.cfg)
-	healthCheckHdlr := appHandler.NewHealthCheck(healthCheckSvc)
+	shortenUrlHdlr := urlHandler.NewShortenLink(shortenUrlSvc, e.cfg)
+	healthCheckHdlr := healthCheckHandler.NewHandler(healthCheckSvc)
 
 	userRepo := userRepository.NewRepository(e.db)
 	userSvc := userService.NewService(userRepo)
@@ -127,7 +130,7 @@ func (e *engine) initRoutes() {
 
 	apiBase := e.eng.Group(apiPath)
 	{
-		// link route
+		// url route
 		linkBase := apiBase.Group("/links")
 
 		linkBase.POST("/shorten", allHandlers.linkHandler.ShortenUrlLink)

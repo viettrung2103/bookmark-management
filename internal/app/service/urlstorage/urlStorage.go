@@ -1,4 +1,4 @@
-package service
+package urlstorage
 
 import (
 	"context"
@@ -7,34 +7,11 @@ import (
 
 	"github.com/redis/go-redis/v9"
 	"github.com/rs/zerolog/log"
-	"github.com/viettrung2103/bookmark-management/internal/app/repository"
-	"github.com/viettrung2103/bookmark-management/pkg/stringutils"
 )
 
 const (
 	urlCodeLength = 7
 )
-
-// ShortenUrl represents the shorten url service
-//
-//go:generate mockery --name=ShortenUrl --filename=shortenurl.go
-type ShortenUrl interface {
-	ShortenUrlWithExpiringTime(ctx context.Context, url string, expireTime int) (string, error)
-	GetLinkFromCode(ctx context.Context, urlCode string) (string, error)
-}
-
-type shortenUrlService struct {
-	repo   repository.UrlStorage
-	keygen stringutils.KeyGenerator
-}
-
-// NewShortenUrl returns a new ShortenUrl
-func NewShortenUrl(repo repository.UrlStorage, keygen stringutils.KeyGenerator) ShortenUrl {
-	return &shortenUrlService{
-		repo:   repo,
-		keygen: keygen,
-	}
-}
 
 // ShortenUrlWithExpiringTime shortens a url with expiring time
 func (s *shortenUrlService) ShortenUrlWithExpiringTime(ctx context.Context, url string, expireTime int) (string, error) {

@@ -42,7 +42,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "link"
+                    "url"
                 ],
                 "summary": "Redirect Forward the request to the original url",
                 "parameters": [
@@ -70,7 +70,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "link"
+                    "url"
                 ],
                 "summary": "receive the url, return the code",
                 "parameters": [

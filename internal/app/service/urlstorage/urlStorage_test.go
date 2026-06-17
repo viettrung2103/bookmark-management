@@ -1,4 +1,4 @@
-package service
+package urlstorage
 
 import (
 	"context"
@@ -67,7 +67,7 @@ func TestService_GetLinkFromKey(t *testing.T) {
 			ctx := context.Background()
 
 			mockRepo := tc.setupRepo(ctx)
-			testService := NewShortenUrl(mockRepo, nil)
+			testService := NewService(mockRepo, nil)
 			result, err := testService.GetLinkFromCode(ctx, "test")
 			assert.Equal(t, result, tc.expectedUrl)
 			assert.ErrorIs(t, err, tc.expectedErr)
@@ -146,7 +146,7 @@ func TestService_CreateShortenLink(t *testing.T) {
 			mockRepo := tc.setupRepo(ctx)
 			keygenMock := tc.setupKeyGen()
 
-			testService := NewShortenUrl(mockRepo, keygenMock)
+			testService := NewService(mockRepo, keygenMock)
 			result, err := testService.ShortenUrlWithExpiringTime(ctx, "https://test.com", 60)
 			assert.Equal(t, result, tc.expectedResult)
 			assert.ErrorIs(t, err, tc.expectedErr)

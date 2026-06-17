@@ -1,4 +1,4 @@
-package repository
+package urlstorage
 
 import (
 	"context"
@@ -8,14 +8,10 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-const (
-	urlExpTime = 24 * time.Hour
-)
-
 //go:generate mockery --name=UrlStorage --filename=urlstorage.go
 
 // UrlStorage is the interface for URL storage
-type UrlStorage interface {
+type Repository interface {
 	StoreURL(ctx context.Context, code, url string, exp time.Duration) error
 	GetURL(ctx context.Context, code string) (string, error)
 }
@@ -25,7 +21,7 @@ type urlStorage struct {
 }
 
 // NewUrlStorage creates a new UrlStorage
-func NewUrlStorage(c *redis.Client) UrlStorage {
+func NewRepository(c *redis.Client) Repository {
 	return &urlStorage{c: c}
 }
 
@@ -38,10 +34,4 @@ func (s *urlStorage) StoreURL(ctx context.Context, code, url string, exp time.Du
 		return err
 	}
 	return nil
-}
-
-// GetURL retrieves a URL from the cache
-func (s *urlStorage) GetURL(ctx context.Context, code string) (string, error) {
-
-	return s.c.Get(ctx, code).Result()
 }

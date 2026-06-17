@@ -6,6 +6,7 @@ import (
 	api "github.com/viettrung2103/bookmark-management/internal/api"
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
 	"github.com/viettrung2103/bookmark-management/internal/config"
+	"github.com/viettrung2103/bookmark-management/pkg/common"
 	"github.com/viettrung2103/bookmark-management/pkg/logger"
 	redispkg "github.com/viettrung2103/bookmark-management/pkg/redis"
 	"github.com/viettrung2103/bookmark-management/pkg/sqldb"
@@ -36,40 +37,47 @@ func main() {
 
 	//start app
 	err := app.Start()
-	if err != nil {
-		panic(err)
-	}
+	common.HandleError(err)
 
 }
 
 func createDBClient() *gorm.DB {
 	dbClient, err := sqldb.NewClient("")
-	if err != nil {
-		panic(err)
-	}
+
+	common.HandleError(err)
 	dbClient.AutoMigrate(&model.User{})
 	return dbClient
 }
 
 func createRedisClient() *redis.Client {
 	redisClient, err := redispkg.NewClient("")
-	if err != nil {
-		panic(err)
-	}
+	common.HandleError(err)
+
 	return redisClient
 }
 
 func createAPIConfig() *config.Config {
 	apiConfig, err := config.NewConfig()
-	if err != nil {
-		panic(err)
-	}
+	common.HandleError(err)
+
 	return apiConfig
 }
 
 func createAPIApp(cfg *config.Config, redis *redis.Client, db *gorm.DB) api.Engine {
-	app := gin.New()
-	a := api.NewEngine(app, cfg, redis, db)
+	//app := gin.New()
+	//testRouter := api.NewEngine(&api.EngineOpts{
+	//	Engine: gin.New(),
+	//	Cfg:    &config.Config{},
+	//	Redis:  nil,
+	//	SqlDB:  fixtures,
+	//})
+	a := api.NewEngine(&api.EngineOpts{
+		Engine: gin.New(),
+		Cfg:    &config.Config{},
+		Redis:  redis,
+		SqlDB:  db,
+	})
+	//app, cfg, redis, db)
 
 	return a
 }

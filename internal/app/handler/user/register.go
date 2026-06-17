@@ -2,7 +2,6 @@ package user
 
 import (
 	"net/http"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -35,15 +34,15 @@ func (h *userHandler) Register(c *gin.Context) {
 	user, err := h.service.CreateUser(c, input.DisplayName, input.Username, input.Password, input.Email)
 	if err != nil {
 		//c.JSON(http.StatusInternalServerError, response.InternalErrResponse)
-		if strings.Contains(err.Error(), "UNIQUE constraint failed: users.username") {
-			c.JSON(http.StatusBadRequest, gin.H{"message": "Field users.username already exist"})
-			return
-		}
-		if strings.Contains(err.Error(), "UNIQUE constraint failed: users.email") {
-			c.JSON(http.StatusBadRequest, gin.H{"message": "Field users.email already exist"})
-			return
-		}
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		//if strings.Contains(err.Error(), "UNIQUE constraint failed: users.username") {
+		//	c.JSON(http.StatusBadRequest, gin.H{"message": "Field users.username already exist"})
+		//	return
+		//}
+		//if strings.Contains(err.Error(), "UNIQUE constraint failed: users.email") {
+		//	c.JSON(http.StatusBadRequest, gin.H{"message": "Field users.email already exist"})
+		//	return
+		//}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot create user, please try again"})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
