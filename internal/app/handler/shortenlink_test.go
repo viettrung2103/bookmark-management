@@ -11,8 +11,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	"github.com/viettrung2103/bookmark-management/internal/app/service/mocks"
 	"github.com/viettrung2103/bookmark-management/internal/config"
-	"github.com/viettrung2103/bookmark-management/internal/service/mocks"
 )
 
 var testCode = "abc1235"

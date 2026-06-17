@@ -7,7 +7,7 @@ import (
 
 	"github.com/redis/go-redis/v9"
 	"github.com/rs/zerolog/log"
-	"github.com/viettrung2103/bookmark-management/internal/repository"
+	"github.com/viettrung2103/bookmark-management/internal/app/repository"
 	"github.com/viettrung2103/bookmark-management/pkg/stringutils"
 )
 
