@@ -12,7 +12,9 @@ jobs:
       - name: Deploy
         working-directory: /root/go-deployment
         run: |
-          docker compose pull
-          docker compose up -d --force-recreate
+          docker rm -f bookmark_service || true
+          docker image rm viettrung21/bookmark-service:dev || true
+          docker compose pull bookmark_service
+          docker compose up -d bookmark_service
           docker image prune -f
       
