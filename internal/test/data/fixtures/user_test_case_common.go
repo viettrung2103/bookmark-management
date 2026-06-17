@@ -31,6 +31,13 @@ func (u *UserCommonTestDB) GenerateData() error {
 			Password:    "$2a$12$K3vX5YwOmP2bZ9rQ3nU7Xe8YvMw9T6uC9iK2oP1lRmSzTxVuWxYz.", // "hashed_password_2"
 			Email:       "jane.smith@example.com",
 		},
+		{
+			ID:          "999a9a99-9999-9999-9999-999999999999",
+			DisplayName: "test",
+			Username:    "test",
+			Password:    "$2a$12$R9h/lIPbuRRvvV1GG9Z.6uCWMUa.6H7H0S.aK92F7t6GgS2T7M3Ki",
+			Email:       "test@mail.com",
+		},
 	}
 
 	return db.CreateInBatches(users, 10).Error

@@ -37,6 +37,26 @@ type engine struct {
 	db    *gorm.DB
 }
 
+// EngineOpts holds initialization dependencies for the engine
+type EngineOpts struct {
+	Engine *gin.Engine
+	Cfg    *config.Config
+	Redis  *redis.Client
+	SqlDB  *gorm.DB
+}
+
+func New(opts *EngineOpts) Engine {
+	eng := &engine{
+		eng:   opts.Engine,
+		cfg:   opts.Cfg,
+		redis: opts.Redis,
+		db:    opts.SqlDB,
+	}
+	eng.initRoutes()
+
+	return eng
+}
+
 // NewEngine creates a new engine
 func NewEngine(eng *gin.Engine, cfg *config.Config, redis *redis.Client, db *gorm.DB) Engine {
 	app := &engine{
