@@ -63,8 +63,10 @@ ENV TZ=ASIA/Ho_Chi_Minh
 
 WORKDIR /app
 
-COPY --from=build /opt/app/bookmark_service ./bookmark_service
-COPY --from=build /opt/app/docs ./docs
+#COPY --from=build /opt/app/bookmark_service ./bookmark_service
+#COPY --from=build /opt/app/docs ./docs
+COPY --from=build /opt/app/bookmark_service /app/bookmark_service
+COPY --from=build /opt/app/docs /app/docs
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 

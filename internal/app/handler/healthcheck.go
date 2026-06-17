@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
-	"github.com/viettrung2103/bookmark-management/internal/service"
+	"github.com/viettrung2103/bookmark-management/internal/app/service"
 )
 
 type HealthCheck interface {

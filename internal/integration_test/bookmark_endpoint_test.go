@@ -8,11 +8,14 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/gin-gonic/gin"
 	"github.com/redis/go-redis/v9"
 	"github.com/stretchr/testify/assert"
 	"github.com/viettrung2103/bookmark-management/internal/api"
 	"github.com/viettrung2103/bookmark-management/internal/config"
+	"github.com/viettrung2103/bookmark-management/internal/test/data/fixtures"
 	pkgRedis "github.com/viettrung2103/bookmark-management/pkg/redis"
+	"gorm.io/gorm"
 )
 
 func TestHealthCheckEndpoint(t *testing.T) {
@@ -22,6 +25,7 @@ func TestHealthCheckEndpoint(t *testing.T) {
 		name string
 
 		setupTestHTTP func(api api.Engine) *httptest.ResponseRecorder
+		setupDB       func() *gorm.DB
 
 		expectedStatusCode   int
 		expectedResponseBody string
@@ -33,6 +37,9 @@ func TestHealthCheckEndpoint(t *testing.T) {
 				respRecorder := httptest.NewRecorder()
 				api.ServeHTTP(respRecorder, req)
 				return respRecorder
+			},
+			setupDB: func() *gorm.DB {
+				return fixtures.NewFixture(t, &fixtures.UserCommonTestDB{})
 			},
 
 			expectedStatusCode:   http.StatusOK,
@@ -46,6 +53,9 @@ func TestHealthCheckEndpoint(t *testing.T) {
 				api.ServeHTTP(respRecorder, req)
 				return respRecorder
 			},
+			setupDB: func() *gorm.DB {
+				return fixtures.NewFixture(t, &fixtures.UserCommonTestDB{})
+			},
 
 			expectedStatusCode:   http.StatusNotFound,
 			expectedResponseBody: ``,
@@ -56,8 +66,11 @@ func TestHealthCheckEndpoint(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 			redisMocks := pkgRedis.InitMockRedis(t)
+			engine := gin.New()
+			// generate test cache
+			fixtures := tc.setupDB()
 
-			testApi := api.NewEngine(&config.Config{}, redisMocks)
+			testApi := api.NewEngine(engine, &config.Config{}, redisMocks, fixtures)
 			recorder := tc.setupTestHTTP(testApi)
 
 			assert.Equal(t, tc.expectedStatusCode, recorder.Code)
@@ -73,6 +86,7 @@ func TestShortenUrlEndpoint(t *testing.T) {
 		name string
 
 		setupTestHTTP func(api api.Engine) *httptest.ResponseRecorder
+		setupDB       func() *gorm.DB
 
 		expectedStatusCode   int
 		expectedResponseBody string
@@ -97,6 +111,9 @@ func TestShortenUrlEndpoint(t *testing.T) {
 				api.ServeHTTP(respRecorder, req)
 				return respRecorder
 			},
+			setupDB: func() *gorm.DB {
+				return fixtures.NewFixture(t, &fixtures.UserCommonTestDB{})
+			},
 
 			expectedStatusCode:   http.StatusOK,
 			expectedResponseBody: `{"code":`,
@@ -109,6 +126,9 @@ func TestShortenUrlEndpoint(t *testing.T) {
 				api.ServeHTTP(respRecorder, req)
 				return respRecorder
 			},
+			setupDB: func() *gorm.DB {
+				return fixtures.NewFixture(t, &fixtures.UserCommonTestDB{})
+			},
 
 			expectedStatusCode:   http.StatusNotFound,
 			expectedResponseBody: ``,
@@ -120,8 +140,11 @@ func TestShortenUrlEndpoint(t *testing.T) {
 			t.Parallel()
 
 			redisMocks := pkgRedis.InitMockRedis(t)
+			engine := gin.New()
+			// generate test cache
+			fixtures := tc.setupDB()
 
-			testApi := api.NewEngine(&config.Config{}, redisMocks)
+			testApi := api.NewEngine(engine, &config.Config{}, redisMocks, fixtures)
 			recorder := tc.setupTestHTTP(testApi)
 
 			assert.Equal(t, tc.expectedStatusCode, recorder.Code)
@@ -142,6 +165,7 @@ func TestRedirectEndpoint(t *testing.T) {
 		// simulate having code in redis
 		setupMockRedis func() *redis.Client
 		setupTestHTTP  func(api api.Engine) *httptest.ResponseRecorder
+		setupDB        func() *gorm.DB
 
 		expectedStatusCode int
 		expectedUrl        string
@@ -161,6 +185,9 @@ func TestRedirectEndpoint(t *testing.T) {
 				api.ServeHTTP(respRecorder, req)
 				return respRecorder
 			},
+			setupDB: func() *gorm.DB {
+				return fixtures.NewFixture(t, &fixtures.UserCommonTestDB{})
+			},
 
 			expectedStatusCode: http.StatusFound,
 			expectedUrl:        `https://test.com`,
@@ -178,6 +205,9 @@ func TestRedirectEndpoint(t *testing.T) {
 				respRecorder := httptest.NewRecorder()
 				api.ServeHTTP(respRecorder, req)
 				return respRecorder
+			},
+			setupDB: func() *gorm.DB {
+				return fixtures.NewFixture(t, &fixtures.UserCommonTestDB{})
 			},
 
 			expectedStatusCode: http.StatusNotFound,
@@ -197,6 +227,9 @@ func TestRedirectEndpoint(t *testing.T) {
 				api.ServeHTTP(respRecorder, req)
 				return respRecorder
 			},
+			setupDB: func() *gorm.DB {
+				return fixtures.NewFixture(t, &fixtures.UserCommonTestDB{})
+			},
 
 			expectedStatusCode: http.StatusNotFound,
 			expectedUrl:        ``,
@@ -207,9 +240,11 @@ func TestRedirectEndpoint(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
+			engine := gin.New()
 			redisMocks := tc.setupMockRedis()
+			fixturesDB := tc.setupDB()
 
-			testApi := api.NewEngine(&config.Config{}, redisMocks)
+			testApi := api.NewEngine(engine, &config.Config{}, redisMocks, fixturesDB)
 			recorder := tc.setupTestHTTP(testApi)
 
 			assert.Equal(t, tc.expectedStatusCode, recorder.Code)

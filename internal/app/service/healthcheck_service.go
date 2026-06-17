@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 
-	"github.com/viettrung2103/bookmark-management/internal/repository"
+	"github.com/viettrung2103/bookmark-management/internal/app/repository"
 )
 
 // HealthCheck represents the health check service
