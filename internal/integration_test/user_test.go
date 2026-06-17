@@ -53,7 +53,7 @@ func TestRegisterEndpoint(t *testing.T) {
 			expectedResponseBody: "Register an user successfully",
 		},
 		{
-			name: "err case - unique constraint",
+			name: "err case - unique usernam",
 			setupTestHTTP: func(api api.Engine) *httptest.ResponseRecorder {
 				req, _ := http.NewRequest(
 					"POST",
@@ -62,6 +62,31 @@ func TestRegisterEndpoint(t *testing.T) {
 						`{
 					"display_name":"test",
 "username":"test",
+"password":"test12345",
+"email":"test1@mail.com"
+}`)))
+				req.Header.Set("Content-Type", "application/json")
+
+				resRecorde := httptest.NewRecorder()
+				api.ServeHTTP(resRecorde, req)
+				return resRecorde
+			},
+			setupDB: func() *gorm.DB {
+				return fixtures.NewFixture(t, &fixtures.UserCommonTestDB{})
+			},
+			expectedStatusCode:   http.StatusBadRequest,
+			expectedResponseBody: `{"message":"Field users.username already exist"}`,
+		},
+		{
+			name: "err case - unique email",
+			setupTestHTTP: func(api api.Engine) *httptest.ResponseRecorder {
+				req, _ := http.NewRequest(
+					"POST",
+					"/v1/users/register",
+					bytes.NewBuffer([]byte(
+						`{
+					"display_name":"test",
+"username":"test1",
 "password":"test12345",
 "email":"test@mail.com"
 }`)))
