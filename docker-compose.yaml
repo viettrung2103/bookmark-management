@@ -10,7 +10,7 @@ services:
   bookmark_service:
 #    before docker hub
     image: bookmark-service:ass_5
-    build: ../bookmark-management
+    build: .
 #    after docker hub
 #    image: viettrung21/bookmark-service:dev
     platform: linux/arm64
@@ -83,7 +83,7 @@ services:
     container_name: postgres
     #    restart: always
     ports:
-      - "5433:5432"
+      - 5433:5432
 #    environment:
 #      POSTGRES_USER: admin
 #      POSTGRES_PASSWORD: admin
@@ -93,7 +93,7 @@ services:
     volumes:
       - /tmp/golang-course-bookmark:/var/lib/postgresql/data:Z
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U admin -d bookmark-lesson" ]
+      test: [ "CMD-SHELL", "pg_isready -U admin -d bookmark" ]
       interval: 5s
       timeout: 5s
       retries: 10
