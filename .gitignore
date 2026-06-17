@@ -1,2 +1,5 @@
 coverage*
 .idea/
+/private.pem
+/public.pem
+.env

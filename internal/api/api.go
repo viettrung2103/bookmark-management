@@ -9,13 +9,19 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/viettrung2103/bookmark-management/docs"
-	_ "github.com/viettrung2103/bookmark-management/docs"
+	healthCheckHandler "github.com/viettrung2103/bookmark-management/internal/app/handler/healthcheck"
+	urlHandler "github.com/viettrung2103/bookmark-management/internal/app/handler/url"
+	userHandler "github.com/viettrung2103/bookmark-management/internal/app/handler/user"
+	healthCheckRepository "github.com/viettrung2103/bookmark-management/internal/app/repository/healthcheck"
+	urlRepository "github.com/viettrung2103/bookmark-management/internal/app/repository/urlstorage"
+	userRepository "github.com/viettrung2103/bookmark-management/internal/app/repository/user"
+	healthCheckService "github.com/viettrung2103/bookmark-management/internal/app/service/healthcheck"
+	urlService "github.com/viettrung2103/bookmark-management/internal/app/service/urlstorage"
+	userService "github.com/viettrung2103/bookmark-management/internal/app/service/user"
 	"github.com/viettrung2103/bookmark-management/pkg/stringutils"
+	"gorm.io/gorm"
 
 	"github.com/viettrung2103/bookmark-management/internal/config"
-	"github.com/viettrung2103/bookmark-management/internal/handler"
-	"github.com/viettrung2103/bookmark-management/internal/repository"
-	"github.com/viettrung2103/bookmark-management/internal/service"
 )
 
 const version = 1
@@ -28,60 +34,111 @@ type Engine interface {
 
 // engine struct implements Engine interface
 type engine struct {
-	app   *gin.Engine
+	eng   *gin.Engine
 	cfg   *config.Config
 	redis *redis.Client
+	db    *gorm.DB
 }
 
-// NewEngine creates a new engine
-func NewEngine(cfg *config.Config, redis *redis.Client) Engine {
+// EngineOpts holds initialization dependencies for the engine
+type EngineOpts struct {
+	Engine *gin.Engine
+	Cfg    *config.Config
+	Redis  *redis.Client
+	SqlDB  *gorm.DB
+}
+
+// New creates a new engine
+func NewEngine(opts *EngineOpts) Engine {
 	app := &engine{
-		app:   gin.Default(),
-		cfg:   cfg,
-		redis: redis,
+		eng:   opts.Engine,
+		cfg:   opts.Cfg,
+		redis: opts.Redis,
+		db:    opts.SqlDB,
 	}
 	app.initRoutes()
 
 	return app
 }
 
+// NewEngine creates a new engine
+//func NewEngine(eng *gin.Engine, cfg *config.Config, redis *redis.Client, db *gorm.DB) Engine {
+//	app := &engine{
+//		//app:   gin.Default(),
+//		eng:   eng,
+//		cfg:   cfg,
+//		redis: redis,
+//		db:    db,
+//	}
+//	app.initRoutes()
+//
+//	return app
+//}
+
 // Start starts the engine
 func (e *engine) Start() error {
-	return e.app.Run(fmt.Sprintf(":%s", e.cfg.AppPort))
+	return e.eng.Run(fmt.Sprintf(":%s", e.cfg.AppPort))
 }
 
 // ServeHTTP implements the http.Handler interface to handle HTTP requests, to serve a specific request for testing purpose
 func (e *engine) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	e.app.ServeHTTP(w, req)
+	e.eng.ServeHTTP(w, req)
+}
+
+type handlers struct {
+	healthCheckHandler healthCheckHandler.Handler
+	linkHandler        urlHandler.Handler
+	userHandler        userHandler.Handler
+}
+
+func (e *engine) initHandlers() *handlers {
+	healthCheckRepo := healthCheckRepository.NewRepository(e.redis)
+	shortenUrlRepo := urlRepository.NewRepository(e.redis)
+
+	keyGen := stringutils.NewKeyGenerator()
+
+	shortenUrlSvc := urlService.NewService(shortenUrlRepo, keyGen)
+	healthCheckSvc := healthCheckService.NewService(healthCheckRepo)
+
+	shortenUrlHdlr := urlHandler.NewShortenLink(shortenUrlSvc, e.cfg)
+	healthCheckHdlr := healthCheckHandler.NewHandler(healthCheckSvc)
+
+	userRepo := userRepository.NewRepository(e.db)
+	userSvc := userService.NewService(userRepo)
+	userHdlr := userHandler.NewHandler(userSvc)
+
+	return &handlers{
+		healthCheckHandler: healthCheckHdlr,
+		linkHandler:        shortenUrlHdlr,
+		userHandler:        userHdlr,
+	}
+
 }
 
 // initRoutes initializes the routes
 func (e *engine) initRoutes() {
-	// genpass svc, handle and route
 
-	shortenUrlRepo := repository.NewUrlStorage(e.redis)
-	healthCheckRepo := repository.NewHealthCheck(e.redis)
-	keyGen := stringutils.NewKeyGenerator()
+	allHandlers := e.initHandlers()
 
-	shortenUrlSvc := service.NewShortenUrl(shortenUrlRepo, keyGen)
-	healthCheckSvc := service.NewHealthCheck(healthCheckRepo)
-
-	shortenUrlHandler := handler.NewShortenLink(shortenUrlSvc, e.cfg)
-	healthCheckHandler := handler.NewHealthCheck(healthCheckSvc)
-
-	e.app.GET("/health-check", healthCheckHandler.CheckHealth)
+	e.eng.GET("/health-check", allHandlers.healthCheckHandler.CheckHealth)
 
 	//int swagger routes
 	docs.SwaggerInfo.Host = e.cfg.Hostname
-	e.app.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	e.eng.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	apiPath := fmt.Sprintf("/v%d/links", version)
+	apiPath := fmt.Sprintf("/v%d", version)
 
-	apiBase := e.app.Group(apiPath)
+	apiBase := e.eng.Group(apiPath)
 	{
-		// shorten link post
-		apiBase.POST("/shorten", shortenUrlHandler.ShortenUrlLink)
-		apiBase.GET("/redirect/:code", shortenUrlHandler.RedirectUrl)
+		// url route
+		linkBase := apiBase.Group("/links")
+
+		linkBase.POST("/shorten", allHandlers.linkHandler.ShortenUrlLink)
+		linkBase.GET("/redirect/:code", allHandlers.linkHandler.RedirectUrl)
+
+		//user route
+		userBase := apiBase.Group("/users")
+		userBase.POST("/register", allHandlers.userHandler.Register)
 
 	}
 }

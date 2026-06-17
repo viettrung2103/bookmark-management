@@ -1,0 +1,99 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports:
+      - 6379:6379
+
+  bookmark_service:
+#    before docker hub
+    image: bookmark-service:ass_5
+    build: ../bookmark-management
+#    after docker hub
+#    image: viettrung21/bookmark-service:dev
+#    platform: linux/arm64
+    container_name: bookmark_service
+#    build:
+#      context: ../bookmark-management
+#      dockerfile: Dockerfile
+    depends_on:
+#      - redis
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+#    network_mode: host
+    env_file:
+      - .env
+# because of nginx so we dont need to expose the port
+    ports:
+      - 8080:8080
+
+
+#  bookmark_service2:
+#    image: bookmark-service:lesson_4
+#    build: ../bookmark-management-lesson
+#    container_name: bookmark_service2
+#    depends_on:
+#      - redis
+#    #    network_mode: host
+#    env_file:
+#      - ./bookmark_service/.env.example
+##    environment:
+##      - APP_PORT=8080
+##      - REDIS_ADDR=redis:6379
+##      - APP_HOSTNAME=localhost/api/bookmark_service
+#  #    ports:
+#  #      -
+#
+#  bookmark_service3:
+#    image: bookmark-service:lesson_4
+#    build: ../bookmark-management-lesson
+#    container_name: bookmark_service3
+#    depends_on:
+#      - redis
+#    #    network_mode: host
+#    env_file:
+#      - ./bookmark_service/.env.example
+##    ports:
+##      -
+
+  portal:
+    image: ebvn/bookmark-app-portal:dev
+    container_name: portal
+    restart: always
+
+#  nginx:
+#    image: nginx:alpine
+#    container_name: nginx
+#    restart: always
+#    ports:
+#      - 80:80
+#    volumes:
+##      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+#      #window
+#      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:z
+#    depends_on:
+#      - bookmark_service
+
+  postgres:
+    image: postgres:17
+    container_name: postgres
+    #    restart: always
+    ports:
+      - "5433:5432"
+#    environment:
+#      POSTGRES_USER: admin
+#      POSTGRES_PASSWORD: admin
+#      POSTGRES_DB: bookmark
+    env_file:
+      - .env
+    volumes:
+      - /tmp/golang-course-bookmark:/var/lib/postgresql/data:Z
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U admin -d bookmark-lesson" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10

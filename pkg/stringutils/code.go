@@ -19,17 +19,20 @@ type randomStringGenerator struct {
 	rng *rand.Rand
 }
 
+// NewKeyGenerator creates a new key generator
 func NewKeyGenerator() KeyGenerator {
 	return &randomStringGenerator{
 		rng: rand.New(rand.NewSource(time.Now().UnixNano())),
 	}
 }
 
+// GenerateKey generates a random string of the given length
 func (r *randomStringGenerator) GenerateKey(length int) string {
 
 	return randomString(r.rng, length)
 }
 
+// GenerateRandomString generates a random string of the given length
 func GenerateRandomString(length int) string {
 
 	rng := rand.New(rand.NewSource(time.Now().UnixNano()))
