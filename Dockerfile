@@ -40,7 +40,8 @@ COPY . .
 
 FROM base AS build
 ARG TARGETARCH
-RUN GOOS=linux GOARCH=${TARGETARCH} go build -tags musl -ldflags "-w -s" -o bookmark_service cmd/api/main.go
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=${TARGETARCH} go build -ldflags "-w -s" -o bookmark_service cmd/api/main.go
+
 
 FROM base AS test-exec
 
