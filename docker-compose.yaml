@@ -13,7 +13,7 @@ services:
     build: ../bookmark-management
 #    after docker hub
 #    image: viettrung21/bookmark-service:dev
-#    platform: linux/arm64
+    platform: linux/arm64
     container_name: bookmark_service
 #    build:
 #      context: ../bookmark-management
