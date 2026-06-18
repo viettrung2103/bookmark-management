@@ -80,7 +80,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.shortenUrlRequest"
+                            "$ref": "#/definitions/url.shortenUrlRequest"
                         }
                     }
                 ],
@@ -138,21 +138,6 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "handler.shortenUrlRequest": {
-            "type": "object",
-            "required": [
-                "exp",
-                "url"
-            ],
-            "properties": {
-                "exp": {
-                    "type": "integer"
-                },
-                "url": {
-                    "type": "string"
-                }
-            }
-        },
         "model.User": {
             "type": "object",
             "properties": {
@@ -169,6 +154,21 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "url.shortenUrlRequest": {
+            "type": "object",
+            "required": [
+                "exp",
+                "url"
+            ],
+            "properties": {
+                "exp": {
+                    "type": "integer"
+                },
+                "url": {
                     "type": "string"
                 }
             }
