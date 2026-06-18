@@ -80,7 +80,7 @@ docker-test:
 	fi
 
 docker-build:
-	docker build --pull -t $(IMG_NAME):$(IMG_TAG) .
+	docker build -t $(IMG_NAME):$(IMG_TAG) .
 
 docker-release:
 	docker push $(IMG_NAME):$(IMG_TAG)
