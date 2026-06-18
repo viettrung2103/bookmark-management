@@ -30,7 +30,7 @@ IMG_NAME=viettrung21/bookmark-service
 GIT_TAG := $(shell git describe --tags --exact-match 2>/dev/null)
 BRANCH 	:= $(shell git rev-parse --abbrev-ref HEAD)
 
-IMG_TAG := dev
+#IMG_TAG := dev
 
 ifeq ($(BRANCH),main)
 	IMG_TAG := dev
@@ -80,7 +80,7 @@ docker-test:
 	fi
 
 docker-build:
-	docker build --pull -t $(IMG_NAME):$(IMG_TAG) .
+	docker build -t $(IMG_NAME):$(IMG_TAG) .
 
 docker-release:
 	docker push $(IMG_NAME):$(IMG_TAG)
