@@ -72,7 +72,8 @@ func createAPIApp(cfg *config.Config, redis *redis.Client, db *gorm.DB) api.Engi
 	//	SqlDB:  fixtures,
 	//})
 	a := api.NewEngine(&api.EngineOpts{
-		Engine: gin.New(),
+		//Engine: gin.New(),
+		Engine: gin.Default(),
 		//Cfg:    &config.Config{},
 		Cfg:   cfg,
 		Redis: redis,
