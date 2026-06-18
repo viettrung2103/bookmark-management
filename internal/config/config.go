@@ -24,7 +24,7 @@ func NewConfig() (*Config, error) {
 	}
 
 	if cfg.InstanceId == "" {
-		log.Error().Err(err).Str("from", "config.Newconfig").Msg("failed to create config")
+		log.Error().Err(err).Str("from", "config.Newconfig").Msg("there is no instance name, creating one")
 
 		cfg.InstanceId = uuid.New().String()
 	}

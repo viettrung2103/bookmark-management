@@ -9,10 +9,10 @@ services:
 
   bookmark_service:
 #    before docker hub
-    image: bookmark-service:ass_5
+#    image: bookmark-service:ass_5
     build: .
 #    after docker hub
-#    image: viettrung21/bookmark-service:v0.1.10
+    image: viettrung21/bookmark-service:v0.1.5
 #    platform: linux/arm64
     container_name: bookmark_service
 #    build:

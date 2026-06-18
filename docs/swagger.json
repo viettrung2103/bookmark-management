@@ -36,7 +36,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "link"
+                    "url"
                 ],
                 "summary": "Redirect Forward the request to the original url",
                 "parameters": [
@@ -64,7 +64,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "link"
+                    "url"
                 ],
                 "summary": "receive the url, return the code",
                 "parameters": [
@@ -74,7 +74,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/handler.shortenUrlRequest"
+                            "$ref": "#/definitions/url.shortenUrlRequest"
                         }
                     }
                 ],
@@ -132,21 +132,6 @@
         }
     },
     "definitions": {
-        "handler.shortenUrlRequest": {
-            "type": "object",
-            "required": [
-                "exp",
-                "url"
-            ],
-            "properties": {
-                "exp": {
-                    "type": "integer"
-                },
-                "url": {
-                    "type": "string"
-                }
-            }
-        },
         "model.User": {
             "type": "object",
             "properties": {
@@ -163,6 +148,21 @@
                     "type": "string"
                 },
                 "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "url.shortenUrlRequest": {
+            "type": "object",
+            "required": [
+                "exp",
+                "url"
+            ],
+            "properties": {
+                "exp": {
+                    "type": "integer"
+                },
+                "url": {
                     "type": "string"
                 }
             }

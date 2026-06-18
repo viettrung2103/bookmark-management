@@ -1,15 +1,5 @@
 basePath: /
 definitions:
-  handler.shortenUrlRequest:
-    properties:
-      exp:
-        type: integer
-      url:
-        type: string
-    required:
-    - exp
-    - url
-    type: object
   model.User:
     properties:
       _:
@@ -22,6 +12,16 @@ definitions:
         type: string
       username:
         type: string
+    type: object
+  url.shortenUrlRequest:
+    properties:
+      exp:
+        type: integer
+      url:
+        type: string
+    required:
+    - exp
+    - url
     type: object
   user.registerInput:
     properties:
@@ -86,7 +86,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/handler.shortenUrlRequest'
+          $ref: '#/definitions/url.shortenUrlRequest'
       produces:
       - application/json
       responses:
