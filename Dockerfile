@@ -36,9 +36,14 @@ COPY go.sum ./go.sum
 
 RUN go mod download
 
+RUN go install github.com/swaggo/swag/cmd/swag@latest
+
+
 COPY . .
 
 FROM base AS build
+
+RUN swag init -g cmd/api/main.go output -o docs
 
 RUN GOOS=linux go build -tags musl -ldflags "-w -s" -o bookmark_service cmd/api/main.go
 
