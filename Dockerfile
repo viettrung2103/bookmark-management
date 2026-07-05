@@ -40,6 +40,8 @@ COPY . .
 
 FROM base AS build
 
+RUN swag init -g cmd/api/main.go
+
 RUN GOOS=linux go build -tags musl -ldflags "-w -s" -o bookmark_service cmd/api/main.go
 
 FROM base AS test-exec
