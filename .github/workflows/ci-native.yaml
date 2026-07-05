@@ -22,8 +22,8 @@ jobs:
       - name: Run unit test
         run: make test
 
-      - name: Generate Swagger Docs
-        run: make swagger
+#      - name: Generate Swagger Docs
+#        run: make swagger
 
       - name: Log in to Docker hub
         if: ${{ github.event_name != 'pull_request' }}
