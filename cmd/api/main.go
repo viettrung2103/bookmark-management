@@ -14,7 +14,7 @@ import (
 )
 
 // @title Bookmark API
-// @version 2.0
+// @version 2.5
 // @description API for bookmark management
 // @host localhost:8080
 // @BasePath /

@@ -12,7 +12,7 @@ services:
 #    image: bookmark-service:ass_5
     build: .
 #    after docker hub
-    image: viettrung21/bookmark-service:v0.1.5
+    image: viettrung21/bookmark-service:dev
 #    platform: linux/arm64
     container_name: bookmark_service
 #    build:
