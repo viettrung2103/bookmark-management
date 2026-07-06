@@ -1,15 +1,9 @@
 package user
 
 import (
-	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/rs/zerolog/log"
-	"github.com/viettrung2103/bookmark-management/internal/app/model"
-	"github.com/viettrung2103/bookmark-management/pkg/dbutils"
-	"github.com/viettrung2103/bookmark-management/pkg/requestutils"
-	"github.com/viettrung2103/bookmark-management/pkg/response"
 )
 
 type registerInput struct {
@@ -19,18 +13,8 @@ type registerInput struct {
 	Email       string `json:"email" binding:"required,email"`
 }
 
-type createUser struct {
-	Data    *model.User `json:"data"`
-	Message string      `json:"message"`
-}
-
 // Register handles user registration
-//
-//	@Summary Create a netype createUser struct {
-//		Data    *model.User `json:"data"`
-//		Message string      `json:"message"`
-//	}w user
-//
+// @Summary Create a new user
 // @Description Create a new user
 // @Tags user
 // @Accept application/json
@@ -39,27 +23,26 @@ type createUser struct {
 // @Success 200 {object} object{data=model.User,message=string} "Success"
 // @Router /v1/users/register [post]
 func (h *userHandler) Register(c *gin.Context) {
+	input := &registerInput{}
+	if err := c.ShouldBindJSON(input); err != nil {
+		//c.JSON(http.StatusBadRequest, response.InputFieldError(err))
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 
-	input, err := requestutils.BindInputFromRequest[registerInput](c)
-	if err != nil {
 		return
 	}
 
 	user, err := h.service.CreateUser(c, input.DisplayName, input.Username, input.Password, input.Email)
-
-	switch {
-	case errors.Is(err, dbutils.ErrDuplication):
-		c.JSON(http.StatusBadRequest, response.Message{
-			Message: "User or Email already exist",
-		})
-		return
-	case err == nil:
-		//return
-	default:
-		log.Err(err).Msg("Failed to create user")
-		c.JSON(http.StatusInternalServerError, response.Message{
-			Message: "Internal server error",
-		})
+	if err != nil {
+		//c.JSON(http.StatusInternalServerError, response.InternalErrResponse)
+		//if strings.Contains(err.Error(), "UNIQUE constraint failed: users.username") {
+		//	c.JSON(http.StatusBadRequest, gin.H{"message": "Field users.username already exist"})
+		//	return
+		//}
+		//if strings.Contains(err.Error(), "UNIQUE constraint failed: users.email") {
+		//	c.JSON(http.StatusBadRequest, gin.H{"message": "Field users.email already exist"})
+		//	return
+		//}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot create user, please try again"})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{

@@ -8,16 +8,13 @@ import (
 // Handler interface for user handler
 type Handler interface {
 	Register(c *gin.Context)
-	Login(c *gin.Context)
-	SelfInfo(c *gin.Context)
-	EditSelfInfo(c *gin.Context)
 }
 
 type userHandler struct {
-	service user.UserService
+	service user.Service
 }
 
 // NewHandler creates a new user handler
-func NewHandler(service user.UserService) Handler {
+func NewHandler(service user.Service) Handler {
 	return &userHandler{service: service}
 }
