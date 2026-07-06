@@ -2,6 +2,7 @@ package healthcheck
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -43,6 +44,27 @@ func TestHealthCheck(t *testing.T) {
 
 			expectedStatus:   http.StatusOK,
 			expectedResponse: `{"redis":"reachable","status":"UP"}`,
+		},
+		{
+			name: "redis is down",
+			setupRequest: func(ctx *gin.Context) {
+				ctx.Request = httptest.NewRequest(http.MethodGet, "/health-check", nil)
+			},
+			setupMockService: func(ctx context.Context) *mocks.HealthCheckService {
+				serviceMock := mocks.NewHealthCheckService(t)
+
+				// 1. Return an actual error here to trigger the `if err != nil` block in your handler
+				// Note: If your HealthCheck interface returns a struct AND an error,
+				// you would write something like: Return(nil, errors.New("redis error"))
+				serviceMock.On("HealthCheck", mock.Anything).Return(errors.New("redis connection refused"))
+
+				return serviceMock
+			},
+			// 2. Expect the 503 Service Unavailable status
+			expectedStatus: http.StatusServiceUnavailable,
+
+			// 3. Expect the JSON payload defined in your handler
+			expectedResponse: `{"error":"Service Unavailable","redis":"unreachable","status":"DOWN"}`,
 		},
 	}
 

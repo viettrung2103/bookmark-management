@@ -13,12 +13,12 @@ type Handler interface {
 	RedirectUrl(c *gin.Context)
 }
 type shortenLinkHandler struct {
-	shortenLinkService urlstorage.Service
+	shortenLinkService urlstorage.URLService
 	cfg                *config.Config
 }
 
 // NewShortenLink creates a new ShortenLink
-func NewShortenLink(shortenLinkSvc urlstorage.Service, cfg *config.Config) Handler {
+func NewShortenLink(shortenLinkSvc urlstorage.URLService, cfg *config.Config) Handler {
 	return &shortenLinkHandler{
 		shortenLinkService: shortenLinkSvc,
 		cfg:                cfg,

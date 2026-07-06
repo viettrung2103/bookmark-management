@@ -28,7 +28,7 @@ func TestShortenLinkHandler(t *testing.T) {
 	testCases := []struct {
 		name             string
 		setupRequest     func(ctx *gin.Context)
-		setupMockService func(ctx context.Context) *mocks.ShortenUrl
+		setupMockService func(ctx context.Context) *mocks.URLService
 
 		expectedStatus   int
 		expectedResponse string
@@ -50,8 +50,8 @@ func TestShortenLinkHandler(t *testing.T) {
 
 				ctx.Request = httptest.NewRequest(http.MethodPost, "/v1/links/shorten", bytes.NewReader(jsonBody))
 			},
-			setupMockService: func(ctx context.Context) *mocks.ShortenUrl {
-				serviceMock := mocks.NewShortenUrl(t)
+			setupMockService: func(ctx context.Context) *mocks.URLService {
+				serviceMock := mocks.NewURLService(t)
 				serviceMock.On("ShortenUrlWithExpiringTime", mock.Anything, "https://www.google.com", 10).Return(testCode, nil)
 				return serviceMock
 			},
@@ -75,8 +75,8 @@ func TestShortenLinkHandler(t *testing.T) {
 
 				ctx.Request = httptest.NewRequest(http.MethodPost, "/v1/links/shorten", bytes.NewReader(jsonBody))
 			},
-			setupMockService: func(ctx context.Context) *mocks.ShortenUrl {
-				return mocks.NewShortenUrl(t)
+			setupMockService: func(ctx context.Context) *mocks.URLService {
+				return mocks.NewURLService(t)
 
 			},
 
@@ -115,7 +115,7 @@ func TestShortenUrlHandler_Redirect(t *testing.T) {
 		name string
 
 		setupRequest func(c *gin.Context)
-		setupMockSvc func(ctx context.Context) *mocks.ShortenUrl
+		setupMockSvc func(ctx context.Context) *mocks.URLService
 
 		exptectedStatus int
 		expectedUrl     string
@@ -130,8 +130,8 @@ func TestShortenUrlHandler_Redirect(t *testing.T) {
 				)
 				ctx.Params = gin.Params{{Key: "code", Value: "1234567"}}
 			},
-			setupMockSvc: func(ctx context.Context) *mocks.ShortenUrl {
-				serviceMock := mocks.NewShortenUrl(t)
+			setupMockSvc: func(ctx context.Context) *mocks.URLService {
+				serviceMock := mocks.NewURLService(t)
 				serviceMock.On("GetLinkFromCode", ctx, "1234567").Return("https://google.com", nil)
 				return serviceMock
 			},
@@ -148,8 +148,8 @@ func TestShortenUrlHandler_Redirect(t *testing.T) {
 				)
 				ctx.Params = gin.Params{{Key: "code", Value: "1234567"}}
 			},
-			setupMockSvc: func(ctx context.Context) *mocks.ShortenUrl {
-				serviceMock := mocks.NewShortenUrl(t)
+			setupMockSvc: func(ctx context.Context) *mocks.URLService {
+				serviceMock := mocks.NewURLService(t)
 				serviceMock.On("GetLinkFromCode", ctx, "1234567").Return("https://google.com", nil)
 				return serviceMock
 			},
