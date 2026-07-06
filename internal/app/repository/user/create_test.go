@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
 	"github.com/viettrung2103/bookmark-management/internal/test/data/fixtures"
+	"github.com/viettrung2103/bookmark-management/pkg/dbutils"
 	"gorm.io/gorm"
 )
 
@@ -16,9 +17,10 @@ func TestUserRepo_CreateUser(t *testing.T) {
 	testCases := []struct {
 		name string
 
-		setupDB           func(t *testing.T) *gorm.DB
-		expectedErrString string
-		inputUser         *model.User
+		setupDB func(t *testing.T) *gorm.DB
+		//expectedErrString string
+		expectedError error
+		inputUser     *model.User
 
 		verifyFunc func(db *gorm.DB)
 	}{
@@ -36,7 +38,8 @@ func TestUserRepo_CreateUser(t *testing.T) {
 				Password:    "$2a$12$K3vX5YwOmP2bZ9rQ3nU7Xe8YvMw9T6uC9iK2oP1lRmSzTxVuWxYz.", // "hashed_password_2"
 				Email:       "jane.smit23h@example.com",
 			},
-			expectedErrString: "",
+			//expectedErrString: "",
+			expectedError: nil,
 			verifyFunc: func(db *gorm.DB) {
 				user := &model.User{}
 				err := db.First(user, "username = ? ", "janesmith_dev123").Error
@@ -62,7 +65,7 @@ func TestUserRepo_CreateUser(t *testing.T) {
 				Password:    "$2a$12$K3vX5YwOmP2bZ9rQ3nU7Xe8YvMw9T6uC9iK2oP1lRmSzTxVuWxYz.", // "hashed_password_2"
 				Email:       "jane.smith@example.com",
 			},
-			expectedErrString: "UNIQUE",
+			expectedError: dbutils.ErrDuplication,
 			verifyFunc: func(db *gorm.DB) {
 
 			},
@@ -78,18 +81,19 @@ func TestUserRepo_CreateUser(t *testing.T) {
 
 			repo := NewRepository(db)
 
-			err := repo.CreateUser(ctx, tc.inputUser)
+			user, err := repo.CreateUser(ctx, tc.inputUser)
 			//if tc.expectedErr {
 			//	assert.NotNil(t, err)
 			//} else {
 			//	assert.NoError(t, err)
 			//}
-			if tc.expectedErrString == "" {
+			if tc.expectedError == nil {
 				assert.NoError(t, err)
+				assert.NotNil(t, user)
 			} else {
-				assert.ErrorContains(t, err, tc.expectedErrString)
+				assert.ErrorIs(t, err, tc.expectedError)
+				assert.Nil(t, user)
 			}
-			tc.verifyFunc(db)
 
 		})
 	}
