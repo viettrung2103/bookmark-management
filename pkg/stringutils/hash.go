@@ -2,6 +2,8 @@ package stringutils
 
 import "golang.org/x/crypto/bcrypt"
 
+//go:generate mockery --name=PasswordHashing --filename=hashing.go
+
 type PasswordHashing interface {
 	Hashing(input string) string
 	CompareHashedPassword(hashedString, input string) bool

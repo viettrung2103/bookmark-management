@@ -9,7 +9,7 @@ import (
 
 // JWTGenerator interface for JWT generation
 //
-//go:generate mockery --name JEWGenerator --filename generator.go
+//go:generate mockery --name JWTGenerator --filename generator.go
 type JWTGenerator interface {
 	GenerateJWT(jwtContent jwt.MapClaims) (string, error)
 }
