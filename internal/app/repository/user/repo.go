@@ -7,8 +7,10 @@ import (
 	"gorm.io/gorm"
 )
 
+//go:generate mockery --name=UserRepository --filename=../../mocks/user.go
+
 // user Repository interface
-type Repository interface {
+type UserRepository interface {
 	CreateUser(ctx context.Context, newUser *model.User) (*model.User, error)
 	GetUserByUsername(ctx context.Context, username string) (*model.User, error)
 	GetUserByUserId(ctx context.Context, userId string) (*model.User, error)
@@ -20,6 +22,6 @@ type userRepository struct {
 }
 
 // NewRepository returns a new repository
-func NewRepository(db *gorm.DB) Repository {
+func NewRepository(db *gorm.DB) UserRepository {
 	return &userRepository{db: db}
 }

@@ -8,10 +8,12 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-//go:generate mockery --name=UrlStorage --filename=urlstorage.go
+//go:generate mockery --name=URLRepository --filename=../../mocks/urlstorage.go
+
+//--filename=../../mocks/healthcheck.go
 
 // UrlStorage is the interface for URL storage
-type Repository interface {
+type URLRepository interface {
 	StoreURL(ctx context.Context, code, url string, exp time.Duration) error
 	GetURL(ctx context.Context, code string) (string, error)
 }
@@ -21,7 +23,7 @@ type urlStorage struct {
 }
 
 // NewUrlStorage creates a new UrlStorage
-func NewRepository(c *redis.Client) Repository {
+func NewRepository(c *redis.Client) URLRepository {
 	return &urlStorage{c: c}
 }
 
