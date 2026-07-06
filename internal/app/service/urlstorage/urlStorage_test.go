@@ -22,14 +22,14 @@ func TestService_GetLinkFromKey(t *testing.T) {
 	testCases := []struct {
 		name string
 
-		setupRepo   func(ctx context.Context) *repoMocks.UrlStorage
+		setupRepo   func(ctx context.Context) *repoMocks.URLRepository
 		expectedUrl string
 		expectedErr error
 	}{
 		{
 			name: "normal case",
-			setupRepo: func(ctx context.Context) *repoMocks.UrlStorage {
-				mock := repoMocks.NewUrlStorage(t)
+			setupRepo: func(ctx context.Context) *repoMocks.URLRepository {
+				mock := repoMocks.NewURLRepository(t)
 				mock.On("GetURL", ctx, "test").Return("https://test.com", nil)
 				return mock
 			},
@@ -39,8 +39,8 @@ func TestService_GetLinkFromKey(t *testing.T) {
 		},
 		{
 			name: "empty case",
-			setupRepo: func(ctx context.Context) *repoMocks.UrlStorage {
-				mock := repoMocks.NewUrlStorage(t)
+			setupRepo: func(ctx context.Context) *repoMocks.URLRepository {
+				mock := repoMocks.NewURLRepository(t)
 				mock.On("GetURL", ctx, "test").Return("", redisTestErr)
 				return mock
 			},
@@ -49,8 +49,8 @@ func TestService_GetLinkFromKey(t *testing.T) {
 		},
 		{
 			name: "err case ",
-			setupRepo: func(ctx context.Context) *repoMocks.UrlStorage {
-				mock := repoMocks.NewUrlStorage(t)
+			setupRepo: func(ctx context.Context) *repoMocks.URLRepository {
+				mock := repoMocks.NewURLRepository(t)
 				mock.On("GetURL", ctx, "test").Return("", redisTestErr)
 				return mock
 			},
@@ -84,7 +84,7 @@ const linkKeyLength = 7
 func TestService_CreateShortenLink(t *testing.T) {
 	testCases := []struct {
 		name        string
-		setupRepo   func(ctx context.Context) *repoMocks.UrlStorage
+		setupRepo   func(ctx context.Context) *repoMocks.URLRepository
 		setupKeyGen func() *keygenMock.KeyGenerator
 
 		expectedResult string
@@ -93,8 +93,8 @@ func TestService_CreateShortenLink(t *testing.T) {
 		{
 			name: "normal case - new key",
 
-			setupRepo: func(ctx context.Context) *repoMocks.UrlStorage {
-				mock := repoMocks.NewUrlStorage(t)
+			setupRepo: func(ctx context.Context) *repoMocks.URLRepository {
+				mock := repoMocks.NewURLRepository(t)
 				mock.On("GetURL", ctx, "1234567").Return("", redis.Nil)
 				mock.On("StoreURL", ctx, "1234567", "https://test.com", testExpTime).Return(nil)
 
@@ -114,8 +114,8 @@ func TestService_CreateShortenLink(t *testing.T) {
 		{
 			name: "normal case - random the same key",
 
-			setupRepo: func(ctx context.Context) *repoMocks.UrlStorage {
-				mock := repoMocks.NewUrlStorage(t)
+			setupRepo: func(ctx context.Context) *repoMocks.URLRepository {
+				mock := repoMocks.NewURLRepository(t)
 				// generate a key >> return a url >> generate new key
 				mock.On("GetURL", ctx, "1234567").Return("https://example.com", redis.Nil)
 				mock.On("GetURL", ctx, "2345678").Return("", redis.Nil)

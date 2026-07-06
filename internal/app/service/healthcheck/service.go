@@ -8,16 +8,16 @@ import (
 
 // HealthCheck represents the health check service
 //
-//go:generate mockery --name=HealthCheck --filename=healthcheck.go
-type Service interface {
+//go:generate mockery --name=HealthCheckService --filename=../../mocks/healthcheck.go
+type HealthCheckService interface {
 	HealthCheck(ctx context.Context) error
 }
 
 type healthCheckService struct {
-	repo healthcheck.Repository
+	repo healthcheck.HealthCheckRepository
 }
 
 // NewHealthCheckS creates a new HealthCheck
-func NewService(repo healthcheck.Repository) Service {
+func NewService(repo healthcheck.HealthCheckRepository) HealthCheckService {
 	return &healthCheckService{repo: repo}
 }

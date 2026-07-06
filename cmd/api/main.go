@@ -7,6 +7,7 @@ import (
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
 	"github.com/viettrung2103/bookmark-management/internal/config"
 	"github.com/viettrung2103/bookmark-management/pkg/common"
+	"github.com/viettrung2103/bookmark-management/pkg/jwtutils"
 	"github.com/viettrung2103/bookmark-management/pkg/logger"
 	redispkg "github.com/viettrung2103/bookmark-management/pkg/redis"
 	"github.com/viettrung2103/bookmark-management/pkg/sqldb"
@@ -14,10 +15,13 @@ import (
 )
 
 // @title Bookmark API
-// @version 2.5
+// @version 3.0
 // @description API for bookmark management
 // @host localhost:8080
+// @securityDefinitions.apikey BearerAuth
 // @BasePath /
+// @in header
+// @name Authorization
 func main() {
 	//create app config
 
@@ -71,13 +75,20 @@ func createAPIApp(cfg *config.Config, redis *redis.Client, db *gorm.DB) api.Engi
 	//	Redis:  nil,
 	//	SqlDB:  fixtures,
 	//})
+	app := gin.Default()
+	jwtGen, err := jwtutils.NewJWTGenerator("./private.pem")
+	common.HandleError(err)
+	jwtVal, err := jwtutils.NewJWTValidator("./public.pem")
 	a := api.NewEngine(&api.EngineOpts{
 		//Engine: gin.New(),
-		Engine: gin.Default(),
+		//Engine: gin.Default(),
+		Engine: app,
 		//Cfg:    &config.Config{},
-		Cfg:   cfg,
-		Redis: redis,
-		SqlDB: db,
+		Cfg:    cfg,
+		Redis:  redis,
+		SqlDB:  db,
+		JwtGen: jwtGen,
+		JwtVal: jwtVal,
 	})
 	//app, cfg, redis, db)
 
