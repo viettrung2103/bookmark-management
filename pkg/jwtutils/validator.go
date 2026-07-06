@@ -15,7 +15,7 @@ var (
 
 // JWTValidator interface for JWT validation
 //
-//go:generate mockery --name JWTValidator --filename generator.go
+//go:generate mockery --name JWTValidator --filename validator.go
 type JWTValidator interface {
 	ValidateJWT(tokenStr string) (jwt.MapClaims, error)
 }

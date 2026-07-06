@@ -18,7 +18,6 @@ import (
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
 	"github.com/viettrung2103/bookmark-management/internal/app/service/mocks"
 	"github.com/viettrung2103/bookmark-management/pkg/dbutils"
-	"gorm.io/gorm"
 	//"gorm.io/gorm"
 )
 
@@ -70,7 +69,7 @@ func TestUserHandler_SelfInfo(t *testing.T) {
 			setupMockService: func(ctx context.Context) *mocks.UserService {
 				serviceMock := mocks.NewUserService(t)
 				// Return GORM's record not found error
-				serviceMock.On("SelfInfo", mock.Anything, "missing-user-999").Return((*model.User)(nil), gorm.ErrRecordNotFound)
+				serviceMock.On("SelfInfo", mock.Anything, "missing-user-999").Return((*model.User)(nil), dbutils.ErrRecordNotFound)
 				return serviceMock
 			},
 			expectedStatus:   http.StatusBadRequest,

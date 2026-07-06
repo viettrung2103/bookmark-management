@@ -57,7 +57,7 @@ func TestRegisterEndpoint(t *testing.T) {
 			expectedResponseBody: "Register an user successfully",
 		},
 		{
-			name: "err case - unique usernam",
+			name: "err case - unique username",
 			setupTestHTTP: func(api api.Engine) *httptest.ResponseRecorder {
 				req, _ := http.NewRequest(
 					"POST",
@@ -78,9 +78,9 @@ func TestRegisterEndpoint(t *testing.T) {
 			setupDB: func() *gorm.DB {
 				return fixtures.NewFixture(t, &fixtures.UserCommonTestDB{})
 			},
-			expectedStatusCode:   http.StatusInternalServerError,
+			expectedStatusCode:   http.StatusBadRequest,
 			expectedErrString:    "UNIQUE",
-			expectedResponseBody: `{"error":"Cannot create user, please try again"}`,
+			expectedResponseBody: `{"message":"User or Email already exist"}`,
 		},
 	}
 	for _, tc := range testCases {

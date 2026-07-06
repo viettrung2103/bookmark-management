@@ -35,9 +35,6 @@ func GetUserIDFromRequest(c *gin.Context) (string, error) {
 	}
 
 	uid, ok := claims["uid"].(string)
-	println("from get user ID from request")
-	println("uid", uid)
-	println("ok", ok)
 
 	if !ok || uid == "" {
 		c.JSON(http.StatusUnauthorized, &response.Message{

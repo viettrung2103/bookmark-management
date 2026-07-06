@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/viettrung2103/bookmark-management/pkg/dbutils"
 )
 
 const jwtExpireDuration = 1 * time.Hour
@@ -30,9 +31,9 @@ func (s *userService) Login(ctx context.Context, username, password string) (str
 	// get user tu username
 	user, err := s.userRepo.GetUserByUsername(ctx, username)
 	if err != nil {
-		//if errors.Is(err, dbutils.ErrRecordNotFound) {
-		//	return "", ErrInvalidCreditials
-		//}
+		if errors.Is(err, dbutils.ErrRecordNotFound) {
+			return "", ErrInvalidCreditials
+		}
 		return "", err
 	}
 

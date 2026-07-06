@@ -56,7 +56,7 @@ func TestUserService_Login(t *testing.T) {
 				// We don't need to mock hasher or jwtGen because the function returns early
 			},
 			expectedToken: "",
-			expectedError: dbutils.ErrRecordNotFound, // Should bubble up the exact error from the DB
+			expectedError: ErrInvalidCreditials, // Should bubble up the exact error from the DB, but for security reason, display same error
 		},
 		{
 			name: "failure - wrong password",

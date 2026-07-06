@@ -9,7 +9,6 @@ import (
 	"github.com/viettrung2103/bookmark-management/pkg/dbutils"
 	"github.com/viettrung2103/bookmark-management/pkg/requestutils"
 	"github.com/viettrung2103/bookmark-management/pkg/response"
-	"gorm.io/gorm"
 )
 
 // SelfInfo get your current user information
@@ -30,7 +29,7 @@ func (h *userHandler) SelfInfo(c *gin.Context) {
 
 	user, err := h.service.SelfInfo(c, userId)
 	switch {
-	case errors.Is(err, gorm.ErrRecordNotFound):
+	case errors.Is(err, dbutils.ErrRecordNotFound):
 		log.Error().Err(err).Str("userId", userId).Msg("User Not Found")
 		c.JSON(http.StatusBadRequest, &response.Message{
 			Message: "User Not Found",
