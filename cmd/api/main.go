@@ -15,7 +15,7 @@ import (
 )
 
 // @title Bookmark API
-// @version 2.5
+// @version 3.0
 // @description API for bookmark management
 // @host localhost:8080
 // @securityDefinitions.apikey BearerAuth
