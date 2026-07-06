@@ -4,7 +4,7 @@
         "description": "API for bookmark management",
         "title": "Bookmark API",
         "contact": {},
-        "version": "2.5"
+        "version": "3.0"
     },
     "host": "localhost:8080",
     "paths": {
