@@ -7,12 +7,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 	"github.com/viettrung2103/bookmark-management/internal/app/service/urlstorage"
-	"github.com/viettrung2103/bookmark-management/pkg/requestutils"
 )
 
 // shortenUrlRequest represents the shorten url request
 type shortenUrlRequest struct {
-	URL              string `json:"url" binding:"required,url"`
+	Url              string `json:"url" binding:"required,url"`
 	ExpiringDuration int    `json:"exp" binding:"required"`
 }
 
@@ -29,22 +28,18 @@ type shortenUrlResponse struct {
 // @Success 200 {object} string
 // @Router /v1/links/shorten [post]
 func (h *shortenLinkHandler) ShortenUrlLink(c *gin.Context) {
-	//var req shortenUrlRequest
+	var req shortenUrlRequest
 
 	// bind the incoming request with our struct
-	//err := c.ShouldBindJSON(&req)
-	//if err != nil {
-	//	log.Error().Err(err).Str("from", "handler.shortenurl.ShortenUrlLink").Msg("failed to get req body from code")
-	//
-	//	c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
-	//	return
-	//}
-	input, err := requestutils.BindInputFromRequest[shortenUrlRequest](c)
+	err := c.ShouldBindJSON(&req)
 	if err != nil {
+		log.Error().Err(err).Str("from", "handler.shortenurl.ShortenUrlLink").Msg("failed to get req body from code")
+
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "Invalid request body"})
 		return
 	}
 
-	code, err := h.shortenLinkService.ShortenUrlWithExpiringTime(c, input.URL, input.ExpiringDuration)
+	code, err := h.shortenLinkService.ShortenUrlWithExpiringTime(c, req.Url, req.ExpiringDuration)
 	if err != nil {
 
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Err"})

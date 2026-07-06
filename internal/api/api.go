@@ -9,7 +9,6 @@ import (
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/viettrung2103/bookmark-management/docs"
-	"github.com/viettrung2103/bookmark-management/internal/api/middleware"
 	healthCheckHandler "github.com/viettrung2103/bookmark-management/internal/app/handler/healthcheck"
 	urlHandler "github.com/viettrung2103/bookmark-management/internal/app/handler/url"
 	userHandler "github.com/viettrung2103/bookmark-management/internal/app/handler/user"
@@ -19,7 +18,6 @@ import (
 	healthCheckService "github.com/viettrung2103/bookmark-management/internal/app/service/healthcheck"
 	urlService "github.com/viettrung2103/bookmark-management/internal/app/service/urlstorage"
 	userService "github.com/viettrung2103/bookmark-management/internal/app/service/user"
-	"github.com/viettrung2103/bookmark-management/pkg/jwtutils"
 	"github.com/viettrung2103/bookmark-management/pkg/stringutils"
 	"gorm.io/gorm"
 
@@ -32,17 +30,14 @@ const version = 1
 type Engine interface {
 	Start() error
 	ServeHTTP(w http.ResponseWriter, req *http.Request)
-	InitRoutes()
 }
 
 // engine struct implements Engine interface
 type engine struct {
-	eng    *gin.Engine
-	cfg    *config.Config
-	redis  *redis.Client
-	db     *gorm.DB
-	jwtGen jwtutils.JWTGenerator
-	jwtVal jwtutils.JWTValidator
+	eng   *gin.Engine
+	cfg   *config.Config
+	redis *redis.Client
+	db    *gorm.DB
 }
 
 // EngineOpts holds initialization dependencies for the engine
@@ -51,21 +46,17 @@ type EngineOpts struct {
 	Cfg    *config.Config
 	Redis  *redis.Client
 	SqlDB  *gorm.DB
-	JwtGen jwtutils.JWTGenerator
-	JwtVal jwtutils.JWTValidator
 }
 
 // New creates a new engine
 func NewEngine(opts *EngineOpts) Engine {
 	app := &engine{
-		eng:    opts.Engine,
-		cfg:    opts.Cfg,
-		redis:  opts.Redis,
-		db:     opts.SqlDB,
-		jwtGen: opts.JwtGen,
-		jwtVal: opts.JwtVal,
+		eng:   opts.Engine,
+		cfg:   opts.Cfg,
+		redis: opts.Redis,
+		db:    opts.SqlDB,
 	}
-	app.InitRoutes()
+	app.initRoutes()
 
 	return app
 }
@@ -112,19 +103,8 @@ func (e *engine) initHandlers() *handlers {
 	shortenUrlHdlr := urlHandler.NewShortenLink(shortenUrlSvc, e.cfg)
 	healthCheckHdlr := healthCheckHandler.NewHandler(healthCheckSvc)
 
-	passwordHashing := stringutils.NewPasswordHasher()
-
 	userRepo := userRepository.NewRepository(e.db)
-	//userSvc := userService.NewService(userRepo)
-	//userHdlr := userHandler.NewHandler(userSvc)
-
-	userSvcInput := &userService.UserServiceOpts{
-		UserRepo:        userRepo,
-		PasswordHashing: passwordHashing,
-		JwtGenerator:    e.jwtGen,
-	}
-
-	userSvc := userService.NewService(userSvcInput)
+	userSvc := userService.NewService(userRepo)
 	userHdlr := userHandler.NewHandler(userSvc)
 
 	return &handlers{
@@ -136,42 +116,29 @@ func (e *engine) initHandlers() *handlers {
 }
 
 // initRoutes initializes the routes
-func (e *engine) InitRoutes() {
+func (e *engine) initRoutes() {
 
 	allHandlers := e.initHandlers()
-	jwtAuth := middleware.NewJWTAuth(e.jwtVal)
 
-	e.eng.GET("/health-check", allHandlers.healthCheckHandler.HealthCheck)
+	e.eng.GET("/health-check", allHandlers.healthCheckHandler.CheckHealth)
 
 	//int swagger routes
 	docs.SwaggerInfo.Host = e.cfg.Hostname
 	e.eng.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	apiRoute := fmt.Sprintf("/v%d", version)
+	apiPath := fmt.Sprintf("/v%d", version)
 
-	OpenBase := e.eng.Group(apiRoute)
+	apiBase := e.eng.Group(apiPath)
 	{
 		// url route
-		linkBase := OpenBase.Group("/links")
+		linkBase := apiBase.Group("/links")
 
 		linkBase.POST("/shorten", allHandlers.linkHandler.ShortenUrlLink)
 		linkBase.GET("/redirect/:code", allHandlers.linkHandler.RedirectUrl)
 
 		//user route
-		userBase := OpenBase.Group("/users")
+		userBase := apiBase.Group("/users")
 		userBase.POST("/register", allHandlers.userHandler.Register)
-		userBase.POST("/login", allHandlers.userHandler.Login)
 
 	}
-
-	privateBase := e.eng.Group(apiRoute)
-	privateBase.Use(jwtAuth.JWTAuthMiddleWare())
-	{
-		// user-related
-		privateBase.GET("/self/info", allHandlers.userHandler.SelfInfo)
-		privateBase.PUT("/self/info", allHandlers.userHandler.EditSelfInfo)
-	}
-
-	//test
-	OpenBase.GET("/test/:id/blah/:uid", userHandler.Test)
 }

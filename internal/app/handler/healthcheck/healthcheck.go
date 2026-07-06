@@ -7,13 +7,13 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-// HealthCheck checks the health of the service
+// CheckHealth checks the health of the service
 // @Summary check redis health
 // @Description ping and pong with redis server
 // @Tags health check
 // @Success 200 {object} map[string]interface{}
 // @Router /health-check [get]
-func (h *healthCheckHandler) HealthCheck(c *gin.Context) {
+func (h *healthCheckHandler) CheckHealth(c *gin.Context) {
 	err := h.healthCheckSvc.HealthCheck(c)
 	if err != nil {
 		log.Error().Err(err).Str("from", "handler.healthCheckHandler.CheckHealth").Msg("redis server is down")

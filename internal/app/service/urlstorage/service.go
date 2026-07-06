@@ -9,19 +9,19 @@ import (
 
 // ShortenUrl represents the shorten url service
 //
-//go:generate mockery --name=URLService --filename=../../mocks/shortenurl.go
-type URLService interface {
+//go:generate mockery --name=ShortenUrl --filename=shortenurl.go
+type Service interface {
 	ShortenUrlWithExpiringTime(ctx context.Context, url string, expireTime int) (string, error)
 	GetLinkFromCode(ctx context.Context, urlCode string) (string, error)
 }
 
 type shortenUrlService struct {
-	repo   urlstorage.URLRepository
+	repo   urlstorage.Repository
 	keygen stringutils.KeyGenerator
 }
 
 // NewShortenUrl returns a new ShortenUrl
-func NewService(repo urlstorage.URLRepository, keygen stringutils.KeyGenerator) URLService {
+func NewService(repo urlstorage.Repository, keygen stringutils.KeyGenerator) Service {
 	return &shortenUrlService{
 		repo:   repo,
 		keygen: keygen,
