@@ -16,12 +16,12 @@ type URLService interface {
 }
 
 type shortenUrlService struct {
-	repo   urlstorage.Repository
+	repo   urlstorage.URLRepository
 	keygen stringutils.KeyGenerator
 }
 
 // NewShortenUrl returns a new ShortenUrl
-func NewService(repo urlstorage.Repository, keygen stringutils.KeyGenerator) URLService {
+func NewService(repo urlstorage.URLRepository, keygen stringutils.KeyGenerator) URLService {
 	return &shortenUrlService{
 		repo:   repo,
 		keygen: keygen,

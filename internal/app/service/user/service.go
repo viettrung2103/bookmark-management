@@ -20,13 +20,13 @@ type UserService interface {
 }
 
 type userService struct {
-	userRepo        user.Repository
+	userRepo        user.UserRepository
 	passwordHashing stringutils.PasswordHashing
 	jwtGenerator    jwtutils.JWTGenerator
 }
 
 type UserServiceOpts struct {
-	UserRepo        user.Repository
+	UserRepo        user.UserRepository
 	PasswordHashing stringutils.PasswordHashing
 	JwtGenerator    jwtutils.JWTGenerator
 }

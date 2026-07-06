@@ -14,10 +14,10 @@ type HealthCheckService interface {
 }
 
 type healthCheckService struct {
-	repo healthcheck.Repository
+	repo healthcheck.HealthCheckRepository
 }
 
 // NewHealthCheckS creates a new HealthCheck
-func NewService(repo healthcheck.Repository) HealthCheckService {
+func NewService(repo healthcheck.HealthCheckRepository) HealthCheckService {
 	return &healthCheckService{repo: repo}
 }
