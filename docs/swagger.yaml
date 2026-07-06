@@ -1,11 +1,17 @@
 definitions:
   model.User:
     properties:
+      created_at:
+        description: GORM auto-manages this on creation
+        type: string
       display_name:
         type: string
       email:
         type: string
       id:
+        type: string
+      updated_at:
+        description: GORM auto-manages this on updates
         type: string
       username:
         type: string
@@ -178,9 +184,9 @@ paths:
           description: Success
           schema:
             properties:
-              ' message':
+              data:
                 type: string
-              token:
+              message:
                 type: string
             type: object
       summary: return a jwt token if the input is correct

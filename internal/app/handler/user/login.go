@@ -24,7 +24,7 @@ type loginInput struct {
 // @Accept application/json
 // @Produce application/json
 // @Param input body loginInput tru "Input required"
-// @Success 200 {object} object{token=string, message=string} "Success"
+// @Success 200 {object} object{data=string,message=string} "Success"
 // @Router /v1/users/login [post]
 func (u *userHandler) Login(c *gin.Context) {
 	// get input
@@ -56,5 +56,8 @@ func (u *userHandler) Login(c *gin.Context) {
 	}
 
 	// return response with token
-	c.JSON(http.StatusOK, gin.H{"token": tokenStr})
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Logged in successfully!",
+		"data":    tokenStr,
+	})
 }
