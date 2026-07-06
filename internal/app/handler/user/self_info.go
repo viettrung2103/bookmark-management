@@ -22,28 +22,6 @@ import (
 // @Success 200 {object} object{data=model.User} "Success"
 // @Router /v1/self/info [get]
 func (h *userHandler) SelfInfo(c *gin.Context) {
-	// get user id from jwt token
-	//claims, isExist := c.Get("claims")
-	////claims, isExist := GetUser
-	//if !isExist {
-	//	c.JSON(http.StatusUnauthorized, response.Message{Message: "Unauthorized"})
-	//	c.Abort()
-	//	return
-	//}
-	//
-	//tokenClaims, ok := claims.(jwt.MapClaims)
-	//if !ok {
-	//	c.JSON(http.StatusUnauthorized, response.Message{Message: "Unauthorized"})
-	//	c.Abort()
-	//	return
-	//}
-	//
-	//userId, ok := tokenClaims["sub"].(string)
-	//if !ok {
-	//	c.JSON(http.StatusUnauthorized, response.Message{Message: "Unauthorized"})
-	//	c.Abort()
-	//	return
-	//}
 
 	userId, err := requestutils.GetUserIDFromRequest(c)
 	if err != nil {
