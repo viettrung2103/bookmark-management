@@ -13,11 +13,13 @@ const jwtExpireDuration = 1 * time.Hour
 
 var ErrInvalidCreditials = errors.New("invalid username or password")
 
+// TokenInfo contains user ID and username
 type TokenInfo struct {
 	Id       string
 	Username string
 }
 
+// ToMapClaim converts TokenInfo to jwt.MapClaims
 func (t *TokenInfo) ToMapClaim() jwt.MapClaims {
 	return jwt.MapClaims{
 		"uid":      t.Id,
@@ -27,6 +29,7 @@ func (t *TokenInfo) ToMapClaim() jwt.MapClaims {
 	}
 }
 
+// Login logs in a user and returns a JWT
 func (s *userService) Login(ctx context.Context, username, password string) (string, error) {
 	// get user tu username
 	user, err := s.userRepo.GetUserByUsername(ctx, username)

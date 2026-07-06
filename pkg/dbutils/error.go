@@ -11,6 +11,7 @@ var errorFilters = []func(err error) (bool, error){
 	filterRecordNotFoundErr,
 }
 
+// CatchDBError catches database errors and returns filtered errors
 func CatchDBError(err error) error {
 	if err == nil {
 		return nil

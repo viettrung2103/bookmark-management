@@ -106,6 +106,7 @@ func TestRegisterEndpoint(t *testing.T) {
 	}
 }
 
+// TestEngine_Login tests the login endpoint
 func TestEngine_Login(t *testing.T) {
 	t.Parallel()
 

@@ -18,6 +18,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// TestEndpoint_SelfInfo tests the SelfInfo endpoint
 func TestEndpoint_SelfInfo(t *testing.T) {
 	t.Parallel()
 
@@ -154,17 +155,12 @@ func TestEndpoint_SelfInfo(t *testing.T) {
 	}
 }
 
+// TestEndpoint_EditSelfInfo tests the EditSelfInfo endpoint
 func TestEndpoint_EditSelfInfo(t *testing.T) {
 	t.Parallel()
 
 	// Target user details sourced from your fixtures.UserCommonTestDB
 	targetUserID := "87a3cb94-d2e8-422d-bb91-fc5215949eb8" // Jane Smith
-	//exisitingEmail := "john.doe@example.com"
-	//oldDisplayName := "Jane Smith"
-	//oldEmail := "jane.smith@example.com"
-	//updatedDisplayName := "Jane Smith1"
-	//updatedEmail := "jane.smith1@example.com"
-	//invaliJWTToken := "123"
 
 	testCases := []struct {
 		name                 string

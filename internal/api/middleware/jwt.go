@@ -9,6 +9,7 @@ import (
 	"github.com/viettrung2103/bookmark-management/pkg/response"
 )
 
+// JWTAuth interface
 type JWTAuth interface {
 	JWTAuthMiddleWare() gin.HandlerFunc
 }
@@ -17,12 +18,14 @@ type jwtAuth struct {
 	jwtValidator jwtutils.JWTValidator
 }
 
+// NewJWTAuth creates a new JWTAuth instance
 func NewJWTAuth(jwtValidator jwtutils.JWTValidator) JWTAuth {
 	return &jwtAuth{
 		jwtValidator: jwtValidator,
 	}
 }
 
+// JWTAuthMiddleWare returns a middleware that validates JWT tokens
 func (j *jwtAuth) JWTAuthMiddleWare() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// get auth header

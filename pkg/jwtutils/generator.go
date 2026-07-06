@@ -18,6 +18,7 @@ type generator struct {
 	privateKey *rsa.PrivateKey
 }
 
+// NewJWTGenerator creates a new JWT generator
 func NewJWTGenerator(privateKeyPath string) (JWTGenerator, error) {
 	privateKeyData, err := os.ReadFile(privateKeyPath)
 	if err != nil {

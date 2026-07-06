@@ -14,6 +14,7 @@ var (
 	ErrInvalidUID   = errors.New("invalid user")
 )
 
+// GetJWTClaimsFromRequest gets JWT claims from request
 func GetJWTClaimsFromRequest(c *gin.Context) (jwt.MapClaims, error) {
 	tokenInfo, _ := c.Get("claims")
 	claims, valid := tokenInfo.(jwt.MapClaims)
@@ -28,6 +29,7 @@ func GetJWTClaimsFromRequest(c *gin.Context) (jwt.MapClaims, error) {
 	return claims, nil
 }
 
+// GetUserIDFromRequest gets user ID from request
 func GetUserIDFromRequest(c *gin.Context) (string, error) {
 	claims, err := GetJWTClaimsFromRequest(c)
 	if err != nil {

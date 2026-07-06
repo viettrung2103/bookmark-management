@@ -14,6 +14,7 @@ var (
 	InputValidator = validator.New(validator.WithRequiredStructEnabled())
 )
 
+// BindInputFromRequest binds input from request
 func BindInputFromRequest[T any](c *gin.Context) (*T, error) {
 	reqInput := new(T)
 

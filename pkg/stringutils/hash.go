@@ -3,6 +3,7 @@ package stringutils
 import "golang.org/x/crypto/bcrypt"
 
 //go:generate mockery --name=PasswordHashing --filename=hashing.go
+// PasswordHashing interface for password hashing
 
 type PasswordHashing interface {
 	Hashing(input string) string
@@ -11,6 +12,7 @@ type PasswordHashing interface {
 
 type passwordHasher struct{}
 
+// NewPasswordHasher creates a new password hasher
 func NewPasswordHasher() PasswordHashing {
 	return &passwordHasher{}
 }

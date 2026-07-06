@@ -21,6 +21,7 @@ import (
 	//"gorm.io/gorm"
 )
 
+// TestUserHandler_SelfInfo tests the SelfInfo method of the UserHandler
 func TestUserHandler_SelfInfo(t *testing.T) {
 	t.Parallel()
 
@@ -120,6 +121,7 @@ func TestUserHandler_SelfInfo(t *testing.T) {
 	}
 }
 
+// TestUserHandler_EditSelfInfo tests the EditSelfInfo method of the UserHandler
 func TestUserHandler_EditSelfInfo(t *testing.T) {
 	t.Parallel()
 

@@ -25,6 +25,7 @@ type userService struct {
 	jwtGenerator    jwtutils.JWTGenerator
 }
 
+// UserServiceOpts contains dependencies for user service
 type UserServiceOpts struct {
 	UserRepo        user.UserRepository
 	PasswordHashing stringutils.PasswordHashing
@@ -32,11 +33,6 @@ type UserServiceOpts struct {
 }
 
 // NewService creates a new user service
-//func NewService(repo user.Repository) Service {
-//	return &userService{repo: repo}
-//}
-
-// func NewService(repo user.Repository, passwordHashing utils.PasswordHashing, jwtGen jwtutils.JWTGenerator) Service {
 func NewService(opts *UserServiceOpts) UserService {
 
 	return &userService{

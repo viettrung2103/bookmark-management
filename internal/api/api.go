@@ -32,6 +32,7 @@ const version = 1
 type Engine interface {
 	Start() error
 	ServeHTTP(w http.ResponseWriter, req *http.Request)
+	InitRoutes()
 }
 
 // engine struct implements Engine interface
@@ -64,7 +65,7 @@ func NewEngine(opts *EngineOpts) Engine {
 		jwtGen: opts.JwtGen,
 		jwtVal: opts.JwtVal,
 	}
-	app.initRoutes()
+	app.InitRoutes()
 
 	return app
 }
@@ -135,7 +136,7 @@ func (e *engine) initHandlers() *handlers {
 }
 
 // initRoutes initializes the routes
-func (e *engine) initRoutes() {
+func (e *engine) InitRoutes() {
 
 	allHandlers := e.initHandlers()
 	jwtAuth := middleware.NewJWTAuth(e.jwtVal)

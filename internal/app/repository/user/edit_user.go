@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// EditInfoByID(ctx context.Context, userId string, inputDisplayName string, inputEmail string) error
+// EditUserByID edits a user by ID
 func (r *userRepository) EditUserByID(ctx context.Context, userID string, inputDisplayName string, inputEmail string) error {
 	//user, err := r.GetUserByUserId(ctx, userID)
 	//if err != nil {

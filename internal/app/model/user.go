@@ -14,6 +14,7 @@ type User struct {
 	Email       string `gorm:"unique;column:email" json:"email"`
 }
 
+// BeforeCreate is a callback function that is called before creating a new user
 func (u *User) BeforeCreate(tx *gorm.DB) (err error) {
 	if u.ID == "" {
 		u.ID = uuid.New().String()
