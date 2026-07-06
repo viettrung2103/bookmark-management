@@ -197,10 +197,10 @@ const docTemplate = `{
                         "schema": {
                             "type": "object",
                             "properties": {
-                                " message": {
+                                "data": {
                                     "type": "string"
                                 },
-                                "token": {
+                                "message": {
                                     "type": "string"
                                 }
                             }
@@ -256,6 +256,10 @@ const docTemplate = `{
         "model.User": {
             "type": "object",
             "properties": {
+                "created_at": {
+                    "description": "GORM auto-manages this on creation",
+                    "type": "string"
+                },
                 "display_name": {
                     "type": "string"
                 },
@@ -263,6 +267,10 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "id": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "description": "GORM auto-manages this on updates",
                     "type": "string"
                 },
                 "username": {

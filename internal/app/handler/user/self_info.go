@@ -3,6 +3,7 @@ package user
 import (
 	"errors"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
@@ -10,6 +11,21 @@ import (
 	"github.com/viettrung2103/bookmark-management/pkg/requestutils"
 	"github.com/viettrung2103/bookmark-management/pkg/response"
 )
+
+// User biểu diễn dữ liệu lấy từ Database
+type User struct {
+	ID          string    `json:"id"`
+	CreatedAt   time.Time `json:"created_at"` // Cần thêm cột này vào DB
+	UpdatedAt   time.Time `json:"updated_at"` // Cần thêm cột này vào DB
+	DisplayName string    `json:"display_name"`
+	Username    string    `json:"username"`
+	Email       string    `json:"email"`
+}
+
+// SelfInfoResponse bọc data lại theo format yêu cầu
+type SelfInfoResponse struct {
+	Data *User `json:"data"`
+}
 
 // SelfInfo get your current user information
 // @Summary get your current user information
@@ -42,8 +58,18 @@ func (h *userHandler) SelfInfo(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, response.InternalErrResponse)
 		return
 	}
-
-	c.JSON(http.StatusOK, user)
+	userResponseObj := &User{
+		ID:          user.ID,
+		CreatedAt:   user.CreatedAt,
+		UpdatedAt:   user.UpdatedAt,
+		DisplayName: user.DisplayName,
+		Username:    user.Username,
+		Email:       user.Email,
+	}
+	responseData := SelfInfoResponse{
+		Data: userResponseObj,
+	}
+	c.JSON(http.StatusOK, responseData)
 }
 
 type editInput struct {
