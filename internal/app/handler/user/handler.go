@@ -8,6 +8,9 @@ import (
 // Handler interface for user handler
 type Handler interface {
 	Register(c *gin.Context)
+	Login(c *gin.Context)
+	SelfInfo(c *gin.Context)
+	EditSelfInfo(c *gin.Context)
 }
 
 type userHandler struct {

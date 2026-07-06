@@ -10,7 +10,7 @@ type User struct {
 	ID          string `gorm:"type:uuid;primarykey;column:id" json:"id"`
 	DisplayName string `gorm:"column:display_name" json:"display_name"`
 	Username    string `gorm:"unique;column:username" json:"username"`
-	Password    string `gorm:"column:password" json:"_"`
+	Password    string `gorm:"column:password" json:"-"`
 	Email       string `gorm:"unique;column:email" json:"email"`
 }
 

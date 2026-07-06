@@ -9,14 +9,17 @@ import (
 
 // user Repository interface
 type Repository interface {
-	CreateUser(ctx context.Context, user *model.User) error
+	CreateUser(ctx context.Context, newUser *model.User) (*model.User, error)
+	GetUserByUsername(ctx context.Context, username string) (*model.User, error)
+	GetUserByUserId(ctx context.Context, userId string) (*model.User, error)
+	EditUserByID(ctx context.Context, userId string, inputDisplayName string, inputEmail string) error
 }
 
-type userRepo struct {
+type userRepository struct {
 	db *gorm.DB
 }
 
 // NewRepository returns a new repository
 func NewRepository(db *gorm.DB) Repository {
-	return &userRepo{db: db}
+	return &userRepository{db: db}
 }

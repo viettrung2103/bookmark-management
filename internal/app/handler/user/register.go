@@ -1,9 +1,15 @@
 package user
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/rs/zerolog/log"
+	"github.com/viettrung2103/bookmark-management/internal/app/model"
+	"github.com/viettrung2103/bookmark-management/pkg/dbutils"
+	"github.com/viettrung2103/bookmark-management/pkg/requestutils"
+	"github.com/viettrung2103/bookmark-management/pkg/response"
 )
 
 type registerInput struct {
@@ -13,8 +19,18 @@ type registerInput struct {
 	Email       string `json:"email" binding:"required,email"`
 }
 
+type createUser struct {
+	Data    *model.User `json:"data"`
+	Message string      `json:"message"`
+}
+
 // Register handles user registration
-// @Summary Create a new user
+//
+//	@Summary Create a netype createUser struct {
+//		Data    *model.User `json:"data"`
+//		Message string      `json:"message"`
+//	}w user
+//
 // @Description Create a new user
 // @Tags user
 // @Accept application/json
@@ -23,11 +39,15 @@ type registerInput struct {
 // @Success 200 {object} object{data=model.User,message=string} "Success"
 // @Router /v1/users/register [post]
 func (h *userHandler) Register(c *gin.Context) {
-	input := &registerInput{}
-	if err := c.ShouldBindJSON(input); err != nil {
-		//c.JSON(http.StatusBadRequest, response.InputFieldError(err))
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-
+	//input := &registerInput{}
+	//if err := c.ShouldBindJSON(input); err != nil {
+	//	//c.JSON(http.StatusBadRequest, response.InputFieldError(err))
+	//	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	//
+	//	return
+	//}
+	input, err := requestutils.BindInputFromRequest[registerInput](c)
+	if err != nil {
 		return
 	}
 
@@ -43,6 +63,22 @@ func (h *userHandler) Register(c *gin.Context) {
 		//	return
 		//}
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Cannot create user, please try again"})
+		return
+	}
+
+	switch {
+	case errors.Is(err, dbutils.ErrDuplication):
+		c.JSON(http.StatusBadRequest, response.Message{
+			Message: "User or Email already exist",
+		})
+		return
+	case err == nil:
+		//return
+	default:
+		log.Err(err).Msg("Failed to create user")
+		c.JSON(http.StatusInternalServerError, response.Message{
+			Message: "Internal server error",
+		})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{

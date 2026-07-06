@@ -4,12 +4,11 @@ import (
 	"context"
 
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
-	"github.com/viettrung2103/bookmark-management/pkg/stringutils"
 )
 
 // CreateUser creates a new user
 func (s *userService) CreateUser(ctx context.Context, displayName, username, password, email string) (*model.User, error) {
-	hashedPwd := stringutils.Hastring(password)
+	hashedPwd := s.passwordHashing.Hashing(password)
 
 	user := &model.User{
 		Username:    username,
@@ -18,9 +17,9 @@ func (s *userService) CreateUser(ctx context.Context, displayName, username, pas
 		DisplayName: displayName,
 	}
 
-	err := s.repo.CreateUser(ctx, user)
+	newUser, err := s.userRepo.CreateUser(ctx, user)
 	if err != nil {
 		return nil, err
 	}
-	return user, nil
+	return newUser, nil
 }
