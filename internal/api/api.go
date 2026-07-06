@@ -140,7 +140,7 @@ func (e *engine) initRoutes() {
 	allHandlers := e.initHandlers()
 	jwtAuth := middleware.NewJWTAuth(e.jwtVal)
 
-	e.eng.GET("/health-check", allHandlers.healthCheckHandler.CheckHealth)
+	e.eng.GET("/health-check", allHandlers.healthCheckHandler.HealthCheck)
 
 	//int swagger routes
 	docs.SwaggerInfo.Host = e.cfg.Hostname

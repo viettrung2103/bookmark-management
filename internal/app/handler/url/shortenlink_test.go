@@ -81,7 +81,7 @@ func TestShortenLinkHandler(t *testing.T) {
 			},
 
 			expectedStatus:   http.StatusBadRequest,
-			expectedResponse: `{"error":"Invalid request body"}`,
+			expectedResponse: `{"error":"the input is invalid","message":"Key: 'shortenUrlRequest.URL' Error:Field validation for 'URL' failed on the 'required' tag"}`,
 		},
 	}
 

@@ -7,14 +7,14 @@ import (
 
 // HealthCheck interface for health check
 type Handler interface {
-	CheckHealth(c *gin.Context)
+	HealthCheck(c *gin.Context)
 }
 type healthCheckHandler struct {
-	healthCheckSvc healthcheck.Service
+	healthCheckSvc healthcheck.HealthCheckService
 }
 
 // NewHealthCheck creates a new health check handler
-func NewHandler(healthCheckSvc healthcheck.Service) Handler {
+func NewHandler(healthCheckSvc healthcheck.HealthCheckService) Handler {
 	return &healthCheckHandler{
 		healthCheckSvc: healthCheckSvc,
 	}

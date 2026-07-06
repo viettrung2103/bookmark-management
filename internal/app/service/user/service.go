@@ -10,7 +10,9 @@ import (
 )
 
 // Service interface for user service
-type Service interface {
+//
+//go:generate mockery --name=UserService --filename=../../mocks/user.go
+type UserService interface {
 	CreateUser(ctx context.Context, displayName, username, password, email string) (*model.User, error)
 	Login(ctx context.Context, username, password string) (string, error)
 	SelfInfo(ctx context.Context, userId string) (*model.User, error)
@@ -35,7 +37,7 @@ type UserServiceOpts struct {
 //}
 
 // func NewService(repo user.Repository, passwordHashing utils.PasswordHashing, jwtGen jwtutils.JWTGenerator) Service {
-func NewService(opts *UserServiceOpts) Service {
+func NewService(opts *UserServiceOpts) UserService {
 
 	return &userService{
 		userRepo:        opts.UserRepo,
