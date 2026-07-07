@@ -57,7 +57,7 @@ func TestUserHandler_Register(t *testing.T) {
 			},
 			expectedStatus: http.StatusOK,
 			// Notice how data aligns with the model returned by the mock
-			expectedResponse: `{"data":{"id":"user-123","display_name":"","username":"testuser","email":"test@example.com"},"message":"Register an user successfully"}`,
+			expectedResponse: `{"data":{"id":"user-123","display_name":"","username":"testuser","email":"test@example.com","created_at":"0001-01-01T00:00:00Z","updated_at":"0001-01-01T00:00:00Z"},"message":"Register an user successfully"}`,
 		},
 		{
 			name: "duplication error",

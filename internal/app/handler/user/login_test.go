@@ -53,7 +53,7 @@ func TestUserHandler_Login(t *testing.T) {
 				return serviceMock
 			},
 			expectedStatus:   http.StatusOK,
-			expectedResponse: `{"token":"fake-jwt-token-123"}`,
+			expectedResponse: `{"data":"fake-jwt-token-123","message":"Logged in successfully!"}`,
 		},
 		{
 			name: "invalid credentials error",
