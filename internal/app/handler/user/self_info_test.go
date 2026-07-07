@@ -58,7 +58,7 @@ func TestUserHandler_SelfInfo(t *testing.T) {
 			},
 			expectedStatus: http.StatusOK,
 			// Notice this expects the raw user object because your handler does `c.JSON(http.StatusOK, user)`
-			expectedResponse: `{"display_name":"testuser", "email":"test@example.com", "id":"user-123", "username":"testuser"}`,
+			expectedResponse: `{"data":{"id":"user-123","created_at":"0001-01-01T00:00:00Z","updated_at":"0001-01-01T00:00:00Z","display_name":"testuser","username":"testuser","email":"test@example.com"}}`,
 		},
 		{
 			name: "user not found",
@@ -115,7 +115,7 @@ func TestUserHandler_SelfInfo(t *testing.T) {
 
 			// Safely compare the JSON output
 			if tc.expectedResponse != "" {
-				assert.JSONEq(t, tc.expectedResponse, rec.Body.String())
+				assert.Equal(t, tc.expectedResponse, rec.Body.String())
 			}
 		})
 	}

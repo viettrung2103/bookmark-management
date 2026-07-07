@@ -61,15 +61,19 @@ func TestEndpoint_SelfInfo(t *testing.T) {
 			},
 			expectedStatusCode: http.StatusOK,
 			verifyJSONResponse: func(t *testing.T, body string) {
-				var returnedUser model.User
-				err := json.Unmarshal([]byte(body), &returnedUser)
+				//var returnedUser model.User
+				var response struct {
+					Data model.User `json:"data"`
+				}
+				err := json.Unmarshal([]byte(body), &response)
 				assert.NoError(t, err)
+				//println(returnedUser)
 
 				// Assert the handler output matched Jane Smith's information in the DB
-				assert.Equal(t, targetUserID, returnedUser.ID)
-				assert.Equal(t, "Jane Smith", returnedUser.DisplayName)
-				assert.Equal(t, "janesmith_dev", returnedUser.Username)
-				assert.Equal(t, "jane.smith@example.com", returnedUser.Email)
+				assert.Equal(t, targetUserID, response.Data.ID)
+				assert.Equal(t, "Jane Smith", response.Data.DisplayName)
+				assert.Equal(t, "janesmith_dev", response.Data.Username)
+				assert.Equal(t, "jane.smith@example.com", response.Data.Email)
 			},
 		},
 		{

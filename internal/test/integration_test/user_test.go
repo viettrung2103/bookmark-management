@@ -157,7 +157,7 @@ func TestEngine_Login(t *testing.T) {
 				mockJwt.On("GenerateJWT", mock.Anything).Return("mocked-jwt-token", nil)
 			},
 			expectedStatusCode:   http.StatusOK,
-			expectedResponseBody: `{"token":"mocked-jwt-token"}`,
+			expectedResponseBody: `{"data":"mocked-jwt-token","message":"Logged in successfully!"}`,
 		},
 		{
 			name: "failure - wrong password",
