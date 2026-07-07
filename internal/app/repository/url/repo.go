@@ -1,14 +1,13 @@
-package urlstorage
+package url
 
 import (
 	"context"
 	"time"
 
 	"github.com/redis/go-redis/v9"
-	"github.com/rs/zerolog/log"
 )
 
-//go:generate mockery --name=URLRepository --filename=../../mocks/urlstorage.go
+//go:generate mockery --name=URLRepository --filename=url.go
 
 //--filename=../../mocks/healthcheck.go
 
@@ -25,15 +24,4 @@ type urlStorage struct {
 // NewUrlStorage creates a new UrlStorage
 func NewRepository(c *redis.Client) URLRepository {
 	return &urlStorage{c: c}
-}
-
-// StoreURL stores a URL in the cache
-func (s *urlStorage) StoreURL(ctx context.Context, code, url string, exp time.Duration) error {
-	err := s.c.Set(ctx, code, url, exp).Err()
-	if err != nil {
-		log.Error().Err(err).Str("from", "repo.urlStorage.StoreURL").Msg("failed to store url")
-
-		return err
-	}
-	return nil
 }

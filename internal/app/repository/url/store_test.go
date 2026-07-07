@@ -1,4 +1,4 @@
-package urlstorage
+package url
 
 import (
 	"context"

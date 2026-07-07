@@ -8,7 +8,7 @@ import (
 
 // HealthCheck represents the health check service
 //
-//go:generate mockery --name=HealthCheckService --filename=../../mocks/healthcheck.go
+//go:generate mockery --name=HealthCheckService --filename=healthcheck.go
 type HealthCheckService interface {
 	HealthCheck(ctx context.Context) error
 }

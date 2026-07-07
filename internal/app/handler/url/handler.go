@@ -2,7 +2,7 @@ package url
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/viettrung2103/bookmark-management/internal/app/service/urlstorage"
+	"github.com/viettrung2103/bookmark-management/internal/app/service/url"
 	"github.com/viettrung2103/bookmark-management/internal/config"
 )
 
@@ -13,12 +13,12 @@ type Handler interface {
 	RedirectUrl(c *gin.Context)
 }
 type shortenLinkHandler struct {
-	shortenLinkService urlstorage.URLService
+	shortenLinkService link.URLService
 	cfg                *config.Config
 }
 
 // NewShortenLink creates a new ShortenLink
-func NewShortenLink(shortenLinkSvc urlstorage.URLService, cfg *config.Config) Handler {
+func NewShortenLink(shortenLinkSvc link.URLService, cfg *config.Config) Handler {
 	return &shortenLinkHandler{
 		shortenLinkService: shortenLinkSvc,
 		cfg:                cfg,

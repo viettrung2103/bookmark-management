@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-//go:generate mockery --name=UserRepository --filename=../../mocks/user.go
+//go:generate mockery --name=UserRepository --filename=user.go
 
 // user Repository interface
 type UserRepository interface {

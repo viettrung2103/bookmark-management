@@ -11,7 +11,7 @@ import (
 
 // Service interface for user service
 //
-//go:generate mockery --name=UserService --filename=../../mocks/user.go
+//go:generate mockery --name=UserService --filename=user.go
 type UserService interface {
 	CreateUser(ctx context.Context, displayName, username, password, email string) (*model.User, error)
 	Login(ctx context.Context, username, password string) (string, error)
