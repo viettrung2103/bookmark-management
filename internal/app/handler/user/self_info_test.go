@@ -13,6 +13,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
@@ -45,9 +46,12 @@ func TestUserHandler_SelfInfo(t *testing.T) {
 			},
 			setupMockService: func(ctx context.Context) *mocks.UserService {
 				serviceMock := mocks.NewUserService(t)
+				testUUID := "12345678-1234-1234-1234-123456789012"
 
 				mockUser := &model.User{
-					ID:          "user-123",
+					Base: model.Base{
+						ID: uuid.MustParse(testUUID),
+					},
 					Username:    "testuser",
 					Email:       "test@example.com",
 					DisplayName: "testuser",
@@ -58,7 +62,7 @@ func TestUserHandler_SelfInfo(t *testing.T) {
 			},
 			expectedStatus: http.StatusOK,
 			// Notice this expects the raw user object because your handler does `c.JSON(http.StatusOK, user)`
-			expectedResponse: `{"data":{"id":"user-123","created_at":"0001-01-01T00:00:00Z","updated_at":"0001-01-01T00:00:00Z","display_name":"testuser","username":"testuser","email":"test@example.com"}}`,
+			expectedResponse: `{"data":{"id":"12345678-1234-1234-1234-123456789012","created_at":"0001-01-01T00:00:00Z","updated_at":"0001-01-01T00:00:00Z","display_name":"testuser","username":"testuser","email":"test@example.com"}}`,
 		},
 		{
 			name: "user not found",

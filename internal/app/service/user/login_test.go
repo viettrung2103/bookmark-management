@@ -5,6 +5,7 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
@@ -18,11 +19,16 @@ func TestUserService_Login(t *testing.T) {
 	t.Parallel()
 
 	// Standard test data
+	testUUID := "12345678-1234-1234-1234-123456789012"
+
 	username := "testuser"
 	password := "plainpassword"
 	hashedPassword := "hashedpassword"
 	mockUser := &model.User{
-		ID:       "user-123",
+		Base: model.Base{
+			ID: uuid.MustParse(testUUID),
+		},
+		//ID:       "user-123",
 		Username: username,
 		Password: hashedPassword,
 	}

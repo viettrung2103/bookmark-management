@@ -59,7 +59,7 @@ func (h *userHandler) SelfInfo(c *gin.Context) {
 		return
 	}
 	userResponseObj := &User{
-		ID:          user.ID,
+		ID:          user.ID.String(),
 		CreatedAt:   user.CreatedAt,
 		UpdatedAt:   user.UpdatedAt,
 		DisplayName: user.DisplayName,

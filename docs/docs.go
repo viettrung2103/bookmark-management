@@ -257,7 +257,6 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "created_at": {
-                    "description": "GORM auto-manages this on creation",
                     "type": "string"
                 },
                 "display_name": {
@@ -270,7 +269,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "updated_at": {
-                    "description": "GORM auto-manages this on updates",
                     "type": "string"
                 },
                 "username": {

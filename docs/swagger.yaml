@@ -2,7 +2,6 @@ definitions:
   model.User:
     properties:
       created_at:
-        description: GORM auto-manages this on creation
         type: string
       display_name:
         type: string
@@ -11,7 +10,6 @@ definitions:
       id:
         type: string
       updated_at:
-        description: GORM auto-manages this on updates
         type: string
       username:
         type: string

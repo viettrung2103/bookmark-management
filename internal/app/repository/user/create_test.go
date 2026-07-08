@@ -3,6 +3,7 @@ package user
 import (
 	"testing"
 
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
 	"github.com/viettrung2103/bookmark-management/internal/test/data/fixtures"
@@ -13,6 +14,7 @@ import (
 // TestUserRepo_CreateUser tests the CreateUser method
 func TestUserRepo_CreateUser(t *testing.T) {
 	t.Parallel()
+	testUUID := "12345678-1234-1234-1234-123456789012"
 
 	testCases := []struct {
 		name string
@@ -32,7 +34,9 @@ func TestUserRepo_CreateUser(t *testing.T) {
 			},
 
 			inputUser: &model.User{
-				ID:          "87a3cb94-d2e8-422d-bb91-fc5215949eb12",
+				Base: model.Base{
+					ID: uuid.MustParse(testUUID),
+				},
 				DisplayName: "Jane Smith43",
 				Username:    "janesmith_dev123",
 				Password:    "$2a$12$K3vX5YwOmP2bZ9rQ3nU7Xe8YvMw9T6uC9iK2oP1lRmSzTxVuWxYz.", // "hashed_password_2"
@@ -59,7 +63,9 @@ func TestUserRepo_CreateUser(t *testing.T) {
 			},
 
 			inputUser: &model.User{
-				ID:          "87a3cb94-d2e8-422d-bb91-fc5215949eb8",
+				Base: model.Base{
+					ID: uuid.MustParse(testUUID),
+				},
 				DisplayName: "Jane Smith",
 				Username:    "janesmith_dev",
 				Password:    "$2a$12$K3vX5YwOmP2bZ9rQ3nU7Xe8YvMw9T6uC9iK2oP1lRmSzTxVuWxYz.", // "hashed_password_2"

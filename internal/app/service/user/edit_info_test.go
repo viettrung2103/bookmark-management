@@ -11,6 +11,8 @@ import (
 	hashingMocks "github.com/viettrung2103/bookmark-management/pkg/stringutils/mocks"
 )
 
+//var testUUID = "12345678-1234-1234-1234-123456789012"
+
 func TestUserService_EditInfoByID(t *testing.T) {
 	t.Parallel()
 

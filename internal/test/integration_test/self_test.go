@@ -70,7 +70,7 @@ func TestEndpoint_SelfInfo(t *testing.T) {
 				//println(returnedUser)
 
 				// Assert the handler output matched Jane Smith's information in the DB
-				assert.Equal(t, targetUserID, response.Data.ID)
+				assert.Equal(t, targetUserID, response.Data.ID.String())
 				assert.Equal(t, "Jane Smith", response.Data.DisplayName)
 				assert.Equal(t, "janesmith_dev", response.Data.Username)
 				assert.Equal(t, "jane.smith@example.com", response.Data.Email)

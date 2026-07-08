@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
@@ -46,8 +47,12 @@ func TestUserHandler_Register(t *testing.T) {
 				serviceMock := mocks.NewUserService(t)
 
 				// Create the expected return model
+				testUUID := "12345678-1234-1234-1234-123456789012"
+
 				mockUser := &model.User{
-					ID:       "user-123",
+					Base: model.Base{
+						ID: uuid.MustParse(testUUID),
+					},
 					Username: "testuser",
 					Email:    "test@example.com",
 				}
@@ -57,7 +62,7 @@ func TestUserHandler_Register(t *testing.T) {
 			},
 			expectedStatus: http.StatusOK,
 			// Notice how data aligns with the model returned by the mock
-			expectedResponse: `{"data":{"id":"user-123","display_name":"","username":"testuser","email":"test@example.com","created_at":"0001-01-01T00:00:00Z","updated_at":"0001-01-01T00:00:00Z"},"message":"Register an user successfully"}`,
+			expectedResponse: `{"data":{"id":"12345678-1234-1234-1234-123456789012","created_at":"0001-01-01T00:00:00Z","updated_at":"0001-01-01T00:00:00Z","display_name":"","username":"testuser","email":"test@example.com"},"message":"Register an user successfully"}`,
 		},
 		{
 			name: "duplication error",
