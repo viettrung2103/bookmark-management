@@ -14,10 +14,10 @@ import (
 	urlHandler "github.com/viettrung2103/bookmark-management/internal/app/handler/url"
 	userHandler "github.com/viettrung2103/bookmark-management/internal/app/handler/user"
 	healthCheckRepository "github.com/viettrung2103/bookmark-management/internal/app/repository/healthcheck"
-	urlRepository "github.com/viettrung2103/bookmark-management/internal/app/repository/urlstorage"
+	urlRepository "github.com/viettrung2103/bookmark-management/internal/app/repository/url"
 	userRepository "github.com/viettrung2103/bookmark-management/internal/app/repository/user"
 	healthCheckService "github.com/viettrung2103/bookmark-management/internal/app/service/healthcheck"
-	urlService "github.com/viettrung2103/bookmark-management/internal/app/service/urlstorage"
+	urlService "github.com/viettrung2103/bookmark-management/internal/app/service/url"
 	userService "github.com/viettrung2103/bookmark-management/internal/app/service/user"
 	"github.com/viettrung2103/bookmark-management/pkg/jwtutils"
 	"github.com/viettrung2103/bookmark-management/pkg/stringutils"
@@ -69,20 +69,6 @@ func NewEngine(opts *EngineOpts) Engine {
 
 	return app
 }
-
-// NewEngine creates a new engine
-//func NewEngine(eng *gin.Engine, cfg *config.Config, redis *redis.Client, db *gorm.DB) Engine {
-//	app := &engine{
-//		//app:   gin.Default(),
-//		eng:   eng,
-//		cfg:   cfg,
-//		redis: redis,
-//		db:    db,
-//	}
-//	app.initRoutes()
-//
-//	return app
-//}
 
 // Start starts the engine
 func (e *engine) Start() error {

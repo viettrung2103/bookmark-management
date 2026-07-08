@@ -48,7 +48,7 @@ func (s *userService) Login(ctx context.Context, username, password string) (str
 
 	// generate token
 	tokenInfo := &TokenInfo{
-		Id:       user.ID,
+		Id:       user.ID.String(),
 		Username: user.Username,
 	}
 	token, err := s.jwtGenerator.GenerateJWT(tokenInfo.ToMapClaim())

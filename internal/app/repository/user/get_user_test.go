@@ -30,7 +30,7 @@ func TestUserRepo_GetUserByUserId(t *testing.T) {
 			expectedError: nil,
 			verifyUser: func(t *testing.T, user *model.User) {
 				assert.NotNil(t, user)
-				assert.Equal(t, "87a3cb94-d2e8-422d-bb91-fc5215949eb8", user.ID)
+				assert.Equal(t, "87a3cb94-d2e8-422d-bb91-fc5215949eb8", user.ID.String())
 			},
 		},
 		{

@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
@@ -15,11 +16,14 @@ import (
 func TestUserService_SelfInfo(t *testing.T) {
 	t.Parallel()
 
-	userId := "user-123"
+	testUUID := "12345678-1234-1234-1234-123456789012"
 
 	// Create a mock user to return in the success case
 	mockUser := &model.User{
-		ID:          userId,
+		Base: model.Base{
+			ID: uuid.MustParse(testUUID),
+		},
+		//ID:          userId,
 		Username:    "testuser",
 		Email:       "test@example.com",
 		DisplayName: "Test User",
@@ -34,7 +38,7 @@ func TestUserService_SelfInfo(t *testing.T) {
 		{
 			name: "success - user found",
 			setupMocksRepo: func(repo *repoMocks.UserRepository) {
-				repo.On("GetUserByUserId", mock.Anything, userId).Return(mockUser, nil)
+				repo.On("GetUserByUserId", mock.Anything, testUUID).Return(mockUser, nil)
 			},
 			expectedUser:  mockUser,
 			expectedError: nil,
@@ -42,7 +46,7 @@ func TestUserService_SelfInfo(t *testing.T) {
 		{
 			name: "failure - user not found",
 			setupMocksRepo: func(repo *repoMocks.UserRepository) {
-				repo.On("GetUserByUserId", mock.Anything, userId).Return((*model.User)(nil), dbutils.ErrRecordNotFound)
+				repo.On("GetUserByUserId", mock.Anything, testUUID).Return((*model.User)(nil), dbutils.ErrRecordNotFound)
 			},
 			expectedUser:  nil,
 			expectedError: dbutils.ErrRecordNotFound,
@@ -50,7 +54,7 @@ func TestUserService_SelfInfo(t *testing.T) {
 		{
 			name: "failure - generic database error",
 			setupMocksRepo: func(repo *repoMocks.UserRepository) {
-				repo.On("GetUserByUserId", mock.Anything, userId).Return((*model.User)(nil), assert.AnError)
+				repo.On("GetUserByUserId", mock.Anything, testUUID).Return((*model.User)(nil), assert.AnError)
 			},
 			expectedUser:  nil,
 			expectedError: assert.AnError,
@@ -79,7 +83,7 @@ func TestUserService_SelfInfo(t *testing.T) {
 			svc := NewService(opts)
 
 			// Execute the method
-			user, err := svc.SelfInfo(ctx, userId)
+			user, err := svc.SelfInfo(ctx, testUUID)
 
 			// Assert the results
 			if tc.expectedError == nil {

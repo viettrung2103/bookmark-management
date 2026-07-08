@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
@@ -12,6 +13,8 @@ import (
 	"github.com/viettrung2103/bookmark-management/pkg/dbutils"
 	hashingMocks "github.com/viettrung2103/bookmark-management/pkg/stringutils/mocks"
 )
+
+var testUUID = "12345678-1234-1234-1234-123456789012"
 
 func TestUserService_CreateUser(t *testing.T) {
 	t.Parallel()
@@ -45,7 +48,10 @@ func TestUserService_CreateUser(t *testing.T) {
 
 				// 2. Mock the repository saving the exact user struct
 				mockSavedUser := &model.User{
-					ID:          "user-123",
+					Base: model.Base{
+						ID: uuid.MustParse(testUUID),
+					},
+					//ID:          "user-123",
 					Username:    username,
 					Password:    hashedPassword,
 					Email:       email,
@@ -54,7 +60,10 @@ func TestUserService_CreateUser(t *testing.T) {
 				repo.On("CreateUser", mock.Anything, expectedUserToSave).Return(mockSavedUser, nil)
 			},
 			expectedUser: &model.User{
-				ID:          "user-123",
+				Base: model.Base{
+					ID: uuid.MustParse(testUUID),
+				},
+				//ID:          "user-123",
 				Username:    username,
 				Password:    hashedPassword,
 				Email:       email,

@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/viettrung2103/bookmark-management/internal/api"
@@ -109,6 +110,7 @@ func TestRegisterEndpoint(t *testing.T) {
 // TestEngine_Login tests the login endpoint
 func TestEngine_Login(t *testing.T) {
 	t.Parallel()
+	testUUID := "12345678-1234-1234-1234-123456789012"
 
 	testCases := []struct {
 		name                 string
@@ -143,7 +145,10 @@ func TestEngine_Login(t *testing.T) {
 
 				// 2. Insert this specific user into the test database
 				db.Create(&model.User{
-					ID:          "integration-test-id",
+					//ID:          "integration-test-id",
+					Base: model.Base{
+						ID: uuid.MustParse(testUUID),
+					},
 					DisplayName: "Integration User",
 					Username:    "integration_user",
 					Password:    knownHash,
@@ -184,7 +189,10 @@ func TestEngine_Login(t *testing.T) {
 				knownHash := hasher.Hashing("my_known_password123")
 
 				db.Create(&model.User{
-					ID:          "integration-test-id",
+					//ID:          "integration-test-id",
+					Base: model.Base{
+						ID: uuid.MustParse(testUUID),
+					},
 					DisplayName: "Integration User",
 					Username:    "integration_user",
 					Password:    knownHash,

@@ -13,6 +13,8 @@ import (
 // TestUserRepo_EditUserByID tests the EditUserByID method
 func TestUserRepo_EditUserByID(t *testing.T) {
 	t.Parallel()
+	foundUUID := "133b3b42-70b9-456c-82e7-bf1b570e6c51"
+	invalidUUID := "00000000-0000-0000-0000-000000000000"
 
 	testCases := []struct {
 		name             string
@@ -29,14 +31,14 @@ func TestUserRepo_EditUserByID(t *testing.T) {
 				return fixtures.NewFixture(t, &fixtures.UserCommonTestDB{})
 			},
 			// Using Jane Smith's ID from your fixture
-			inputUserID:      "87a3cb94-d2e8-422d-bb91-fc5215949eb8",
+			inputUserID:      foundUUID,
 			inputDisplayName: "Jane Smith Updated",
 			inputEmail:       "jane.updated@example.com",
 			expectedError:    nil,
 			verifyDB: func(t *testing.T, db *gorm.DB) {
 				// Query the DB directly to verify the update persisted
 				var updatedUser model.User
-				err := db.First(&updatedUser, "id = ?", "87a3cb94-d2e8-422d-bb91-fc5215949eb8").Error
+				err := db.First(&updatedUser, "id = ?", foundUUID).Error
 
 				assert.NoError(t, err)
 				assert.Equal(t, "Jane Smith Updated", updatedUser.DisplayName)
@@ -48,7 +50,7 @@ func TestUserRepo_EditUserByID(t *testing.T) {
 			setupDB: func(t *testing.T) *gorm.DB {
 				return fixtures.NewFixture(t, &fixtures.UserCommonTestDB{})
 			},
-			inputUserID:      "invalid-id-999",
+			inputUserID:      invalidUUID,
 			inputDisplayName: "Ghost User",
 			inputEmail:       "ghost@example.com",
 			expectedError:    dbutils.ErrRecordNotFound, // Triggered by your RowsAffected == 0 check
