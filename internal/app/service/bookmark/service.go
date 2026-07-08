@@ -10,7 +10,7 @@ import (
 
 //go:generate mockery --name=Service --filename=bookmark.go
 type Service interface {
-	CreateBookmark(ctx context.Context, description, url, userID string) (*model.Bookmark, error)
+	AddBookmark(ctx context.Context, description, url, userID string) (*model.Bookmark, error)
 	//Login(ctx context.Context, username, password string) (string, error)
 	//SelfInfo(ctx context.Context, userId string) (*model.User, error)
 	//EditInfoByID(ctx context.Context, userId string, inputDisplayName string, inputEmail string) error
@@ -21,12 +21,10 @@ type bookmarkService struct {
 	bookmarkRepo bookmark.Repository
 }
 
-// UserServiceOpts contains dependencies for user service
+// BookmarkServiceOpts contains dependencies for user service
 type BookmarkServiceOpts struct {
 	Keygen             stringutils.KeyGenerator
 	BookmarkRepository bookmark.Repository
-	//PasswordHashing stringutils.PasswordHashing
-	//JwtGenerator    jwtutils.JWTGenerator
 }
 
 // NewService creates a new user service

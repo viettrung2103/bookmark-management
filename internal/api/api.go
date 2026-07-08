@@ -10,15 +10,21 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/viettrung2103/bookmark-management/docs"
 	"github.com/viettrung2103/bookmark-management/internal/api/middleware"
+	bookmarkHandler "github.com/viettrung2103/bookmark-management/internal/app/handler/bookmark"
 	healthCheckHandler "github.com/viettrung2103/bookmark-management/internal/app/handler/healthcheck"
 	urlHandler "github.com/viettrung2103/bookmark-management/internal/app/handler/url"
 	userHandler "github.com/viettrung2103/bookmark-management/internal/app/handler/user"
+
+	bookmarkRepository "github.com/viettrung2103/bookmark-management/internal/app/repository/bookmark"
 	healthCheckRepository "github.com/viettrung2103/bookmark-management/internal/app/repository/healthcheck"
 	urlRepository "github.com/viettrung2103/bookmark-management/internal/app/repository/url"
 	userRepository "github.com/viettrung2103/bookmark-management/internal/app/repository/user"
+
+	bookmarkService "github.com/viettrung2103/bookmark-management/internal/app/service/bookmark"
 	healthCheckService "github.com/viettrung2103/bookmark-management/internal/app/service/healthcheck"
 	urlService "github.com/viettrung2103/bookmark-management/internal/app/service/url"
 	userService "github.com/viettrung2103/bookmark-management/internal/app/service/user"
+
 	"github.com/viettrung2103/bookmark-management/pkg/jwtutils"
 	"github.com/viettrung2103/bookmark-management/pkg/stringutils"
 	"gorm.io/gorm"
@@ -84,6 +90,7 @@ type handlers struct {
 	healthCheckHandler healthCheckHandler.Handler
 	linkHandler        urlHandler.Handler
 	userHandler        userHandler.Handler
+	bookmarkHandler    bookmarkHandler.Handler
 }
 
 func (e *engine) initHandlers() *handlers {
@@ -113,10 +120,20 @@ func (e *engine) initHandlers() *handlers {
 	userSvc := userService.NewService(userSvcInput)
 	userHdlr := userHandler.NewHandler(userSvc)
 
+	bookmarkRepo := bookmarkRepository.NewRepository(e.db)
+	bookmarkSvcOpts := &bookmarkService.BookmarkServiceOpts{
+		Keygen:             keyGen,
+		BookmarkRepository: bookmarkRepo,
+	}
+
+	bookmarkSvc := bookmarkService.NewService(bookmarkSvcOpts)
+	bookmarkHdlr := bookmarkHandler.NewHandler(bookmarkSvc)
+
 	return &handlers{
 		healthCheckHandler: healthCheckHdlr,
 		linkHandler:        shortenUrlHdlr,
 		userHandler:        userHdlr,
+		bookmarkHandler:    bookmarkHdlr,
 	}
 
 }
@@ -150,12 +167,15 @@ func (e *engine) InitRoutes() {
 
 	}
 
-	privateBase := e.eng.Group(apiRoute)
+	privateBase := e.eng.Group(apiRoute) // /v1
 	privateBase.Use(jwtAuth.JWTAuthMiddleWare())
 	{
 		// user-related
 		privateBase.GET("/self/info", allHandlers.userHandler.SelfInfo)
 		privateBase.PUT("/self/info", allHandlers.userHandler.EditSelfInfo)
+
+		//bookmark
+		privateBase.POST("/bookmarks", allHandlers.bookmarkHandler.AddBookmark)
 	}
 
 	//test
