@@ -1,14 +1,15 @@
-basePath: /
 definitions:
   model.User:
     properties:
-      _:
+      created_at:
         type: string
       display_name:
         type: string
       email:
         type: string
       id:
+        type: string
+      updated_at:
         type: string
       username:
         type: string
@@ -22,6 +23,27 @@ definitions:
     required:
     - exp
     - url
+    type: object
+  user.editInput:
+    properties:
+      display_name:
+        type: string
+      email:
+        type: string
+    required:
+    - display_name
+    - email
+    type: object
+  user.loginInput:
+    properties:
+      password:
+        minLength: 8
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
     type: object
   user.registerInput:
     properties:
@@ -44,7 +66,7 @@ info:
   contact: {}
   description: API for bookmark management
   title: Bookmark API
-  version: "2.5"
+  version: "3.0"
 paths:
   /health-check:
     get:
@@ -97,6 +119,77 @@ paths:
       summary: receive the url, return the code
       tags:
       - url
+  /v1/self/info:
+    get:
+      consumes:
+      - applicatin/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            properties:
+              data:
+                $ref: '#/definitions/model.User'
+            type: object
+      security:
+      - BearerAuth: []
+      summary: get your current user information
+      tags:
+      - user
+    put:
+      consumes:
+      - application/json
+      description: edit your current user info
+      parameters:
+      - description: Input required
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/user.editInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: edit your current info
+      tags:
+      - user
+  /v1/users/login:
+    post:
+      consumes:
+      - application/json
+      description: Return a jwt toke if the input is correct
+      parameters:
+      - description: Input required
+        in: body
+        name: input
+        schema:
+          $ref: '#/definitions/user.loginInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            properties:
+              data:
+                type: string
+              message:
+                type: string
+            type: object
+      summary: return a jwt token if the input is correct
+      tags:
+      - user
   /v1/users/register:
     post:
       consumes:
@@ -121,7 +214,12 @@ paths:
               message:
                 type: string
             type: object
-      summary: Create a new user
+      summary: Create a netype createUser struct {
       tags:
       - user
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

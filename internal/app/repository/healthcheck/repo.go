@@ -8,8 +8,8 @@ import (
 
 // HealthCheck is the interface for health check
 //
-//go:generate mockery --name=HealthCheck --filename=healthcheck.go
-type Repository interface {
+//go:generate mockery --name=HealthCheckRepository --filename=healthcheck.go
+type HealthCheckRepository interface {
 	HealthCheck(ctx context.Context) error
 }
 type healthCheckRepo struct {
@@ -17,7 +17,7 @@ type healthCheckRepo struct {
 }
 
 // NewHealthCheck creates a new HealthCheck
-func NewRepository(c *redis.Client) Repository {
+func NewRepository(c *redis.Client) HealthCheckRepository {
 	return &healthCheckRepo{
 		c: c,
 	}

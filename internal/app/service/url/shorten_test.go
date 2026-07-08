@@ -1,8 +1,7 @@
-package urlstorage
+package link
 
 import (
 	"context"
-	"errors"
 	"testing"
 	"time"
 
@@ -13,69 +12,6 @@ import (
 	keygenMock "github.com/viettrung2103/bookmark-management/pkg/stringutils/mocks"
 )
 
-var redisTestErr = errors.New("test error")
-
-// TestService_GetLinkFromKey tests the GetLinkFromKey method
-func TestService_GetLinkFromKey(t *testing.T) {
-	t.Parallel()
-
-	testCases := []struct {
-		name string
-
-		setupRepo   func(ctx context.Context) *repoMocks.UrlStorage
-		expectedUrl string
-		expectedErr error
-	}{
-		{
-			name: "normal case",
-			setupRepo: func(ctx context.Context) *repoMocks.UrlStorage {
-				mock := repoMocks.NewUrlStorage(t)
-				mock.On("GetURL", ctx, "test").Return("https://test.com", nil)
-				return mock
-			},
-
-			expectedUrl: "https://test.com",
-			expectedErr: nil,
-		},
-		{
-			name: "empty case",
-			setupRepo: func(ctx context.Context) *repoMocks.UrlStorage {
-				mock := repoMocks.NewUrlStorage(t)
-				mock.On("GetURL", ctx, "test").Return("", redisTestErr)
-				return mock
-			},
-			expectedUrl: "",
-			expectedErr: redisTestErr,
-		},
-		{
-			name: "err case ",
-			setupRepo: func(ctx context.Context) *repoMocks.UrlStorage {
-				mock := repoMocks.NewUrlStorage(t)
-				mock.On("GetURL", ctx, "test").Return("", redisTestErr)
-				return mock
-			},
-
-			expectedUrl: "",
-			expectedErr: redisTestErr,
-		},
-	}
-
-	for _, tc := range testCases {
-		tc := tc
-		t.Run(tc.name, func(t *testing.T) {
-			t.Parallel()
-			ctx := context.Background()
-
-			mockRepo := tc.setupRepo(ctx)
-			testService := NewService(mockRepo, nil)
-			result, err := testService.GetLinkFromCode(ctx, "test")
-			assert.Equal(t, result, tc.expectedUrl)
-			assert.ErrorIs(t, err, tc.expectedErr)
-
-		})
-	}
-}
-
 const testExpTime = 60 * time.Second
 
 const linkKeyLength = 7
@@ -84,7 +20,7 @@ const linkKeyLength = 7
 func TestService_CreateShortenLink(t *testing.T) {
 	testCases := []struct {
 		name        string
-		setupRepo   func(ctx context.Context) *repoMocks.UrlStorage
+		setupRepo   func(ctx context.Context) *repoMocks.URLRepository
 		setupKeyGen func() *keygenMock.KeyGenerator
 
 		expectedResult string
@@ -93,8 +29,8 @@ func TestService_CreateShortenLink(t *testing.T) {
 		{
 			name: "normal case - new key",
 
-			setupRepo: func(ctx context.Context) *repoMocks.UrlStorage {
-				mock := repoMocks.NewUrlStorage(t)
+			setupRepo: func(ctx context.Context) *repoMocks.URLRepository {
+				mock := repoMocks.NewURLRepository(t)
 				mock.On("GetURL", ctx, "1234567").Return("", redis.Nil)
 				mock.On("StoreURL", ctx, "1234567", "https://test.com", testExpTime).Return(nil)
 
@@ -114,8 +50,8 @@ func TestService_CreateShortenLink(t *testing.T) {
 		{
 			name: "normal case - random the same key",
 
-			setupRepo: func(ctx context.Context) *repoMocks.UrlStorage {
-				mock := repoMocks.NewUrlStorage(t)
+			setupRepo: func(ctx context.Context) *repoMocks.URLRepository {
+				mock := repoMocks.NewURLRepository(t)
 				// generate a key >> return a url >> generate new key
 				mock.On("GetURL", ctx, "1234567").Return("https://example.com", redis.Nil)
 				mock.On("GetURL", ctx, "2345678").Return("", redis.Nil)

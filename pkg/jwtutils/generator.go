@@ -9,7 +9,7 @@ import (
 
 // JWTGenerator interface for JWT generation
 //
-//go:generate mockery --name JEWGenerator --filename generator.go
+//go:generate mockery --name JWTGenerator --filename generator.go
 type JWTGenerator interface {
 	GenerateJWT(jwtContent jwt.MapClaims) (string, error)
 }
@@ -18,6 +18,7 @@ type generator struct {
 	privateKey *rsa.PrivateKey
 }
 
+// NewJWTGenerator creates a new JWT generator
 func NewJWTGenerator(privateKeyPath string) (JWTGenerator, error) {
 	privateKeyData, err := os.ReadFile(privateKeyPath)
 	if err != nil {
