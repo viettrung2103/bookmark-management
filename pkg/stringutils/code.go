@@ -15,19 +15,19 @@ type KeyGenerator interface {
 	GenerateKey(length int) string
 }
 
-type randomStringGenerator struct {
+type stringGenerator struct {
 	rng *rand.Rand
 }
 
 // NewKeyGenerator creates a new key generator
 func NewKeyGenerator() KeyGenerator {
-	return &randomStringGenerator{
+	return &stringGenerator{
 		rng: rand.New(rand.NewSource(time.Now().UnixNano())),
 	}
 }
 
 // GenerateKey generates a random string of the given length
-func (r *randomStringGenerator) GenerateKey(length int) string {
+func (r *stringGenerator) GenerateKey(length int) string {
 
 	return randomString(r.rng, length)
 }

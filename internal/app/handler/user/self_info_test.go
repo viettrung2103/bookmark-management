@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"errors"
 
-	//"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -39,7 +38,6 @@ func TestUserHandler_SelfInfo(t *testing.T) {
 			setupRequest: func(ctx *gin.Context) {
 				ctx.Request = httptest.NewRequest(http.MethodGet, "/v1/self/info", nil)
 
-				// CRITICAL: Inject the user ID into the context so `requestutils.GetUserIDFromRequest` succeeds.
 				// Change "userId" to whatever key your middleware actually uses (e.g., "user_id", "userID", etc.)
 				mockClaims := jwt.MapClaims{"uid": "user-123"}
 				ctx.Set("claims", mockClaims)

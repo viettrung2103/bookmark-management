@@ -16,10 +16,6 @@ import (
 // TestShortenLinkHandler tests the ShortenLinkHandler function
 func TestHealthCheck(t *testing.T) {
 	t.Parallel()
-	//cfg, err := config.NewConfig()
-	//if err != nil {
-	//	panic(err)
-	//}
 
 	testCases := []struct {
 		name             string

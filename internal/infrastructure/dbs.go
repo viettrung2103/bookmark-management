@@ -4,8 +4,8 @@ import (
 	"github.com/redis/go-redis/v9"
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
 	"github.com/viettrung2103/bookmark-management/pkg/common"
+	"github.com/viettrung2103/bookmark-management/pkg/db"
 	redispkg "github.com/viettrung2103/bookmark-management/pkg/redis"
-	"github.com/viettrung2103/bookmark-management/pkg/sqldb"
 	"gorm.io/gorm"
 )
 
@@ -19,7 +19,7 @@ func CreateRedisClient() *redis.Client {
 
 // CreateDBClient creates a new database client
 func CreateDBClient() *gorm.DB {
-	dbClient, err := sqldb.NewClient("")
+	dbClient, err := db.NewClient("")
 
 	common.HandleError(err)
 	err = MigrateDB(dbClient)

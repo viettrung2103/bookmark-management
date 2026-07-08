@@ -39,7 +39,6 @@ func TestHealthCheckRepo_HealthCheck(t *testing.T) {
 			t.Parallel()
 
 			// 1. Initialize the in-memory Redis server using your helper
-			// (Call it via whatever package you placed it in)
 			client := redisPkg.InitMockRedis(t)
 
 			// 2. Manipulate the client state based on the test case

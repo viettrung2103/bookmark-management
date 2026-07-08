@@ -3,7 +3,7 @@ package fixtures
 import (
 	"testing"
 
-	"github.com/viettrung2103/bookmark-management/pkg/sqldb"
+	"github.com/viettrung2103/bookmark-management/pkg/db"
 	"gorm.io/gorm"
 )
 
@@ -37,7 +37,7 @@ func (b *base) DB() *gorm.DB {
 // NewFixture creates a new fixture
 func NewFixture(t *testing.T, fix Fixture) *gorm.DB {
 	//create test db
-	fix.SetupDB(sqldb.CreateTestDb(t))
+	fix.SetupDB(db.CreateTestDb(t))
 
 	// migrate schema
 	err := fix.Migrate()
