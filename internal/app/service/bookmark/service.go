@@ -11,9 +11,7 @@ import (
 //go:generate mockery --name=Service --filename=bookmark.go
 type Service interface {
 	AddBookmark(ctx context.Context, description, url, userID string) (*model.Bookmark, error)
-	//Login(ctx context.Context, username, password string) (string, error)
-	//SelfInfo(ctx context.Context, userId string) (*model.User, error)
-	//EditInfoByID(ctx context.Context, userId string, inputDisplayName string, inputEmail string) error
+	GetBookmarks(ctx context.Context, userID string, page, limit int) (*BookmarkResult, error)
 }
 
 type bookmarkService struct {

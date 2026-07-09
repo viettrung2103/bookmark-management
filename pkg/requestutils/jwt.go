@@ -18,7 +18,6 @@ var (
 func GetJWTClaimsFromRequest(c *gin.Context) (jwt.MapClaims, error) {
 	tokenInfo, _ := c.Get("claims")
 	claims, valid := tokenInfo.(jwt.MapClaims)
-	println("from get JWT from claims")
 	if !valid {
 		c.JSON(http.StatusUnauthorized, &response.Message{
 			Message: "invalid jwt token",

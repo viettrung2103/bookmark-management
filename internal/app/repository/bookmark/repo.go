@@ -10,8 +10,8 @@ import (
 //go:generate mockery --name=Repository --filename=bookmark.go
 type Repository interface {
 	CreateBookmark(ctx context.Context, bookmark *model.Bookmark) (*model.Bookmark, error)
-	//GetBookmarks(ctx context.Context, userID string, offset, limit int) ([]*model.Bookmark, error)
-	//GetBookmarkCount(ctx context.Context, userID string) (int64, error)
+	GetBookmarks(ctx context.Context, userID string, offset, limit int) ([]*model.Bookmark, error)
+	GetBookmarkCount(ctx context.Context, userID string) (int64, error)
 }
 
 type bookmarkRepository struct {

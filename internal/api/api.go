@@ -176,6 +176,7 @@ func (e *engine) InitRoutes() {
 
 		//bookmark
 		privateBase.POST("/bookmarks", allHandlers.bookmarkHandler.AddBookmark)
+		privateBase.GET("/bookmarks", allHandlers.bookmarkHandler.GetBookmarks)
 	}
 
 	//test

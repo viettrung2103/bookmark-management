@@ -8,6 +8,7 @@ import (
 // Handler interface for user handler
 type Handler interface {
 	AddBookmark(c *gin.Context)
+	GetBookmarks(c *gin.Context)
 }
 
 type bookmarkHandler struct {
