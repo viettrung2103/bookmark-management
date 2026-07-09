@@ -132,6 +132,60 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/bookmarks/{id}": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "edit bookmark of current user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bookmark"
+                ],
+                "summary": "edit bookmark of current user",
+                "parameters": [
+                    {
+                        "description": "Input required",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/bookmark.putBookmarkInput"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "id",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "data": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/model.Bookmark"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/v1/links/redirect/{code}": {
             "get": {
                 "consumes": [
@@ -367,6 +421,21 @@ const docTemplate = `{
                     "type": "string",
                     "maxLength": 2048,
                     "example": "https://www.google.com"
+                }
+            }
+        },
+        "bookmark.putBookmarkInput": {
+            "type": "object",
+            "required": [
+                "description",
+                "url"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
                 }
             }
         },

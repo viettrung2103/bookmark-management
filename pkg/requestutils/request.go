@@ -26,21 +26,25 @@ func BindInputFromRequest[T any](c *gin.Context) (*T, error) {
 		}
 	}
 
+	//bind from uri
 	if err := c.ShouldBindUri(reqInput); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, response.InputFieldError(err))
 		return nil, err
 	}
 
+	// bind from header
 	if err := c.ShouldBindHeader(reqInput); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, response.InputFieldError(err))
 		return nil, err
 	}
 
+	// bind from param
 	if err := c.ShouldBindQuery(reqInput); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, response.InputFieldError(err))
 		return nil, err
 	}
 
+	// validate
 	if err := InputValidator.Struct(reqInput); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest, response.InputFieldError(err))
 		return nil, err
