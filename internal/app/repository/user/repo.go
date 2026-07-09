@@ -14,6 +14,7 @@ type UserRepository interface {
 	CreateUser(ctx context.Context, newUser *model.User) (*model.User, error)
 	GetUserByUsername(ctx context.Context, username string) (*model.User, error)
 	GetUserByUserId(ctx context.Context, userId string) (*model.User, error)
+	GetUserByUniqueField(ctx context.Context, uniqueCol, value string) (*model.User, error)
 	EditUserByID(ctx context.Context, userId string, inputDisplayName string, inputEmail string) error
 }
 

@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
+	"github.com/viettrung2103/bookmark-management/internal/test/data/fixtures"
 )
 
 var ErrNoOwnerShip = errors.New("bookmark does not belong to current user")
@@ -18,8 +19,9 @@ func (s *bookmarkService) AddBookmark(ctx context.Context, description, url, use
 		Description: description,
 		URL:         url,
 		Code:        code,
-		UserID:      userID,
+		UserID:      fixtures.GetUUID(userID),
 	}
+	println("Add booking using repo")
 
 	return s.bookmarkRepo.CreateBookmark(ctx, newBookmark)
 

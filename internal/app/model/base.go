@@ -8,7 +8,7 @@ import (
 )
 
 type Base struct {
-	ID        uuid.UUID      `gorm:"type:uuid,primaryKey;column:id" json:"id"`
+	ID        uuid.UUID      `gorm:"type:uuid;primaryKey;column:id" json:"id"`
 	CreatedAt time.Time      `json:"created_at"`
 	UpdatedAt time.Time      `json:"updated_at"`
 	DeletedAt gorm.DeletedAt `json:"-"`

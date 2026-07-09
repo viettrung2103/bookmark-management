@@ -12,5 +12,7 @@ func (r *bookmarkRepository) CreateBookmark(ctx context.Context, bookmark *model
 	if err != nil {
 		return nil, dbutils.CatchDBError(err)
 	}
+	println("add booking using repo done")
+
 	return bookmark, nil
 }
