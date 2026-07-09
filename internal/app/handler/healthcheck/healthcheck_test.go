@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"github.com/viettrung2103/bookmark-management/internal/app/service/mocks"
+	healthCheckMock "github.com/viettrung2103/bookmark-management/internal/app/service/healthcheck/mocks"
 )
 
 // TestShortenLinkHandler tests the ShortenLinkHandler function
@@ -20,7 +20,7 @@ func TestHealthCheck(t *testing.T) {
 	testCases := []struct {
 		name             string
 		setupRequest     func(ctx *gin.Context)
-		setupMockService func(ctx context.Context) *mocks.HealthCheckService
+		setupMockService func(ctx context.Context) *healthCheckMock.HealthCheckService
 
 		expectedStatus   int
 		expectedResponse string
@@ -32,8 +32,8 @@ func TestHealthCheck(t *testing.T) {
 				ctx.Request = httptest.NewRequest(http.MethodGet, "/health-check", nil)
 
 			},
-			setupMockService: func(ctx context.Context) *mocks.HealthCheckService {
-				serviceMock := mocks.NewHealthCheckService(t)
+			setupMockService: func(ctx context.Context) *healthCheckMock.HealthCheckService {
+				serviceMock := healthCheckMock.NewHealthCheckService(t)
 				serviceMock.On("HealthCheck", mock.Anything).Return(nil)
 				return serviceMock
 			},
@@ -46,8 +46,8 @@ func TestHealthCheck(t *testing.T) {
 			setupRequest: func(ctx *gin.Context) {
 				ctx.Request = httptest.NewRequest(http.MethodGet, "/health-check", nil)
 			},
-			setupMockService: func(ctx context.Context) *mocks.HealthCheckService {
-				serviceMock := mocks.NewHealthCheckService(t)
+			setupMockService: func(ctx context.Context) *healthCheckMock.HealthCheckService {
+				serviceMock := healthCheckMock.NewHealthCheckService(t)
 
 				// 1. Return an actual error here to trigger the `if err != nil` block in your handler
 				// Note: If your HealthCheck interface returns a struct AND an error,

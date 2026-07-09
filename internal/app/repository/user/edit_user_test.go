@@ -64,7 +64,7 @@ func TestUserRepo_EditUserByID(t *testing.T) {
 				return fixtures.NewFixture(t, &fixtures.UserCommonTestDB{})
 			},
 			// Using Jane Smith's ID again
-			inputUserID:      "87a3cb94-d2e8-422d-bb91-fc5215949eb8",
+			inputUserID:      "133b3b42-70b9-456c-82e7-bf1b570e6c52",
 			inputDisplayName: "Jane Smith",
 			// Attempting to change to John Doe's email (which exists in the fixture)
 			inputEmail:    "john.doe@example.com",
@@ -72,7 +72,7 @@ func TestUserRepo_EditUserByID(t *testing.T) {
 			verifyDB: func(t *testing.T, db *gorm.DB) {
 				// Verify the rollback: Jane's email should remain unchanged
 				var user model.User
-				err := db.First(&user, "id = ?", "87a3cb94-d2e8-422d-bb91-fc5215949eb8").Error
+				err := db.First(&user, "id = ?", "133b3b42-70b9-456c-82e7-bf1b570e6c52").Error
 
 				assert.NoError(t, err)
 				assert.Equal(t, "jane.smith@example.com", user.Email) // Still the old email

@@ -16,7 +16,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
-	"github.com/viettrung2103/bookmark-management/internal/app/service/mocks"
+	userMock "github.com/viettrung2103/bookmark-management/internal/app/service/user/mocks"
 	"github.com/viettrung2103/bookmark-management/pkg/dbutils"
 	//"gorm.io/gorm"
 )
@@ -28,7 +28,7 @@ func TestUserHandler_SelfInfo(t *testing.T) {
 	testCases := []struct {
 		name             string
 		setupRequest     func(ctx *gin.Context)
-		setupMockService func(ctx context.Context) *mocks.UserService
+		setupMockService func(ctx context.Context) *userMock.UserService
 
 		expectedStatus   int
 		expectedResponse string
@@ -42,8 +42,8 @@ func TestUserHandler_SelfInfo(t *testing.T) {
 				mockClaims := jwt.MapClaims{"uid": "user-123"}
 				ctx.Set("claims", mockClaims)
 			},
-			setupMockService: func(ctx context.Context) *mocks.UserService {
-				serviceMock := mocks.NewUserService(t)
+			setupMockService: func(ctx context.Context) *userMock.UserService {
+				serviceMock := userMock.NewUserService(t)
 				testUUID := "12345678-1234-1234-1234-123456789012"
 
 				mockUser := &model.User{
@@ -69,8 +69,8 @@ func TestUserHandler_SelfInfo(t *testing.T) {
 				mockClaims := jwt.MapClaims{"uid": "missing-user-999"}
 				ctx.Set("claims", mockClaims)
 			},
-			setupMockService: func(ctx context.Context) *mocks.UserService {
-				serviceMock := mocks.NewUserService(t)
+			setupMockService: func(ctx context.Context) *userMock.UserService {
+				serviceMock := userMock.NewUserService(t)
 				// Return GORM's record not found error
 				serviceMock.On("SelfInfo", mock.Anything, "missing-user-999").Return((*model.User)(nil), dbutils.ErrRecordNotFound)
 				return serviceMock
@@ -90,8 +90,8 @@ func TestUserHandler_SelfInfo(t *testing.T) {
 				// 2. Set it in the context under the "claims" key
 				ctx.Set("claims", mockClaims)
 			},
-			setupMockService: func(ctx context.Context) *mocks.UserService {
-				serviceMock := mocks.NewUserService(t)
+			setupMockService: func(ctx context.Context) *userMock.UserService {
+				serviceMock := userMock.NewUserService(t)
 				serviceMock.On("SelfInfo", mock.Anything, "user-123").Return((*model.User)(nil), errors.New("database connection lost"))
 				return serviceMock
 			},
@@ -130,7 +130,7 @@ func TestUserHandler_EditSelfInfo(t *testing.T) {
 	testCases := []struct {
 		name             string
 		setupRequest     func(ctx *gin.Context)
-		setupMockService func(ctx context.Context) *mocks.UserService
+		setupMockService func(ctx context.Context) *userMock.UserService
 
 		expectedStatus   int
 		expectedResponse string
@@ -152,8 +152,8 @@ func TestUserHandler_EditSelfInfo(t *testing.T) {
 				ctx.Set("claims", mockClaims)
 				//ctx.Set("userId", "user-123") // Make sure "userId" matches what GetUserIDFromRequest expects
 			},
-			setupMockService: func(ctx context.Context) *mocks.UserService {
-				serviceMock := mocks.NewUserService(t)
+			setupMockService: func(ctx context.Context) *userMock.UserService {
+				serviceMock := userMock.NewUserService(t)
 				// Expect the exact parameters from the request and return nil error
 				serviceMock.On("EditInfoByID", mock.Anything, "user-123", "Updated Name", "updated@example.com").Return(nil)
 				return serviceMock
@@ -175,8 +175,8 @@ func TestUserHandler_EditSelfInfo(t *testing.T) {
 				mockClaims := jwt.MapClaims{"uid": "user-123"}
 				ctx.Set("claims", mockClaims)
 			},
-			setupMockService: func(ctx context.Context) *mocks.UserService {
-				serviceMock := mocks.NewUserService(t)
+			setupMockService: func(ctx context.Context) *userMock.UserService {
+				serviceMock := userMock.NewUserService(t)
 				// Simulate the DB rejecting the update due to a duplicate email
 				serviceMock.On("EditInfoByID", mock.Anything, "user-123", "Updated Name", "duplicate@example.com").Return(dbutils.ErrDuplication)
 				return serviceMock
@@ -199,8 +199,8 @@ func TestUserHandler_EditSelfInfo(t *testing.T) {
 				mockClaims := jwt.MapClaims{"uid": "user-123"}
 				ctx.Set("claims", mockClaims)
 			},
-			setupMockService: func(ctx context.Context) *mocks.UserService {
-				serviceMock := mocks.NewUserService(t)
+			setupMockService: func(ctx context.Context) *userMock.UserService {
+				serviceMock := userMock.NewUserService(t)
 				serviceMock.On("EditInfoByID", mock.Anything, "user-123", "Updated Name", "updated@example.com").Return(errors.New("db down"))
 				return serviceMock
 			},
