@@ -34,7 +34,10 @@ func (h *bookmarkHandler) AddBookmark(c *gin.Context) {
 	if err != nil {
 		return
 	}
-	c.JSON(200, gin.H{"data": newBookmark})
+	c.JSON(200, gin.H{
+		"data":    newBookmark,
+		"message": "Create a bookmark successfully",
+	})
 
 	// tra ve response
 }
