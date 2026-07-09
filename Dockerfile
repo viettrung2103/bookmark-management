@@ -6,20 +6,20 @@ RUN mkdir -p /opt/app
 
 WORKDIR /opt/app
 
-COPY .. .
+#COPY .. .
 
 
 RUN apk add build-base
 
-#COPY go.mod ./go.mod
-#COPY go.sum ./go.sum
+COPY go.mod ./go.mod
+COPY go.sum ./go.sum
 
 RUN go mod download
 
 RUN go install github.com/swaggo/swag/cmd/swag@latest
 
 
-#COPY . .
+COPY . .
 
 FROM base AS build
 
