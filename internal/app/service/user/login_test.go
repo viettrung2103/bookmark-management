@@ -9,7 +9,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
-	repoMocks "github.com/viettrung2103/bookmark-management/internal/app/repository/mocks"
+	//repoMocks "github.com/viettrung2103/bookmark-management/internal/app/repository/mocks"
+	userMocks "github.com/viettrung2103/bookmark-management/internal/app/repository/user/mocks"
 	"github.com/viettrung2103/bookmark-management/pkg/dbutils"
 	jwtMocks "github.com/viettrung2103/bookmark-management/pkg/jwtutils/mocks"
 	hashingMocks "github.com/viettrung2103/bookmark-management/pkg/stringutils/mocks"
@@ -36,13 +37,13 @@ func TestUserService_Login(t *testing.T) {
 
 	testCases := []struct {
 		name          string
-		setupMocks    func(repo *repoMocks.UserRepository, hasher *hashingMocks.PasswordHashing, jwtGen *jwtMocks.JWTGenerator)
+		setupMocks    func(repo *userMocks.UserRepository, hasher *hashingMocks.PasswordHashing, jwtGen *jwtMocks.JWTGenerator)
 		expectedToken string
 		expectedError error
 	}{
 		{
 			name: "success - login successful",
-			setupMocks: func(repo *repoMocks.UserRepository, hasher *hashingMocks.PasswordHashing, jwtGen *jwtMocks.JWTGenerator) {
+			setupMocks: func(repo *userMocks.UserRepository, hasher *hashingMocks.PasswordHashing, jwtGen *jwtMocks.JWTGenerator) {
 				// 1. Repo finds the user
 				repo.On("GetUserByUsername", mock.Anything, username).Return(mockUser, nil)
 
@@ -57,7 +58,7 @@ func TestUserService_Login(t *testing.T) {
 		},
 		{
 			name: "failure - user not found",
-			setupMocks: func(repo *repoMocks.UserRepository, hasher *hashingMocks.PasswordHashing, jwtGen *jwtMocks.JWTGenerator) {
+			setupMocks: func(repo *userMocks.UserRepository, hasher *hashingMocks.PasswordHashing, jwtGen *jwtMocks.JWTGenerator) {
 				repo.On("GetUserByUsername", mock.Anything, username).Return((*model.User)(nil), dbutils.ErrRecordNotFound)
 				// We don't need to mock hasher or jwtGen because the function returns early
 			},
@@ -66,7 +67,7 @@ func TestUserService_Login(t *testing.T) {
 		},
 		{
 			name: "failure - wrong password",
-			setupMocks: func(repo *repoMocks.UserRepository, hasher *hashingMocks.PasswordHashing, jwtGen *jwtMocks.JWTGenerator) {
+			setupMocks: func(repo *userMocks.UserRepository, hasher *hashingMocks.PasswordHashing, jwtGen *jwtMocks.JWTGenerator) {
 				// Repo finds the user
 				repo.On("GetUserByUsername", mock.Anything, username).Return(mockUser, nil)
 
@@ -78,7 +79,7 @@ func TestUserService_Login(t *testing.T) {
 		},
 		{
 			name: "failure - jwt generation fails",
-			setupMocks: func(repo *repoMocks.UserRepository, hasher *hashingMocks.PasswordHashing, jwtGen *jwtMocks.JWTGenerator) {
+			setupMocks: func(repo *userMocks.UserRepository, hasher *hashingMocks.PasswordHashing, jwtGen *jwtMocks.JWTGenerator) {
 				repo.On("GetUserByUsername", mock.Anything, username).Return(mockUser, nil)
 				hasher.On("CompareHashedPassword", hashedPassword, password).Return(true)
 
@@ -96,7 +97,7 @@ func TestUserService_Login(t *testing.T) {
 			ctx := context.Background()
 
 			// 1. Initialize all mocks
-			mockRepo := repoMocks.NewUserRepository(t)
+			mockRepo := userMocks.NewUserRepository(t)
 			mockHasher := hashingMocks.NewPasswordHashing(t)
 			mockJwtGen := jwtMocks.NewJWTGenerator(t)
 

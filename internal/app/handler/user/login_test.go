@@ -12,7 +12,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"github.com/viettrung2103/bookmark-management/internal/app/service/mocks"
+	userMock "github.com/viettrung2103/bookmark-management/internal/app/service/user/mocks"
+
+	//userMocks"github.com/viettrung2103/bookmark-management/internal/app/service/user/mocks"
 	"github.com/viettrung2103/bookmark-management/internal/app/service/user"
 	"github.com/viettrung2103/bookmark-management/pkg/dbutils"
 )
@@ -28,7 +30,7 @@ func TestUserHandler_Login(t *testing.T) {
 	testCases := []struct {
 		name             string
 		setupRequest     func(ctx *gin.Context)
-		setupMockService func(ctx context.Context) *mocks.UserService
+		setupMockService func(ctx context.Context) *userMock.UserService
 
 		expectedStatus   int
 		expectedResponse string
@@ -46,8 +48,8 @@ func TestUserHandler_Login(t *testing.T) {
 				// CRITICAL: Gin requires the Content-Type header to bind JSON properly
 				ctx.Request.Header.Set("Content-Type", "application/json")
 			},
-			setupMockService: func(ctx context.Context) *mocks.UserService {
-				serviceMock := mocks.NewUserService(t)
+			setupMockService: func(ctx context.Context) *userMock.UserService {
+				serviceMock := userMock.NewUserService(t)
 				// Return a fake token and no error
 				serviceMock.On("Login", mock.Anything, "testuser", "validpassword123").Return("fake-jwt-token-123", nil)
 				return serviceMock
@@ -66,8 +68,8 @@ func TestUserHandler_Login(t *testing.T) {
 				ctx.Request = httptest.NewRequest(http.MethodPost, "/v1/users/login", bytes.NewReader(jsonBody))
 				ctx.Request.Header.Set("Content-Type", "application/json")
 			},
-			setupMockService: func(ctx context.Context) *mocks.UserService {
-				serviceMock := mocks.NewUserService(t)
+			setupMockService: func(ctx context.Context) *userMock.UserService {
+				serviceMock := userMock.NewUserService(t)
 				// Simulate the service returning ErrInvalidCreditials
 				serviceMock.On("Login", mock.Anything, "testuser", "wrongpassword").Return("", user.ErrInvalidCreditials)
 				return serviceMock
@@ -86,8 +88,8 @@ func TestUserHandler_Login(t *testing.T) {
 				ctx.Request = httptest.NewRequest(http.MethodPost, "/v1/users/login", bytes.NewReader(jsonBody))
 				ctx.Request.Header.Set("Content-Type", "application/json")
 			},
-			setupMockService: func(ctx context.Context) *mocks.UserService {
-				serviceMock := mocks.NewUserService(t)
+			setupMockService: func(ctx context.Context) *userMock.UserService {
+				serviceMock := userMock.NewUserService(t)
 				// Simulate the DB not finding the user
 				serviceMock.On("Login", mock.Anything, "nonexistentuser", "somepassword").Return("", dbutils.ErrRecordNotFound)
 				return serviceMock
@@ -106,8 +108,8 @@ func TestUserHandler_Login(t *testing.T) {
 				ctx.Request = httptest.NewRequest(http.MethodPost, "/v1/users/login", bytes.NewReader(jsonBody))
 				ctx.Request.Header.Set("Content-Type", "application/json")
 			},
-			setupMockService: func(ctx context.Context) *mocks.UserService {
-				serviceMock := mocks.NewUserService(t)
+			setupMockService: func(ctx context.Context) *userMock.UserService {
+				serviceMock := userMock.NewUserService(t)
 				// Simulate an unexpected error (like a DB connection failure)
 				serviceMock.On("Login", mock.Anything, "testuser", "validpassword123").Return("", errors.New("database connection refused"))
 				return serviceMock

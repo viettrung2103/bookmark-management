@@ -23,7 +23,7 @@ func TestEndpoint_SelfInfo(t *testing.T) {
 	t.Parallel()
 
 	// Target user details sourced from your fixtures.UserCommonTestDB
-	targetUserID := "87a3cb94-d2e8-422d-bb91-fc5215949eb8" // Jane Smith
+	targetUserID := "133b3b42-70b9-456c-82e7-bf1b570e6c52" // Jane Smith
 	//invaliJWTToken := "123"
 
 	testCases := []struct {
@@ -164,7 +164,7 @@ func TestEndpoint_EditSelfInfo(t *testing.T) {
 	t.Parallel()
 
 	// Target user details sourced from your fixtures.UserCommonTestDB
-	targetUserID := "87a3cb94-d2e8-422d-bb91-fc5215949eb8" // Jane Smith
+	targetUserID := "133b3b42-70b9-456c-82e7-bf1b570e6c52" // Jane Smith
 
 	testCases := []struct {
 		name                 string

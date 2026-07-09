@@ -6,7 +6,9 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	repoMocks "github.com/viettrung2103/bookmark-management/internal/app/repository/mocks"
+	repoMocks "github.com/viettrung2103/bookmark-management/internal/app/repository/user/mocks"
+
+	//repoMocks "github.com/viettrung2103/bookmark-management/internal/app/repository/mocks"
 	"github.com/viettrung2103/bookmark-management/pkg/dbutils"
 	hashingMocks "github.com/viettrung2103/bookmark-management/pkg/stringutils/mocks"
 )

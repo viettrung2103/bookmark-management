@@ -62,6 +62,36 @@ func (_m *UserRepository) EditUserByID(ctx context.Context, userId string, input
 	return r0
 }
 
+// GetUserByUniqueField provides a mock function with given fields: ctx, uniqueCol, value
+func (_m *UserRepository) GetUserByUniqueField(ctx context.Context, uniqueCol string, value string) (*model.User, error) {
+	ret := _m.Called(ctx, uniqueCol, value)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetUserByUniqueField")
+	}
+
+	var r0 *model.User
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) (*model.User, error)); ok {
+		return rf(ctx, uniqueCol, value)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) *model.User); ok {
+		r0 = rf(ctx, uniqueCol, value)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*model.User)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string, string) error); ok {
+		r1 = rf(ctx, uniqueCol, value)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetUserByUserId provides a mock function with given fields: ctx, userId
 func (_m *UserRepository) GetUserByUserId(ctx context.Context, userId string) (*model.User, error) {
 	ret := _m.Called(ctx, userId)

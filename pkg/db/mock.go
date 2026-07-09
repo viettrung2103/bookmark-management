@@ -1,4 +1,4 @@
-package sqldb
+package db
 
 import (
 	"fmt"
@@ -12,7 +12,7 @@ import (
 
 // CreateTestDb creates a new in-memory database for testing
 func CreateTestDb(t *testing.T) *gorm.DB {
-	cxn := fmt.Sprintf("file:%s?mode=memory&cache=shared", uuid.New().String())
+	cxn := fmt.Sprintf("file:%s?mode=memory&cache=shared&_fk=1", uuid.New().String())
 	db, err := gorm.Open(sqlite.Open(cxn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Silent),
 	})

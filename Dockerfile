@@ -1,33 +1,13 @@
-#FROM golang:alpine AS build
-#
-#RUN mkdir -p /opt/app
-#
-#WORKDIR /opt/app
-#
-#COPY . .
-#
-#RUN go build -o bookmark-management cmd/api/main.go
-#
-#
-##easy way
-##CMD ["go","run","/opt/app/cmd/api/main.go"]
-##CMD ["./bookmark-management"]
-#
-## difficult way
-#FROM alpine
-#
-#WORKDIR /app
-#
-#COPY --from=build /opt/app/bookmark-management /app/bookmark-management
-#COPY --from=build /opt/app/docs /app/docs
-#
-#CMD ["/app/bookmark-management"]
+
 
 FROM golang:alpine AS base
 
 RUN mkdir -p /opt/app
 
 WORKDIR /opt/app
+
+#COPY .. .
+
 
 RUN apk add build-base
 
@@ -46,6 +26,8 @@ FROM base AS build
 RUN swag init -g cmd/api/main.go output -o docs
 
 RUN GOOS=linux go build -tags musl -ldflags "-w -s" -o bookmark_service cmd/api/main.go
+RUN GOOS=linux go build -tags musl -ldflags "-w -s" -o bookmark_service_migrate cmd/migrate/main.go
+
 
 FROM base AS test-exec
 
@@ -71,7 +53,9 @@ WORKDIR /app
 #COPY --from=build /opt/app/bookmark_service ./bookmark_service
 #COPY --from=build /opt/app/docs ./docs
 COPY --from=build /opt/app/bookmark_service /app/bookmark_service
+COPY --from=build /opt/app/bookmark_service_migrate /app/bookmark_service_migrate
 COPY --from=build /opt/app/docs /app/docs
+COPY --from=build /opt/app/migrations /app/migrations
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 

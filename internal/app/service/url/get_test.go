@@ -6,7 +6,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	repoMocks "github.com/viettrung2103/bookmark-management/internal/app/repository/mocks"
+	//repoMocks "github.com/viettrung2103/bookmark-management/internal/app/repository/mocks"
+	repoMocks "github.com/viettrung2103/bookmark-management/internal/app/repository/url/mocks"
 )
 
 var redisTestErr = errors.New("test error")

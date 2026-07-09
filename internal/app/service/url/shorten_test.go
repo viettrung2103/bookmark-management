@@ -7,7 +7,7 @@ import (
 
 	"github.com/redis/go-redis/v9"
 	"github.com/stretchr/testify/assert"
-	repoMocks "github.com/viettrung2103/bookmark-management/internal/app/repository/mocks"
+	repoMocks "github.com/viettrung2103/bookmark-management/internal/app/repository/url/mocks"
 
 	keygenMock "github.com/viettrung2103/bookmark-management/pkg/stringutils/mocks"
 )

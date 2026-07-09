@@ -1,13 +1,11 @@
 package fixtures
 
 import (
-	"github.com/google/uuid"
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
 	"gorm.io/gorm"
 )
 
 // UserCommonTestDB struct for user test data
-
 type UserCommonTestDB struct {
 	base
 }
@@ -23,19 +21,16 @@ func (u *UserCommonTestDB) GenerateData() error {
 
 	users := []*model.User{
 		{
-			Base: model.Base{
-				ID: uuid.MustParse("133b3b42-70b9-456c-82e7-bf1b570e6c51"),
-			},
-			//ID:          "133b3b42-70b9-456c-82e7-bf1b570e6c51",
+			Base:        GetTestBase("133b3b42-70b9-456c-82e7-bf1b570e6c51"),
 			DisplayName: "John Doe",
 			Username:    "johndoe99",
 			Password:    "$2a$12$R9h/lIPbuRRvvV1GG9Z.6uCWMUa.6H7H0S.aK92F7t6GgS2T7M3Ki", // "hashed_password_1"
 			Email:       "john.doe@example.com",
 		},
 		{
-			Base: model.Base{
-				ID: uuid.MustParse("87a3cb94-d2e8-422d-bb91-fc5215949eb8"),
-			},
+
+			Base: GetTestBase("133b3b42-70b9-456c-82e7-bf1b570e6c52"),
+
 			//ID:          "87a3cb94-d2e8-422d-bb91-fc5215949eb8",
 			DisplayName: "Jane Smith",
 			Username:    "janesmith_dev",
@@ -43,10 +38,8 @@ func (u *UserCommonTestDB) GenerateData() error {
 			Email:       "jane.smith@example.com",
 		},
 		{
-			Base: model.Base{
-				ID: uuid.MustParse("999a9a99-9999-9999-9999-999999999999"),
-			},
-			//ID:          "999a9a99-9999-9999-9999-999999999999",
+
+			Base:        GetTestBase("999a9a99-9999-9999-9999-999999999999"),
 			DisplayName: "test",
 			Username:    "test",
 			Password:    "$2a$12$R9h/lIPbuRRvvV1GG9Z.6uCWMUa.6H7H0S.aK92F7t6GgS2T7M3Ki",

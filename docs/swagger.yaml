@@ -1,4 +1,32 @@
 definitions:
+  bookmark.addBookmarkInput:
+    properties:
+      description:
+        example: Google
+        maxLength: 255
+        type: string
+      url:
+        example: https://www.google.com
+        maxLength: 2048
+        type: string
+    required:
+    - url
+    type: object
+  model.Bookmark:
+    properties:
+      code:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      updated_at:
+        type: string
+      url:
+        type: string
+    type: object
   model.User:
     properties:
       created_at:
@@ -80,6 +108,69 @@ paths:
       summary: check redis health
       tags:
       - health check
+  /v1/bookmarks:
+    get:
+      consumes:
+      - application/json
+      description: get lists of bookmarks of current user
+      parameters:
+      - default: 1
+        description: page
+        format: int32
+        in: query
+        name: page
+        type: integer
+      - default: 20
+        description: limit
+        format: int32
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                items:
+                  $ref: '#/definitions/model.Bookmark'
+                type: array
+            type: object
+      security:
+      - BearerAuth: []
+      summary: get lists of bookmarks of current user
+      tags:
+      - bookmark
+    post:
+      consumes:
+      - application/json
+      description: Create a new bookmark for a bookmark group
+      parameters:
+      - description: Input required
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/bookmark.addBookmarkInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success
+          schema:
+            properties:
+              data:
+                $ref: '#/definitions/model.Bookmark'
+              message:
+                type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a new bookmark for a bookmark group
+      tags:
+      - bookmark
   /v1/links/redirect/{code}:
     get:
       consumes:

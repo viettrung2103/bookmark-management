@@ -28,11 +28,7 @@ type loginInput struct {
 // @Router /v1/users/login [post]
 func (u *userHandler) Login(c *gin.Context) {
 	// get input
-	//input := &loginInput{}
-	//if err := c.ShouldBindJSON(input); err != nil {
-	//	c.JSON(http.StatusBadRequest, response.InputFieldError(err))
-	//	return
-	//}
+
 	input, err := requestutils.BindInputFromRequest[loginInput](c)
 	if err != nil {
 		return

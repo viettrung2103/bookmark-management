@@ -26,11 +26,11 @@ func TestUserRepo_GetUserByUserId(t *testing.T) {
 				return fixtures.NewFixture(t, &fixtures.UserCommonTestDB{})
 			},
 			// Using the ID from your previous fixture example
-			inputUserId:   "87a3cb94-d2e8-422d-bb91-fc5215949eb8",
+			inputUserId:   "133b3b42-70b9-456c-82e7-bf1b570e6c51",
 			expectedError: nil,
 			verifyUser: func(t *testing.T, user *model.User) {
 				assert.NotNil(t, user)
-				assert.Equal(t, "87a3cb94-d2e8-422d-bb91-fc5215949eb8", user.ID.String())
+				assert.Equal(t, "133b3b42-70b9-456c-82e7-bf1b570e6c51", user.ID.String())
 			},
 		},
 		{
