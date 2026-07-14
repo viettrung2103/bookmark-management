@@ -20,7 +20,7 @@ import (
 var testCode = "abc1235"
 
 // TestShortenLinkHandler tests the ShortenLinkHandler function
-func TestShortenLinkHandler(t *testing.T) {
+func TestShortenLinkHandler_ShortenUrlLink(t *testing.T) {
 	t.Parallel()
 	cfg, err := config.NewConfig()
 	if err != nil {

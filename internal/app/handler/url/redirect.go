@@ -21,6 +21,7 @@ func (h *shortenLinkHandler) RedirectUrl(c *gin.Context) {
 	code := c.Param("code")
 	if code == "" {
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "code is required"})
+		return
 	}
 
 	// call service to get url from code
