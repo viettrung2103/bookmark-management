@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 	repoMocks "github.com/viettrung2103/bookmark-management/internal/app/repository/user/mocks"
 
 	//repoMocks "github.com/viettrung2103/bookmark-management/internal/app/repository/mocks"
@@ -25,35 +24,35 @@ func TestUserService_EditInfoByID(t *testing.T) {
 
 	testCases := []struct {
 		name          string
-		setupMocks    func(repo *repoMocks.UserRepository)
+		setupMocks    func(ctx context.Context, repo *repoMocks.UserRepository)
 		expectedError error
 	}{
 		{
 			name: "success - info updated successfully",
-			setupMocks: func(repo *repoMocks.UserRepository) {
+			setupMocks: func(ctx context.Context, repo *repoMocks.UserRepository) {
 				// Expect the exact parameters to be passed to the repo
-				repo.On("EditUserByID", mock.Anything, userId, inputDisplayName, inputEmail).Return(nil)
+				repo.On("EditUserByID", ctx, userId, inputDisplayName, inputEmail).Return(nil)
 			},
 			expectedError: nil,
 		},
 		{
 			name: "failure - user not found",
-			setupMocks: func(repo *repoMocks.UserRepository) {
-				repo.On("EditUserByID", mock.Anything, userId, inputDisplayName, inputEmail).Return(dbutils.ErrRecordNotFound)
+			setupMocks: func(ctx context.Context, repo *repoMocks.UserRepository) {
+				repo.On("EditUserByID", ctx, userId, inputDisplayName, inputEmail).Return(dbutils.ErrRecordNotFound)
 			},
 			expectedError: dbutils.ErrRecordNotFound,
 		},
 		{
 			name: "failure - duplication error (email already taken)",
-			setupMocks: func(repo *repoMocks.UserRepository) {
-				repo.On("EditUserByID", mock.Anything, userId, inputDisplayName, inputEmail).Return(dbutils.ErrDuplication)
+			setupMocks: func(ctx context.Context, repo *repoMocks.UserRepository) {
+				repo.On("EditUserByID", ctx, userId, inputDisplayName, inputEmail).Return(dbutils.ErrDuplication)
 			},
 			expectedError: dbutils.ErrDuplication,
 		},
 		{
 			name: "failure - generic database error",
-			setupMocks: func(repo *repoMocks.UserRepository) {
-				repo.On("EditUserByID", mock.Anything, userId, inputDisplayName, inputEmail).Return(assert.AnError)
+			setupMocks: func(ctx context.Context, repo *repoMocks.UserRepository) {
+				repo.On("EditUserByID", ctx, userId, inputDisplayName, inputEmail).Return(assert.AnError)
 			},
 			expectedError: assert.AnError,
 		},
@@ -62,7 +61,7 @@ func TestUserService_EditInfoByID(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
-			ctx := context.Background()
+			ctx := t.Context()
 
 			// Initialize mocks
 			mockRepo := repoMocks.NewUserRepository(t)
@@ -74,7 +73,7 @@ func TestUserService_EditInfoByID(t *testing.T) {
 			//mockJwtGen := mocks.NewJWTGenerator(t)
 
 			// Setup the specific repo mock for this scenario
-			tc.setupMocks(mockRepo)
+			tc.setupMocks(ctx, mockRepo)
 
 			// Initialize service
 			opts := &UserServiceOpts{

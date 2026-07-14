@@ -17,6 +17,7 @@ type getBookmarkInput struct {
 	Limit int `form:"limit" validate:"gte=1"`
 }
 
+// GetBookmarks get lists of bookmarks of current user
 // @Summary get lists of bookmarks of current user
 // @Description get lists of bookmarks of current user
 // @Tags bookmark

@@ -11,7 +11,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 	userMock "github.com/viettrung2103/bookmark-management/internal/app/service/user/mocks"
 
 	//userMocks"github.com/viettrung2103/bookmark-management/internal/app/service/user/mocks"
@@ -51,7 +50,7 @@ func TestUserHandler_Login(t *testing.T) {
 			setupMockService: func(ctx context.Context) *userMock.UserService {
 				serviceMock := userMock.NewUserService(t)
 				// Return a fake token and no error
-				serviceMock.On("Login", mock.Anything, "testuser", "validpassword123").Return("fake-jwt-token-123", nil)
+				serviceMock.On("Login", ctx, "testuser", "validpassword123").Return("fake-jwt-token-123", nil)
 				return serviceMock
 			},
 			expectedStatus:   http.StatusOK,
@@ -71,7 +70,7 @@ func TestUserHandler_Login(t *testing.T) {
 			setupMockService: func(ctx context.Context) *userMock.UserService {
 				serviceMock := userMock.NewUserService(t)
 				// Simulate the service returning ErrInvalidCreditials
-				serviceMock.On("Login", mock.Anything, "testuser", "wrongpassword").Return("", user.ErrInvalidCreditials)
+				serviceMock.On("Login", ctx, "testuser", "wrongpassword").Return("", user.ErrInvalidCreditials)
 				return serviceMock
 			},
 			expectedStatus:   http.StatusBadRequest,
@@ -91,7 +90,7 @@ func TestUserHandler_Login(t *testing.T) {
 			setupMockService: func(ctx context.Context) *userMock.UserService {
 				serviceMock := userMock.NewUserService(t)
 				// Simulate the DB not finding the user
-				serviceMock.On("Login", mock.Anything, "nonexistentuser", "somepassword").Return("", dbutils.ErrRecordNotFound)
+				serviceMock.On("Login", ctx, "nonexistentuser", "somepassword").Return("", dbutils.ErrRecordNotFound)
 				return serviceMock
 			},
 			expectedStatus:   http.StatusBadRequest,
@@ -111,7 +110,7 @@ func TestUserHandler_Login(t *testing.T) {
 			setupMockService: func(ctx context.Context) *userMock.UserService {
 				serviceMock := userMock.NewUserService(t)
 				// Simulate an unexpected error (like a DB connection failure)
-				serviceMock.On("Login", mock.Anything, "testuser", "validpassword123").Return("", errors.New("database connection refused"))
+				serviceMock.On("Login", ctx, "testuser", "validpassword123").Return("", errors.New("database connection refused"))
 				return serviceMock
 			},
 			expectedStatus:   http.StatusInternalServerError,

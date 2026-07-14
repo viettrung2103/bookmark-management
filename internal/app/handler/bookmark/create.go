@@ -1,6 +1,8 @@
 package bookmark
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"github.com/viettrung2103/bookmark-management/pkg/requestutils"
 )
@@ -32,12 +34,16 @@ func (h *bookmarkHandler) AddBookmark(c *gin.Context) {
 	// call service
 	newBookmark, err := h.svc.AddBookmark(c, input.Description, input.URL, uid)
 	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"message": "Internal server error",
+		})
+		//c.Abort()
 		return
 	}
+	// tra ve response
 	c.JSON(200, gin.H{
 		"data":    newBookmark,
 		"message": "Create a bookmark successfully",
 	})
 
-	// tra ve response
 }

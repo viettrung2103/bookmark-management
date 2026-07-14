@@ -6,7 +6,6 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
 	//"github.com/viettrung2103/bookmark-management/internal/app/repository/user"
 	repoMocks "github.com/viettrung2103/bookmark-management/internal/app/repository/user/mocks"
@@ -32,30 +31,30 @@ func TestUserService_SelfInfo(t *testing.T) {
 
 	testCases := []struct {
 		name           string
-		setupMocksRepo func(repo *repoMocks.UserRepository)
+		setupMocksRepo func(ctx context.Context, repo *repoMocks.UserRepository)
 		expectedUser   *model.User
 		expectedError  error
 	}{
 		{
 			name: "success - user found",
-			setupMocksRepo: func(repo *repoMocks.UserRepository) {
-				repo.On("GetUserByUserId", mock.Anything, testUUID).Return(mockUser, nil)
+			setupMocksRepo: func(ctx context.Context, repo *repoMocks.UserRepository) {
+				repo.On("GetUserByUserId", ctx, testUUID).Return(mockUser, nil)
 			},
 			expectedUser:  mockUser,
 			expectedError: nil,
 		},
 		{
 			name: "failure - user not found",
-			setupMocksRepo: func(repo *repoMocks.UserRepository) {
-				repo.On("GetUserByUserId", mock.Anything, testUUID).Return((*model.User)(nil), dbutils.ErrRecordNotFound)
+			setupMocksRepo: func(ctx context.Context, repo *repoMocks.UserRepository) {
+				repo.On("GetUserByUserId", ctx, testUUID).Return((*model.User)(nil), dbutils.ErrRecordNotFound)
 			},
 			expectedUser:  nil,
 			expectedError: dbutils.ErrRecordNotFound,
 		},
 		{
 			name: "failure - generic database error",
-			setupMocksRepo: func(repo *repoMocks.UserRepository) {
-				repo.On("GetUserByUserId", mock.Anything, testUUID).Return((*model.User)(nil), assert.AnError)
+			setupMocksRepo: func(ctx context.Context, repo *repoMocks.UserRepository) {
+				repo.On("GetUserByUserId", ctx, testUUID).Return((*model.User)(nil), assert.AnError)
 			},
 			expectedUser:  nil,
 			expectedError: assert.AnError,
@@ -65,7 +64,7 @@ func TestUserService_SelfInfo(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
-			ctx := context.Background()
+			ctx := t.Context()
 
 			// Initialize mocks
 			mockRepo := repoMocks.NewUserRepository(t)
@@ -73,7 +72,7 @@ func TestUserService_SelfInfo(t *testing.T) {
 			//mockJwtGen := mocks.NewJWTGenerator(t)    // Not used in this method
 
 			// Setup the specific repo mock for this scenario
-			tc.setupMocksRepo(mockRepo)
+			tc.setupMocksRepo(ctx, mockRepo)
 
 			// Initialize service
 			opts := &UserServiceOpts{

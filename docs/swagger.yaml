@@ -12,6 +12,16 @@ definitions:
     required:
     - url
     type: object
+  bookmark.putBookmarkInput:
+    properties:
+      description:
+        type: string
+      url:
+        type: string
+    required:
+    - description
+    - url
+    type: object
   model.Bookmark:
     properties:
       code:
@@ -169,6 +179,67 @@ paths:
       security:
       - BearerAuth: []
       summary: Create a new bookmark for a bookmark group
+      tags:
+      - bookmark
+  /v1/bookmarks/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete bookmark of id of current user
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                items:
+                  $ref: '#/definitions/model.Bookmark'
+                type: array
+            type: object
+      security:
+      - BearerAuth: []
+      summary: delete bookmark of id of current user
+      tags:
+      - bookmark
+    put:
+      consumes:
+      - application/json
+      description: edit bookmark of current user
+      parameters:
+      - description: Input required
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/bookmark.putBookmarkInput'
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                items:
+                  $ref: '#/definitions/model.Bookmark'
+                type: array
+            type: object
+      security:
+      - BearerAuth: []
+      summary: edit bookmark of current user
       tags:
       - bookmark
   /v1/links/redirect/{code}:

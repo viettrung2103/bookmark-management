@@ -9,7 +9,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 	healthCheckMock "github.com/viettrung2103/bookmark-management/internal/app/service/healthcheck/mocks"
 )
 
@@ -34,7 +33,7 @@ func TestHealthCheck(t *testing.T) {
 			},
 			setupMockService: func(ctx context.Context) *healthCheckMock.HealthCheckService {
 				serviceMock := healthCheckMock.NewHealthCheckService(t)
-				serviceMock.On("HealthCheck", mock.Anything).Return(nil)
+				serviceMock.On("HealthCheck", ctx).Return(nil)
 				return serviceMock
 			},
 
@@ -52,7 +51,7 @@ func TestHealthCheck(t *testing.T) {
 				// 1. Return an actual error here to trigger the `if err != nil` block in your handler
 				// Note: If your HealthCheck interface returns a struct AND an error,
 				// you would write something like: Return(nil, errors.New("redis error"))
-				serviceMock.On("HealthCheck", mock.Anything).Return(errors.New("redis connection refused"))
+				serviceMock.On("HealthCheck", ctx).Return(errors.New("redis connection refused"))
 
 				return serviceMock
 			},
@@ -67,7 +66,7 @@ func TestHealthCheck(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
-
+			
 			rec := httptest.NewRecorder()
 			ctx, _ := gin.CreateTestContext(rec)
 			tc.setupRequest(ctx)

@@ -14,7 +14,6 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
 	userMock "github.com/viettrung2103/bookmark-management/internal/app/service/user/mocks"
 	"github.com/viettrung2103/bookmark-management/pkg/dbutils"
@@ -55,7 +54,7 @@ func TestUserHandler_SelfInfo(t *testing.T) {
 					DisplayName: "testuser",
 				}
 
-				serviceMock.On("SelfInfo", mock.Anything, "user-123").Return(mockUser, nil)
+				serviceMock.On("SelfInfo", ctx, "user-123").Return(mockUser, nil)
 				return serviceMock
 			},
 			expectedStatus: http.StatusOK,
@@ -72,7 +71,7 @@ func TestUserHandler_SelfInfo(t *testing.T) {
 			setupMockService: func(ctx context.Context) *userMock.UserService {
 				serviceMock := userMock.NewUserService(t)
 				// Return GORM's record not found error
-				serviceMock.On("SelfInfo", mock.Anything, "missing-user-999").Return((*model.User)(nil), dbutils.ErrRecordNotFound)
+				serviceMock.On("SelfInfo", ctx, "missing-user-999").Return((*model.User)(nil), dbutils.ErrRecordNotFound)
 				return serviceMock
 			},
 			expectedStatus:   http.StatusBadRequest,
@@ -92,7 +91,7 @@ func TestUserHandler_SelfInfo(t *testing.T) {
 			},
 			setupMockService: func(ctx context.Context) *userMock.UserService {
 				serviceMock := userMock.NewUserService(t)
-				serviceMock.On("SelfInfo", mock.Anything, "user-123").Return((*model.User)(nil), errors.New("database connection lost"))
+				serviceMock.On("SelfInfo", ctx, "user-123").Return((*model.User)(nil), errors.New("database connection lost"))
 				return serviceMock
 			},
 			expectedStatus: http.StatusInternalServerError,
@@ -155,7 +154,7 @@ func TestUserHandler_EditSelfInfo(t *testing.T) {
 			setupMockService: func(ctx context.Context) *userMock.UserService {
 				serviceMock := userMock.NewUserService(t)
 				// Expect the exact parameters from the request and return nil error
-				serviceMock.On("EditInfoByID", mock.Anything, "user-123", "Updated Name", "updated@example.com").Return(nil)
+				serviceMock.On("EditInfoByID", ctx, "user-123", "Updated Name", "updated@example.com").Return(nil)
 				return serviceMock
 			},
 			expectedStatus:   http.StatusOK,
@@ -178,7 +177,7 @@ func TestUserHandler_EditSelfInfo(t *testing.T) {
 			setupMockService: func(ctx context.Context) *userMock.UserService {
 				serviceMock := userMock.NewUserService(t)
 				// Simulate the DB rejecting the update due to a duplicate email
-				serviceMock.On("EditInfoByID", mock.Anything, "user-123", "Updated Name", "duplicate@example.com").Return(dbutils.ErrDuplication)
+				serviceMock.On("EditInfoByID", ctx, "user-123", "Updated Name", "duplicate@example.com").Return(dbutils.ErrDuplication)
 				return serviceMock
 			},
 			expectedStatus: http.StatusBadRequest,
@@ -201,7 +200,7 @@ func TestUserHandler_EditSelfInfo(t *testing.T) {
 			},
 			setupMockService: func(ctx context.Context) *userMock.UserService {
 				serviceMock := userMock.NewUserService(t)
-				serviceMock.On("EditInfoByID", mock.Anything, "user-123", "Updated Name", "updated@example.com").Return(errors.New("db down"))
+				serviceMock.On("EditInfoByID", ctx, "user-123", "Updated Name", "updated@example.com").Return(errors.New("db down"))
 				return serviceMock
 			},
 			expectedStatus: http.StatusInternalServerError,

@@ -9,11 +9,12 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
+	//"github.com/stretchr/testify/mock"
 	"github.com/viettrung2103/bookmark-management/internal/api"
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
 	"github.com/viettrung2103/bookmark-management/internal/config"
 	"github.com/viettrung2103/bookmark-management/internal/test/data/fixtures"
+	"github.com/viettrung2103/bookmark-management/pkg/jwtutils"
 	jwtMocks "github.com/viettrung2103/bookmark-management/pkg/jwtutils/mocks"
 	"github.com/viettrung2103/bookmark-management/pkg/stringutils"
 	"gorm.io/gorm"
@@ -22,6 +23,22 @@ import (
 // TestRegisterEndpoint tests the register endpoint
 func TestRegisterEndpoint(t *testing.T) {
 	t.Parallel()
+
+	//// Standard test data
+	//testUUID := "12345678-1234-1234-1234-123456789012"
+	//
+	//username := "testuser"
+	//password := "plainpassword"
+	//hashedPassword := "hashedpassword"
+	//mockUser := &model.User{
+	//	Base: model.Base{
+	//		ID: uuid.MustParse(testUUID),
+	//	},
+	//	//ID:       "user-123",
+	//	Username: username,
+	//	Password: hashedPassword,
+	//}
+	//expectedToken := "fake-jwt-token"
 
 	testCases := []struct {
 		name                 string
@@ -110,7 +127,22 @@ func TestRegisterEndpoint(t *testing.T) {
 // TestEngine_Login tests the login endpoint
 func TestEngine_Login(t *testing.T) {
 	t.Parallel()
+	// Standard test data
 	testUUID := "12345678-1234-1234-1234-123456789012"
+	displayName := "testuser"
+	username := "testuser"
+	password := "plainpassword"
+	hashedPassword := "hashedpassword"
+	email := "testuser@mail.com"
+	mockUser := &model.User{
+		Base: model.Base{
+			ID: uuid.MustParse(testUUID),
+		},
+		//ID:       "user-123",
+		Username: username,
+		Password: hashedPassword,
+	}
+	expectedToken := "fake-jwt-token"
 
 	testCases := []struct {
 		name                 string
@@ -127,8 +159,8 @@ func TestEngine_Login(t *testing.T) {
 					http.MethodPost,
 					"/v1/users/login",
 					bytes.NewBuffer([]byte(`{
-						"username": "integration_user",
-						"password": "my_known_password123"
+						"username": "testuser",
+						"password": "plainpassword"
 					}`)))
 				req.Header.Set("Content-Type", "application/json")
 
@@ -141,7 +173,7 @@ func TestEngine_Login(t *testing.T) {
 
 				// 1. Generate a real hash for a password we actually know
 				hasher := stringutils.NewPasswordHasher()
-				knownHash := hasher.Hashing("my_known_password123")
+				knownHash := hasher.Hashing(password)
 
 				// 2. Insert this specific user into the test database
 				db.Create(&model.User{
@@ -149,20 +181,21 @@ func TestEngine_Login(t *testing.T) {
 					Base: model.Base{
 						ID: uuid.MustParse(testUUID),
 					},
-					DisplayName: "Integration User",
-					Username:    "integration_user",
+					DisplayName: displayName,
+					Username:    username,
 					Password:    knownHash,
-					Email:       "integration@example.com",
+					Email:       email,
 				})
 
 				return db
 			},
 			setupMockJwt: func(mockJwt *jwtMocks.JWTGenerator) {
 				// Simulate successful token generation
-				mockJwt.On("GenerateJWT", mock.Anything).Return("mocked-jwt-token", nil)
+				testTokenClaim := jwtutils.GetMapClaim(mockUser.ID.String(), mockUser.Username)
+				mockJwt.On("GenerateJWT", testTokenClaim).Return(expectedToken, nil)
 			},
 			expectedStatusCode:   http.StatusOK,
-			expectedResponseBody: `{"data":"mocked-jwt-token","message":"Logged in successfully!"}`,
+			expectedResponseBody: `{"data":"fake-jwt-token","message":"Logged in successfully!"}`,
 		},
 		{
 			name: "failure - wrong password",

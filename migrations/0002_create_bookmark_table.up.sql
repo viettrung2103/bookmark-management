@@ -1,10 +1,10 @@
 CREATE TABLE IF NOT EXISTS bookmarks
 (
-    id varchar(36) unique,
+    id uuid unique,
     description varchar(255),
     url varchar(2048) not null,
     code varchar(10) not null,
-    user_id varchar(36) not null,
+    user_id uuid not null,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP WITH TIME ZONE,

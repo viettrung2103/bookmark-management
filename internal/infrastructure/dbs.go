@@ -2,7 +2,6 @@ package infrastructure
 
 import (
 	"github.com/redis/go-redis/v9"
-	"github.com/viettrung2103/bookmark-management/internal/app/model"
 	"github.com/viettrung2103/bookmark-management/pkg/common"
 	"github.com/viettrung2103/bookmark-management/pkg/db"
 	redispkg "github.com/viettrung2103/bookmark-management/pkg/redis"
@@ -22,13 +21,15 @@ func CreateDBClient() *gorm.DB {
 	dbClient, err := db.NewClient("")
 
 	common.HandleError(err)
-	err = MigrateDB(dbClient)
+	db.MigrationPostgresDB(dbClient, "up", 0)
+
+	//err = MigrateDB(dbClient)
 	common.HandleError(err)
 	return dbClient
 }
 
 // MigrateDB migrates the database
-func MigrateDB(sqlDB *gorm.DB) error {
-	return sqlDB.AutoMigrate(&model.User{})
-
-}
+//func MigrateDB(sqlDB *gorm.DB) error {
+//	return sqlDB.AutoMigrate(&model.User{})
+//
+//}

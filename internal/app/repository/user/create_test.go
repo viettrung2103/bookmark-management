@@ -88,11 +88,7 @@ func TestUserRepo_CreateUser(t *testing.T) {
 			repo := NewRepository(db)
 
 			user, err := repo.CreateUser(ctx, tc.inputUser)
-			//if tc.expectedErr {
-			//	assert.NotNil(t, err)
-			//} else {
-			//	assert.NoError(t, err)
-			//}
+
 			if tc.expectedError == nil {
 				assert.NoError(t, err)
 				assert.NotNil(t, user)
