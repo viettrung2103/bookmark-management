@@ -44,6 +44,100 @@ func (_m *Repository) CreateBookmark(ctx context.Context, _a1 *model.Bookmark) (
 	return r0, r1
 }
 
+// DeleteBookmarkByID provides a mock function with given fields: ctx, userID, bookmarkID
+func (_m *Repository) DeleteBookmarkByID(ctx context.Context, userID string, bookmarkID string) error {
+	ret := _m.Called(ctx, userID, bookmarkID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteBookmarkByID")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) error); ok {
+		r0 = rf(ctx, userID, bookmarkID)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// EditBookmarkByID provides a mock function with given fields: ctx, userID, bookmarkID, newDescription, newURL
+func (_m *Repository) EditBookmarkByID(ctx context.Context, userID string, bookmarkID string, newDescription string, newURL string) error {
+	ret := _m.Called(ctx, userID, bookmarkID, newDescription, newURL)
+
+	if len(ret) == 0 {
+		panic("no return value specified for EditBookmarkByID")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, string, string, string) error); ok {
+		r0 = rf(ctx, userID, bookmarkID, newDescription, newURL)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// GetBookmarkCount provides a mock function with given fields: ctx, userID
+func (_m *Repository) GetBookmarkCount(ctx context.Context, userID string) (int64, error) {
+	ret := _m.Called(ctx, userID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetBookmarkCount")
+	}
+
+	var r0 int64
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (int64, error)); ok {
+		return rf(ctx, userID)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) int64); ok {
+		r0 = rf(ctx, userID)
+	} else {
+		r0 = ret.Get(0).(int64)
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, userID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GetBookmarks provides a mock function with given fields: ctx, userID, offset, limit
+func (_m *Repository) GetBookmarks(ctx context.Context, userID string, offset int, limit int) ([]*model.Bookmark, error) {
+	ret := _m.Called(ctx, userID, offset, limit)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetBookmarks")
+	}
+
+	var r0 []*model.Bookmark
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, int, int) ([]*model.Bookmark, error)); ok {
+		return rf(ctx, userID, offset, limit)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string, int, int) []*model.Bookmark); ok {
+		r0 = rf(ctx, userID, offset, limit)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]*model.Bookmark)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string, int, int) error); ok {
+		r1 = rf(ctx, userID, offset, limit)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // NewRepository creates a new instance of Repository. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.
 // The first argument is typically a *testing.T value.
 func NewRepository(t interface {

@@ -5,7 +5,10 @@ package mocks
 import (
 	context "context"
 
+	bookmark "github.com/viettrung2103/bookmark-management/internal/app/service/bookmark"
+
 	mock "github.com/stretchr/testify/mock"
+
 	model "github.com/viettrung2103/bookmark-management/internal/app/model"
 )
 
@@ -37,6 +40,72 @@ func (_m *Service) AddBookmark(ctx context.Context, description string, url stri
 
 	if rf, ok := ret.Get(1).(func(context.Context, string, string, string) error); ok {
 		r1 = rf(ctx, description, url, userID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// DeleteBookmarkByID provides a mock function with given fields: ctx, userID, bookmarkID
+func (_m *Service) DeleteBookmarkByID(ctx context.Context, userID string, bookmarkID string) error {
+	ret := _m.Called(ctx, userID, bookmarkID)
+
+	if len(ret) == 0 {
+		panic("no return value specified for DeleteBookmarkByID")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, string) error); ok {
+		r0 = rf(ctx, userID, bookmarkID)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// EditBookmarkByID provides a mock function with given fields: ctx, userID, bookmarkID, newDescription, newURL
+func (_m *Service) EditBookmarkByID(ctx context.Context, userID string, bookmarkID string, newDescription string, newURL string) error {
+	ret := _m.Called(ctx, userID, bookmarkID, newDescription, newURL)
+
+	if len(ret) == 0 {
+		panic("no return value specified for EditBookmarkByID")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, string, string, string) error); ok {
+		r0 = rf(ctx, userID, bookmarkID, newDescription, newURL)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// GetBookmarks provides a mock function with given fields: ctx, userID, page, limit
+func (_m *Service) GetBookmarks(ctx context.Context, userID string, page int, limit int) (*bookmark.BookmarkResult, error) {
+	ret := _m.Called(ctx, userID, page, limit)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetBookmarks")
+	}
+
+	var r0 *bookmark.BookmarkResult
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, int, int) (*bookmark.BookmarkResult, error)); ok {
+		return rf(ctx, userID, page, limit)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string, int, int) *bookmark.BookmarkResult); ok {
+		r0 = rf(ctx, userID, page, limit)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*bookmark.BookmarkResult)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string, int, int) error); ok {
+		r1 = rf(ctx, userID, page, limit)
 	} else {
 		r1 = ret.Error(1)
 	}
