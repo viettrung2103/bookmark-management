@@ -22,6 +22,7 @@ type putBookmarkInput struct {
 	//ID          int ``
 }
 
+// EditBookmark edit bookmark of current user
 // @Summary edit bookmark of current user
 // @Description edit bookmark of current user
 // @Tags bookmark

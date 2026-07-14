@@ -2,7 +2,6 @@ package intergration
 
 import (
 	"bytes"
-	"context"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -105,7 +104,7 @@ const testExpTime = 1000
 // TestRedirectEndpoint tests the redirect endpoint
 func TestRedirectEndpoint(t *testing.T) {
 	t.Parallel()
-	ctx := context.Background()
+	ctx := t.Context()
 
 	testCases := []struct {
 		name string

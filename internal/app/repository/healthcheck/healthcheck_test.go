@@ -1,7 +1,6 @@
 package healthcheck
 
 import (
-	"context"
 	"testing"
 
 	"github.com/redis/go-redis/v9"
@@ -37,6 +36,7 @@ func TestHealthCheckRepo_HealthCheck(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
+			ctx := t.Context()
 
 			// 1. Initialize the in-memory Redis server using your helper
 			client := redisPkg.InitMockRedis(t)
@@ -48,7 +48,7 @@ func TestHealthCheckRepo_HealthCheck(t *testing.T) {
 			repo := NewRepository(client)
 
 			// 4. Execute the HealthCheck
-			err := repo.HealthCheck(context.Background())
+			err := repo.HealthCheck(ctx)
 
 			// 5. Assert the results
 			if tc.wantErr {

@@ -6,7 +6,6 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
 	repoMocks "github.com/viettrung2103/bookmark-management/internal/app/repository/user/mocks"
 	//serviceMocks"github.com/viettrung2103/bookmark-management/internal/app/service/mocks"
@@ -36,13 +35,13 @@ func TestUserService_CreateUser(t *testing.T) {
 
 	testCases := []struct {
 		name          string
-		setupMocks    func(repo *repoMocks.UserRepository, hasher *hashingMocks.PasswordHashing)
+		setupMocks    func(ctx context.Context, repo *repoMocks.UserRepository, hasher *hashingMocks.PasswordHashing)
 		expectedUser  *model.User
 		expectedError error
 	}{
 		{
 			name: "success - user created successfully",
-			setupMocks: func(repo *repoMocks.UserRepository, hasher *hashingMocks.PasswordHashing) {
+			setupMocks: func(ctx context.Context, repo *repoMocks.UserRepository, hasher *hashingMocks.PasswordHashing) {
 				// 1. Mock the hashing utility
 				hasher.On("Hashing", password).Return(hashedPassword)
 
@@ -57,7 +56,7 @@ func TestUserService_CreateUser(t *testing.T) {
 					Email:       email,
 					DisplayName: displayName,
 				}
-				repo.On("CreateUser", mock.Anything, expectedUserToSave).Return(mockSavedUser, nil)
+				repo.On("CreateUser", ctx, expectedUserToSave).Return(mockSavedUser, nil)
 			},
 			expectedUser: &model.User{
 				Base: model.Base{
@@ -73,23 +72,23 @@ func TestUserService_CreateUser(t *testing.T) {
 		},
 		{
 			name: "failure - repository returns duplication error",
-			setupMocks: func(repo *repoMocks.UserRepository, hasher *hashingMocks.PasswordHashing) {
+			setupMocks: func(ctx context.Context, repo *repoMocks.UserRepository, hasher *hashingMocks.PasswordHashing) {
 				// 1. Hashing still succeeds
 				hasher.On("Hashing", password).Return(hashedPassword)
 
 				// 2. Repository simulates a unique constraint failure (e.g., email already exists)
-				repo.On("CreateUser", mock.Anything, expectedUserToSave).Return((*model.User)(nil), dbutils.ErrDuplication)
+				repo.On("CreateUser", ctx, expectedUserToSave).Return((*model.User)(nil), dbutils.ErrDuplication)
 			},
 			expectedUser:  nil,
 			expectedError: dbutils.ErrDuplication,
 		},
 		{
 			name: "failure - repository returns generic error",
-			setupMocks: func(repo *repoMocks.UserRepository, hasher *hashingMocks.PasswordHashing) {
+			setupMocks: func(ctx context.Context, repo *repoMocks.UserRepository, hasher *hashingMocks.PasswordHashing) {
 				hasher.On("Hashing", password).Return(hashedPassword)
 
 				// Simulate a database crash
-				repo.On("CreateUser", mock.Anything, expectedUserToSave).Return((*model.User)(nil), assert.AnError)
+				repo.On("CreateUser", ctx, expectedUserToSave).Return((*model.User)(nil), assert.AnError)
 			},
 			expectedUser:  nil,
 			expectedError: assert.AnError,
@@ -99,7 +98,7 @@ func TestUserService_CreateUser(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
-			ctx := context.Background()
+			ctx := t.Context()
 
 			// 1. Initialize mocks
 			mockRepo := repoMocks.NewUserRepository(t)
@@ -107,7 +106,7 @@ func TestUserService_CreateUser(t *testing.T) {
 			//mockJwtGen := mocks.NewJWTGenerator(t) // Not used in this method, but required by UserServiceOpts
 
 			// 2. Run test case specific mock setup
-			tc.setupMocks(mockRepo, mockHasher)
+			tc.setupMocks(ctx, mockRepo, mockHasher)
 
 			// 3. Initialize service using your opts struct
 			opts := &UserServiceOpts{

@@ -7,7 +7,6 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
 	repoMocks "github.com/viettrung2103/bookmark-management/internal/app/repository/bookmark/mocks"
 	"github.com/viettrung2103/bookmark-management/internal/test/data/fixtures"
@@ -27,7 +26,7 @@ func TestBookmarkService_AddBookmark(t *testing.T) {
 		description string
 		url         string
 		userID      string
-		setupMocks  func(repo *repoMocks.Repository, keygen *keygenMocks.KeyGenerator)
+		setupMocks  func(ctx context.Context, repo *repoMocks.Repository, keygen *keygenMocks.KeyGenerator)
 
 		expectedOut *model.Bookmark
 		expectedErr error
@@ -37,7 +36,7 @@ func TestBookmarkService_AddBookmark(t *testing.T) {
 			description: "Google Search",
 			url:         "https://google.com",
 			userID:      testSvcUserID,
-			setupMocks: func(repo *repoMocks.Repository, keygen *keygenMocks.KeyGenerator) {
+			setupMocks: func(ctx context.Context, repo *repoMocks.Repository, keygen *keygenMocks.KeyGenerator) {
 				// 1. Mock Keygen to return our fixed test code
 				keygen.On("GenerateKey", shortenUrlKeyLength).Return(mockGeneratedCode)
 
@@ -60,7 +59,7 @@ func TestBookmarkService_AddBookmark(t *testing.T) {
 					UserID:      fixtures.GetUUID(testSvcUserID),
 				}
 
-				repo.On("CreateBookmark", mock.Anything, expectedInput).Return(mockedSavedBookmark, nil)
+				repo.On("CreateBookmark", ctx, expectedInput).Return(mockedSavedBookmark, nil)
 			},
 			expectedOut: &model.Bookmark{
 				Description: "Google Search",
@@ -74,7 +73,7 @@ func TestBookmarkService_AddBookmark(t *testing.T) {
 			description: "Google Search",
 			url:         "https://google.com",
 			userID:      testSvcUserID,
-			setupMocks: func(repo *repoMocks.Repository, keygen *keygenMocks.KeyGenerator) {
+			setupMocks: func(ctx context.Context, repo *repoMocks.Repository, keygen *keygenMocks.KeyGenerator) {
 				keygen.On("GenerateKey", shortenUrlKeyLength).Return(mockGeneratedCode)
 
 				expectedInput := &model.Bookmark{
@@ -84,7 +83,7 @@ func TestBookmarkService_AddBookmark(t *testing.T) {
 					UserID:      fixtures.GetUUID(testSvcUserID),
 				}
 
-				repo.On("CreateBookmark", mock.Anything, expectedInput).
+				repo.On("CreateBookmark", ctx, expectedInput).
 					Return((*model.Bookmark)(nil), errors.New("database connectivity error"))
 			},
 			expectedOut: nil,
@@ -95,12 +94,14 @@ func TestBookmarkService_AddBookmark(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
+			ctx := t.Context()
 
 			// Initialize mock controllers
+
 			mockRepo := repoMocks.NewRepository(t)
 			mockKeygen := keygenMocks.NewKeyGenerator(t) // Adjust constructor name to match your generated mock setup
 
-			tc.setupMocks(mockRepo, mockKeygen)
+			tc.setupMocks(ctx, mockRepo, mockKeygen)
 
 			// Construct service injecting the mocked dependencies
 			service := &bookmarkService{
@@ -108,7 +109,7 @@ func TestBookmarkService_AddBookmark(t *testing.T) {
 				keygen:       mockKeygen,
 			}
 
-			output, err := service.AddBookmark(context.Background(), tc.description, tc.url, tc.userID)
+			output, err := service.AddBookmark(ctx, tc.description, tc.url, tc.userID)
 
 			if tc.expectedErr != nil {
 				assert.EqualError(t, err, tc.expectedErr.Error())

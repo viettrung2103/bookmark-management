@@ -16,7 +16,6 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
 	bookmarkMock "github.com/viettrung2103/bookmark-management/internal/app/service/bookmark/mocks"
 )
@@ -77,7 +76,7 @@ func TestBookmarkHandler_AddBookmark(t *testing.T) {
 					Code:        "abc1235",
 				}
 
-				serviceMock.On("AddBookmark", mock.Anything, "Google Search", "https://www.google.com", testUserID).
+				serviceMock.On("AddBookmark", ctx, "Google Search", "https://www.google.com", testUserID).
 					Return(mockBookmark, nil)
 
 				return serviceMock
@@ -103,7 +102,7 @@ func TestBookmarkHandler_AddBookmark(t *testing.T) {
 			setupMockService: func(ctx context.Context) *bookmarkMock.Service {
 				serviceMock := bookmarkMock.NewService(t)
 
-				serviceMock.On("AddBookmark", mock.Anything, "Google Search", "https://www.google.com", testUserID).
+				serviceMock.On("AddBookmark", ctx, "Google Search", "https://www.google.com", testUserID).
 					Return((*model.Bookmark)(nil), errors.New("database connection down"))
 
 				return serviceMock

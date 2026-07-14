@@ -77,7 +77,7 @@ func TestService_CreateShortenLink(t *testing.T) {
 		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
-			ctx := context.Background()
+			ctx := t.Context()
 
 			mockRepo := tc.setupRepo(ctx)
 			keygenMock := tc.setupKeyGen()

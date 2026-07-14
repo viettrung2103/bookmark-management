@@ -7,6 +7,7 @@ import (
 	"github.com/viettrung2103/bookmark-management/pkg/dbutils"
 )
 
+// GetBookmarks get bookmarks of current user
 func (r *bookmarkRepository) GetBookmarks(ctx context.Context, userID string, offset, limit int) ([]*model.Bookmark, error) {
 	// tao ra 1 array with fix size = limit
 	bookmarks := make([]*model.Bookmark, 0, limit)
@@ -25,6 +26,7 @@ func (r *bookmarkRepository) GetBookmarks(ctx context.Context, userID string, of
 	return bookmarks, nil
 }
 
+// GetBookmarkCount get count of bookmarks of current user
 func (r *bookmarkRepository) GetBookmarkCount(ctx context.Context, userID string) (int64, error) {
 	var count int64
 	err := r.db.WithContext(ctx).

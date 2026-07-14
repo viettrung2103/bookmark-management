@@ -9,6 +9,7 @@ import (
 	"github.com/viettrung2103/bookmark-management/pkg/dbutils"
 )
 
+// EditBookmarkByID edit bookmark of id of current user
 func (r *bookmarkRepository) EditBookmarkByID(ctx context.Context, userID, bookmarkID, newDescription, newURL string) error {
 	parsedUserID, err := uuid.Parse(userID)
 	common.HandleError(err)

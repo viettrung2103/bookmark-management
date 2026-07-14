@@ -2,16 +2,14 @@ package bookmark
 
 import (
 	"context"
-	"errors"
 
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
 	"github.com/viettrung2103/bookmark-management/internal/test/data/fixtures"
 )
 
-var ErrNoOwnerShip = errors.New("bookmark does not belong to current user")
-
 const shortenUrlKeyLength = 8
 
+// AddBookmark add new bookmark
 func (s *bookmarkService) AddBookmark(ctx context.Context, description, url, userID string) (*model.Bookmark, error) {
 	code := s.keygen.GenerateKey(shortenUrlKeyLength)
 

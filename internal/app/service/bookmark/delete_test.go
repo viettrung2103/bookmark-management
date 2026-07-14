@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 	RepoMocks "github.com/viettrung2103/bookmark-management/internal/app/repository/bookmark/mocks"
 	"github.com/viettrung2103/bookmark-management/pkg/dbutils"
 )
@@ -23,16 +22,16 @@ func TestBookmarkService_DeleteBookmarkByID(t *testing.T) {
 		name          string
 		userID        string
 		bookmarkID    string
-		setupMocks    func(repo *RepoMocks.Repository)
+		setupMocks    func(ctx context.Context, repo *RepoMocks.Repository)
 		expectedError error
 	}{
 		{
 			name:       "Success - Delete Bookmark",
 			userID:     testSvcDeleteUserID,
 			bookmarkID: testSvcDeleteBookmarkID,
-			setupMocks: func(repo *RepoMocks.Repository) {
+			setupMocks: func(ctx context.Context, repo *RepoMocks.Repository) {
 				// Expecting service layer to pass context, userID string, and bookmarkID string down directly
-				repo.On("DeleteBookmarkByID", mock.Anything, testSvcDeleteUserID, testSvcDeleteBookmarkID).
+				repo.On("DeleteBookmarkByID", ctx, testSvcDeleteUserID, testSvcDeleteBookmarkID).
 					Return(nil)
 			},
 			expectedError: nil,
@@ -41,8 +40,8 @@ func TestBookmarkService_DeleteBookmarkByID(t *testing.T) {
 			name:       "Error - Bookmark Not Found",
 			userID:     testSvcDeleteUserID,
 			bookmarkID: testSvcDeleteBookmarkID,
-			setupMocks: func(repo *RepoMocks.Repository) {
-				repo.On("DeleteBookmarkByID", mock.Anything, testSvcDeleteUserID, testSvcDeleteBookmarkID).
+			setupMocks: func(ctx context.Context, repo *RepoMocks.Repository) {
+				repo.On("DeleteBookmarkByID", ctx, testSvcDeleteUserID, testSvcDeleteBookmarkID).
 					Return(dbutils.ErrRecordNotFound)
 			},
 			expectedError: dbutils.ErrRecordNotFound,
@@ -51,8 +50,8 @@ func TestBookmarkService_DeleteBookmarkByID(t *testing.T) {
 			name:       "Error - Internal Database Failure",
 			userID:     testSvcDeleteUserID,
 			bookmarkID: testSvcDeleteBookmarkID,
-			setupMocks: func(repo *RepoMocks.Repository) {
-				repo.On("DeleteBookmarkByID", mock.Anything, testSvcDeleteUserID, testSvcDeleteBookmarkID).
+			setupMocks: func(ctx context.Context, repo *RepoMocks.Repository) {
+				repo.On("DeleteBookmarkByID", ctx, testSvcDeleteUserID, testSvcDeleteBookmarkID).
 					Return(errors.New("unexpected table deadlocks"))
 			},
 			expectedError: errors.New("unexpected table deadlocks"),
@@ -62,17 +61,18 @@ func TestBookmarkService_DeleteBookmarkByID(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
+			ctx := t.Context()
 
 			// Initialize mock controllers
 			mockRepo := RepoMocks.NewRepository(t)
-			tc.setupMocks(mockRepo)
+			tc.setupMocks(ctx, mockRepo)
 
 			// Construct service injecting the mocked repository layer
 			service := &bookmarkService{
 				bookmarkRepo: mockRepo,
 			}
 
-			err := service.DeleteBookmarkByID(context.Background(), tc.userID, tc.bookmarkID)
+			err := service.DeleteBookmarkByID(ctx, tc.userID, tc.bookmarkID)
 
 			if tc.expectedError != nil {
 				assert.EqualError(t, err, tc.expectedError.Error())

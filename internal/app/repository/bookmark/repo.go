@@ -7,6 +7,8 @@ import (
 	"gorm.io/gorm"
 )
 
+// Repository interface for bookmark
+//
 //go:generate mockery --name=Repository --filename=bookmark.go
 type Repository interface {
 	CreateBookmark(ctx context.Context, bookmark *model.Bookmark) (*model.Bookmark, error)
@@ -20,6 +22,7 @@ type bookmarkRepository struct {
 	db *gorm.DB
 }
 
+// NewRepository create new repository
 func NewRepository(db *gorm.DB) Repository {
 	return &bookmarkRepository{
 		db: db,

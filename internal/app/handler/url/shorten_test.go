@@ -10,7 +10,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 	urlMock "github.com/viettrung2103/bookmark-management/internal/app/service/url/mocks"
 
 	//urlMock"github.com/viettrung2103/bookmark-management/internal/app/service/url/mocks"
@@ -54,7 +53,7 @@ func TestShortenLinkHandler_ShortenUrlLink(t *testing.T) {
 			},
 			setupMockService: func(ctx context.Context) *urlMock.URLService {
 				serviceMock := urlMock.NewURLService(t)
-				serviceMock.On("ShortenUrlWithExpiringTime", mock.Anything, "https://www.google.com", 10).Return(testCode, nil)
+				serviceMock.On("ShortenUrlWithExpiringTime", ctx, "https://www.google.com", 10).Return(testCode, nil)
 				return serviceMock
 			},
 

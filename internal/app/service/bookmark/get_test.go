@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
 	repoMocks "github.com/viettrung2103/bookmark-management/internal/app/repository/bookmark/mocks"
 )
@@ -30,7 +29,7 @@ func TestBookmarkService_GetBookmarks(t *testing.T) {
 		userID         string
 		page           int
 		limit          int
-		setupRepo      func(repo *repoMocks.Repository)
+		setupRepo      func(ctx context.Context, repo *repoMocks.Repository)
 		expectedResult *BookmarkResult
 		expectedError  error
 	}{
@@ -39,13 +38,13 @@ func TestBookmarkService_GetBookmarks(t *testing.T) {
 			userID: testSvcGetUserID,
 			page:   1, // (1-1) * 10 = 0 offset
 			limit:  10,
-			setupRepo: func(repo *repoMocks.Repository) {
+			setupRepo: func(ctx context.Context, repo *repoMocks.Repository) {
 				// 1. Verify GetBookmarks receives calculation offset '0'
-				repo.On("GetBookmarks", mock.Anything, testSvcGetUserID, 0, 10).
+				repo.On("GetBookmarks", ctx, testSvcGetUserID, 0, 10).
 					Return(mockedBookmarksList, nil)
 
 				// 2. Verify subsequent count retrieval call
-				repo.On("GetBookmarkCount", mock.Anything, testSvcGetUserID).
+				repo.On("GetBookmarkCount", ctx, testSvcGetUserID).
 					Return(int64(1), nil)
 			},
 			expectedResult: &BookmarkResult{
@@ -59,11 +58,11 @@ func TestBookmarkService_GetBookmarks(t *testing.T) {
 			userID: testSvcGetUserID,
 			page:   3, // (3-1) * 5 = 10 offset
 			limit:  5,
-			setupRepo: func(repo *repoMocks.Repository) {
-				repo.On("GetBookmarks", mock.Anything, testSvcGetUserID, 10, 5).
+			setupRepo: func(ctx context.Context, repo *repoMocks.Repository) {
+				repo.On("GetBookmarks", ctx, testSvcGetUserID, 10, 5).
 					Return(mockedBookmarksList, nil)
 
-				repo.On("GetBookmarkCount", mock.Anything, testSvcGetUserID).
+				repo.On("GetBookmarkCount", ctx, testSvcGetUserID).
 					Return(int64(11), nil)
 			},
 			expectedResult: &BookmarkResult{
@@ -77,8 +76,8 @@ func TestBookmarkService_GetBookmarks(t *testing.T) {
 			userID: testSvcGetUserID,
 			page:   1,
 			limit:  10,
-			setupRepo: func(repo *repoMocks.Repository) {
-				repo.On("GetBookmarks", mock.Anything, testSvcGetUserID, 0, 10).
+			setupRepo: func(ctx context.Context, repo *repoMocks.Repository) {
+				repo.On("GetBookmarks", ctx, testSvcGetUserID, 0, 10).
 					Return(([]*model.Bookmark)(nil), errors.New("list pull db crash"))
 			},
 			expectedResult: nil,
@@ -89,11 +88,11 @@ func TestBookmarkService_GetBookmarks(t *testing.T) {
 			userID: testSvcGetUserID,
 			page:   1,
 			limit:  10,
-			setupRepo: func(repo *repoMocks.Repository) {
-				repo.On("GetBookmarks", mock.Anything, testSvcGetUserID, 0, 10).
+			setupRepo: func(ctx context.Context, repo *repoMocks.Repository) {
+				repo.On("GetBookmarks", ctx, testSvcGetUserID, 0, 10).
 					Return(mockedBookmarksList, nil)
 
-				repo.On("GetBookmarkCount", mock.Anything, testSvcGetUserID).
+				repo.On("GetBookmarkCount", ctx, testSvcGetUserID).
 					Return(int64(0), errors.New("count aggregate db crash"))
 			},
 			expectedResult: nil,
@@ -104,17 +103,18 @@ func TestBookmarkService_GetBookmarks(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
+			ctx := t.Context()
 
 			// Initialize mock repository layer controller
 			mockRepo := repoMocks.NewRepository(t)
-			tc.setupRepo(mockRepo)
+			tc.setupRepo(ctx, mockRepo)
 
 			// Construct service injecting the mocked repository configuration
 			service := &bookmarkService{
 				bookmarkRepo: mockRepo,
 			}
 
-			output, err := service.GetBookmarks(context.Background(), tc.userID, tc.page, tc.limit)
+			output, err := service.GetBookmarks(ctx, tc.userID, tc.page, tc.limit)
 
 			if tc.expectedError != nil {
 				assert.EqualError(t, err, tc.expectedError.Error())

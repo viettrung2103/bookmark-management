@@ -9,7 +9,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 	bookmarkMock "github.com/viettrung2103/bookmark-management/internal/app/service/bookmark/mocks"
 )
 
@@ -48,7 +47,7 @@ func TestBookmarkHandler_DeleteBookmark(t *testing.T) {
 				serviceMock := bookmarkMock.NewService(t)
 
 				// Service layer expects the Context, the verified User ID, and the Target Bookmark ID
-				serviceMock.On("DeleteBookmarkByID", mock.Anything, testDeleteUserID, testDeleteBookmarkID).
+				serviceMock.On("DeleteBookmarkByID", ctx, testDeleteUserID, testDeleteBookmarkID).
 					Return(nil)
 
 				return serviceMock
@@ -69,7 +68,7 @@ func TestBookmarkHandler_DeleteBookmark(t *testing.T) {
 			setupMockService: func(ctx context.Context) *bookmarkMock.Service {
 				serviceMock := bookmarkMock.NewService(t)
 
-				serviceMock.On("DeleteBookmarkByID", mock.Anything, testDeleteUserID, testDeleteBookmarkID).
+				serviceMock.On("DeleteBookmarkByID", ctx, testDeleteUserID, testDeleteBookmarkID).
 					Return(errors.New("failed to delete from database"))
 
 				return serviceMock

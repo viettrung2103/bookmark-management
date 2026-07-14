@@ -11,6 +11,7 @@ import (
 	"github.com/viettrung2103/bookmark-management/pkg/response"
 )
 
+// DeleteBookmark delete bookmark of id of current user
 // @Summary delete bookmark of id of current user
 // @Description delete bookmark of id of current user
 // @Tags bookmark
@@ -25,7 +26,6 @@ func (h *bookmarkHandler) DeleteBookmark(c *gin.Context) {
 
 	userID, err := requestutils.GetUserIDFromRequest(c)
 	common.HandleError(err)
-	println("is problem in handle")
 	err = h.svc.DeleteBookmarkByID(c, userID, id)
 
 	switch {

@@ -11,7 +11,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 	bookmarkMock "github.com/viettrung2103/bookmark-management/internal/app/service/bookmark/mocks"
 	"github.com/viettrung2103/bookmark-management/pkg/dbutils"
 )
@@ -58,7 +57,7 @@ func TestBookmarkHandler_EditBookmark(t *testing.T) {
 				serviceMock := bookmarkMock.NewService(t)
 
 				// Expect service tracking arguments matching parameters passed from controller
-				serviceMock.On("EditBookmarkByID", mock.Anything, testEditUserID, testEditBookmarkID, "Updated Google Search", "https://google.com").
+				serviceMock.On("EditBookmarkByID", ctx, testEditUserID, testEditBookmarkID, "Updated Google Search", "https://google.com").
 					Return(nil)
 
 				return serviceMock
@@ -87,7 +86,7 @@ func TestBookmarkHandler_EditBookmark(t *testing.T) {
 				serviceMock := bookmarkMock.NewService(t)
 
 				// Injecting dbutils.ErrDuplication to target your specific switch case matching rule
-				serviceMock.On("EditBookmarkByID", mock.Anything, testEditUserID, testEditBookmarkID, "Duplicate URL", "https://duplicate.com").
+				serviceMock.On("EditBookmarkByID", ctx, testEditUserID, testEditBookmarkID, "Duplicate URL", "https://duplicate.com").
 					Return(dbutils.ErrDuplication)
 
 				return serviceMock
@@ -115,7 +114,7 @@ func TestBookmarkHandler_EditBookmark(t *testing.T) {
 			setupMockService: func(ctx context.Context) *bookmarkMock.Service {
 				serviceMock := bookmarkMock.NewService(t)
 
-				serviceMock.On("EditBookmarkByID", mock.Anything, testEditUserID, testEditBookmarkID, "Broken Request", "https://error.com").
+				serviceMock.On("EditBookmarkByID", ctx, testEditUserID, testEditBookmarkID, "Broken Request", "https://error.com").
 					Return(errors.New("unexpected database disconnection"))
 
 				return serviceMock

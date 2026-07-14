@@ -9,7 +9,6 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
 	bookmarkService "github.com/viettrung2103/bookmark-management/internal/app/service/bookmark"
 	bookmarkMock "github.com/viettrung2103/bookmark-management/internal/app/service/bookmark/mocks"
@@ -52,7 +51,7 @@ func TestBookmarkHandler_GetBookmarks(t *testing.T) {
 					Count: 1,
 				}
 
-				serviceMock.On("GetBookmarks", mock.Anything, testGetUserID, 1, 10).
+				serviceMock.On("GetBookmarks", ctx, testGetUserID, 1, 10).
 					Return(mockResult, nil)
 
 				return serviceMock
@@ -69,8 +68,7 @@ func TestBookmarkHandler_GetBookmarks(t *testing.T) {
 			setupMockService: func(ctx context.Context) *bookmarkMock.Service {
 				serviceMock := bookmarkMock.NewService(t)
 
-				// 🟢 Fix: Return a nil pointer cast to the correct type along with the error
-				serviceMock.On("GetBookmarks", mock.Anything, testGetUserID, 1, 20).
+				serviceMock.On("GetBookmarks", ctx, testGetUserID, 1, 20).
 					Return((*bookmarkService.BookmarkResult)(nil), errors.New("database read crash"))
 
 				return serviceMock

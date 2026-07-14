@@ -8,6 +8,8 @@ import (
 	"github.com/viettrung2103/bookmark-management/pkg/stringutils"
 )
 
+// BookmarkService interface for bookmark
+//
 //go:generate mockery --name=Service --filename=bookmark.go
 type Service interface {
 	AddBookmark(ctx context.Context, description, url, userID string) (*model.Bookmark, error)
@@ -16,6 +18,7 @@ type Service interface {
 	DeleteBookmarkByID(ctx context.Context, userID, bookmarkID string) error
 }
 
+// bookmarkService struct for bookmark
 type bookmarkService struct {
 	keygen       stringutils.KeyGenerator
 	bookmarkRepo bookmark.Repository

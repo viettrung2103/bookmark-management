@@ -9,6 +9,7 @@ import (
 	"github.com/viettrung2103/bookmark-management/pkg/dbutils"
 )
 
+// DeleteBookmarkByID delete bookmark of id of current user
 func (r *bookmarkRepository) DeleteBookmarkByID(ctx context.Context, userID, bookmarkID string) error {
 
 	parsedUserID, err := uuid.Parse(userID)
@@ -17,16 +18,12 @@ func (r *bookmarkRepository) DeleteBookmarkByID(ctx context.Context, userID, boo
 	parsedBookmarkID, err := uuid.Parse(bookmarkID)
 	common.HandleError(err)
 
-	println("is problem in repo")
-
 	// it return an transaction
 	result := r.db.WithContext(ctx).
 		Model(&model.Bookmark{}).
 		Where("id=? AND user_id=?", parsedBookmarkID, parsedUserID).
 		Delete(&model.Bookmark{})
-
-	println("is problem in db")
-
+	
 	if result.Error != nil {
 		return dbutils.CatchDBError(result.Error)
 	}

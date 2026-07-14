@@ -12,7 +12,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
 	userMock "github.com/viettrung2103/bookmark-management/internal/app/service/user/mocks"
 	"github.com/viettrung2103/bookmark-management/pkg/dbutils"
@@ -57,7 +56,7 @@ func TestUserHandler_Register(t *testing.T) {
 					Email:    "test@example.com",
 				}
 
-				serviceMock.On("CreateUser", mock.Anything, "Test User", "testuser", "validpassword123", "test@example.com").Return(mockUser, nil)
+				serviceMock.On("CreateUser", ctx, "Test User", "testuser", "validpassword123", "test@example.com").Return(mockUser, nil)
 				return serviceMock
 			},
 			expectedStatus: http.StatusOK,
@@ -81,7 +80,7 @@ func TestUserHandler_Register(t *testing.T) {
 			setupMockService: func(ctx context.Context) *userMock.UserService {
 				serviceMock := userMock.NewUserService(t)
 				// Return the dbutils.ErrDuplication error
-				serviceMock.On("CreateUser", mock.Anything, "Test User", "duplicateuser", "validpassword123", "dup@example.com").Return((*model.User)(nil), dbutils.ErrDuplication)
+				serviceMock.On("CreateUser", ctx, "Test User", "duplicateuser", "validpassword123", "dup@example.com").Return((*model.User)(nil), dbutils.ErrDuplication)
 				return serviceMock
 			},
 			expectedStatus:   http.StatusBadRequest,
@@ -104,7 +103,7 @@ func TestUserHandler_Register(t *testing.T) {
 			setupMockService: func(ctx context.Context) *userMock.UserService {
 				serviceMock := userMock.NewUserService(t)
 				// Return a generic error
-				serviceMock.On("CreateUser", mock.Anything, "Test User", "testuser", "validpassword123", "test@example.com").Return((*model.User)(nil), errors.New("database connection lost"))
+				serviceMock.On("CreateUser", ctx, "Test User", "testuser", "validpassword123", "test@example.com").Return((*model.User)(nil), errors.New("database connection lost"))
 				return serviceMock
 			},
 			expectedStatus:   http.StatusInternalServerError,
