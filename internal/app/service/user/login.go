@@ -3,31 +3,30 @@ package user
 import (
 	"context"
 	"errors"
-	"time"
 
-	"github.com/golang-jwt/jwt/v5"
 	"github.com/viettrung2103/bookmark-management/pkg/dbutils"
+	"github.com/viettrung2103/bookmark-management/pkg/jwtutils"
 )
 
-const jwtExpireDuration = 1 * time.Hour
-
+// const jwtExpireDuration = 1 * time.Hour
 var ErrInvalidCreditials = errors.New("invalid username or password")
 
-// TokenInfo contains user ID and username
-type TokenInfo struct {
-	Id       string
-	Username string
-}
-
-// ToMapClaim converts TokenInfo to jwt.MapClaims
-func (t *TokenInfo) ToMapClaim() jwt.MapClaims {
-	return jwt.MapClaims{
-		"uid":      t.Id,
-		"username": t.Username,
-		"exp":      time.Now().Add(jwtExpireDuration).Unix(),
-		"iat":      time.Now().Unix(),
-	}
-}
+//
+//// TokenInfo contains user ID and username
+//type TokenInfo struct {
+//	Id       string
+//	Username string
+//}
+//
+//// ToMapClaim converts TokenInfo to jwt.MapClaims
+//func (t *TokenInfo) ToMapClaim() jwt.MapClaims {
+//	return jwt.MapClaims{
+//		"uid":      t.Id,
+//		"username": t.Username,
+//		"exp":      time.Now().Add(jwtExpireDuration).Unix(),
+//		"iat":      time.Now().Unix(),
+//	}
+//}
 
 // Login logs in a user and returns a JWT
 func (s *userService) Login(ctx context.Context, username, password string) (string, error) {
@@ -47,7 +46,7 @@ func (s *userService) Login(ctx context.Context, username, password string) (str
 	}
 
 	// generate token
-	tokenInfo := &TokenInfo{
+	tokenInfo := &jwtutils.TokenInfo{
 		Id:       user.ID.String(),
 		Username: user.Username,
 	}
