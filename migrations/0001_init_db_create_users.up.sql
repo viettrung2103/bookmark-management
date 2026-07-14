@@ -1,6 +1,6 @@
 CREATE TABLE users
 (
-    id              varchar(36) unique,
+    id              uuid unique,
     display_name    varchar(255) not null,
     username        varchar(255) not null,
     email           varchar(255) not null,

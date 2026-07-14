@@ -17,8 +17,8 @@ func createAPIConfig() *config.Config {
 // func CreateAPIApp(cfg *config.Config, redis *redis.Client, db *gorm.DB) api.Engine {
 func CreateAPIApp() api.Engine {
 
-	//app := gin.Default()
-	app := gin.New()
+	app := gin.Default()
+	//app := gin.New()
 	//Engine: gin.New(),
 
 	// init app config

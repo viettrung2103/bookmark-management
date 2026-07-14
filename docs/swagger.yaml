@@ -182,6 +182,33 @@ paths:
       tags:
       - bookmark
   /v1/bookmarks/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: delete bookmark of id of current user
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            properties:
+              data:
+                items:
+                  $ref: '#/definitions/model.Bookmark'
+                type: array
+            type: object
+      security:
+      - BearerAuth: []
+      summary: delete bookmark of id of current user
+      tags:
+      - bookmark
     put:
       consumes:
       - application/json

@@ -30,6 +30,9 @@ services:
 # because of nginx so we dont need to expose the port
     ports:
       - 8080:8080
+    volumes:
+      - ./private.pem:/app/private.pem:ro,z
+      - ./public.pem:/app/public.pem:ro,z
 
 
 #  bookmark_service2:
@@ -63,8 +66,8 @@ services:
   portal:
     image: ebvn/bookmark-app-portal:dev
     container_name: portal
-    ports:
-      - 3000:3000
+#    ports:
+#      - 3000:3000
     restart: always
 
 #  nginx:
