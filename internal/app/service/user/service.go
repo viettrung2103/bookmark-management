@@ -11,8 +11,8 @@ import (
 
 // Service interface for user service
 //
-//go:generate mockery --name=UserService --filename=user.go
-type UserService interface {
+//go:generate mockery --name=Service --filename=user.go
+type Service interface {
 	CreateUser(ctx context.Context, displayName, username, password, email string) (*model.User, error)
 	Login(ctx context.Context, username, password string) (string, error)
 	SelfInfo(ctx context.Context, userId string) (*model.User, error)
@@ -33,7 +33,7 @@ type UserServiceOpts struct {
 }
 
 // NewService creates a new user service
-func NewService(opts *UserServiceOpts) UserService {
+func NewService(opts *UserServiceOpts) Service {
 
 	return &userService{
 		userRepo:        opts.UserRepo,

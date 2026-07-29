@@ -14,6 +14,7 @@ import (
 	healthCheckHandler "github.com/viettrung2103/bookmark-management/internal/app/handler/healthcheck"
 	urlHandler "github.com/viettrung2103/bookmark-management/internal/app/handler/url"
 	userHandler "github.com/viettrung2103/bookmark-management/internal/app/handler/user"
+	"github.com/viettrung2103/bookmark-management/internal/app/repository/cache"
 
 	bookmarkRepository "github.com/viettrung2103/bookmark-management/internal/app/repository/bookmark"
 	healthCheckRepository "github.com/viettrung2103/bookmark-management/internal/app/repository/healthcheck"
@@ -120,6 +121,8 @@ func (e *engine) initHandlers() *handlers {
 	userSvc := userService.NewService(userSvcInput)
 	userHdlr := userHandler.NewHandler(userSvc)
 
+	cacheRepo := cache.NewRedisDB(e.redis)
+
 	bookmarkRepo := bookmarkRepository.NewRepository(e.db)
 	bookmarkSvcOpts := &bookmarkService.BookmarkServiceOpts{
 		Keygen:             keyGen,
@@ -127,7 +130,9 @@ func (e *engine) initHandlers() *handlers {
 	}
 
 	bookmarkSvc := bookmarkService.NewService(bookmarkSvcOpts)
-	bookmarkHdlr := bookmarkHandler.NewHandler(bookmarkSvc)
+	bookmarkCacheSvc := bookmarkService.NewBookmarkCacheService(bookmarkSvc, cacheRepo)
+
+	bookmarkHdlr := bookmarkHandler.NewHandler(bookmarkCacheSvc)
 
 	return &handlers{
 		healthCheckHandler: healthCheckHdlr,

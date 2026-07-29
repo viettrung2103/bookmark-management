@@ -40,7 +40,7 @@ func TestBookmarkHandler_GetBookmarks(t *testing.T) {
 			setupMockService: func(ctx context.Context) *bookmarkMock.Service {
 				serviceMock := bookmarkMock.NewService(t)
 
-				mockResult := &bookmarkService.BookmarkResult{
+				mockResult := &bookmarkService.GetBookmarkResult{
 					Bookmarks: []*model.Bookmark{
 						{
 							Description: "Google",
@@ -69,7 +69,7 @@ func TestBookmarkHandler_GetBookmarks(t *testing.T) {
 				serviceMock := bookmarkMock.NewService(t)
 
 				serviceMock.On("GetBookmarks", ctx, testGetUserID, 1, 20).
-					Return((*bookmarkService.BookmarkResult)(nil), errors.New("database read crash"))
+					Return((*bookmarkService.GetBookmarkResult)(nil), errors.New("database read crash"))
 
 				return serviceMock
 			},
