@@ -8,8 +8,8 @@ import (
 
 // GetBookmarkResult struct
 type GetBookmarkResult struct {
-	Bookmarks []*model.Bookmark
-	Count     int64
+	Bookmarks []*model.Bookmark `json:"bookmarks,omitempty"`
+	Count     int64             `json:"count,omitempty"`
 }
 
 // GetBookmarks get lists of bookmarks of current user
