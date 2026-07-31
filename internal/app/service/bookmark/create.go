@@ -26,19 +26,15 @@ func (s *bookmarkService) AddBookmark(ctx context.Context, description, url, use
 			UserID:      fixtures.GetUUID(userID),
 		}
 
-		println("Add booking using repo")
-
 		newBookmark, err := txRepo.CreateBookmark(ctx, newBookmark)
-		println("new bookmark ", newBookmark)
-		println("new bookmark & ", &newBookmark)
+
 		if err != nil {
 			log.Err(err).Msg("failed to create bookmark")
-			return err // Phải kiểm tra lỗi ở đây để tránh panic!
+			return err
 		}
 
 		// generate new code
 		newCode := s.keygen.GenerateBase62Code(newBookmark.CodeInt)
-		print("code ", newCode)
 		newBookmark.Code = newCode
 
 		// update new code to db

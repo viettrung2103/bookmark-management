@@ -24,12 +24,10 @@ type addBookmarkInput struct {
 // @Router /v1/bookmarks [post]
 func (h *bookmarkHandler) AddBookmark(c *gin.Context) {
 	// lay input
-	println("Getting input")
 	input, uid, err := requestutils.BindInputFromRequestWithAuth[addBookmarkInput](c)
 	if err != nil {
 		return
 	}
-	println("add bookmark using service")
 
 	// call service
 	newBookmark, err := h.svc.AddBookmark(c, input.Description, input.URL, uid)

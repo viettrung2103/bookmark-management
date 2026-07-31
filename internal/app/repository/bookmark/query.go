@@ -42,7 +42,6 @@ func (r *bookmarkRepository) GetBookmarkCount(ctx context.Context, userID string
 }
 
 func (r *bookmarkRepository) GetBookmarkByCode(ctx context.Context, code string) (*model.Bookmark, error) {
-	println("get bookmark by code in bookmark repo")
 	var selectedBookmark model.Bookmark
 	// fetch bookmark from code
 	err := r.db.WithContext(ctx).
@@ -50,7 +49,6 @@ func (r *bookmarkRepository) GetBookmarkByCode(ctx context.Context, code string)
 		Where("code=?", code).
 		First(&selectedBookmark).
 		Error
-	println("err", err)
 	if err != nil {
 		return nil, dbutils.CatchDBError(err)
 	}

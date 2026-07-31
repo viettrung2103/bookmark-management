@@ -46,8 +46,7 @@ func TestService_CreateShortenLink(t *testing.T) {
 			},
 			setupKeyGen: func() *keygenMock.KeyGenerator {
 				mockKeyGen := keygenMock.NewKeyGenerator(t)
-				mockKeyGen.On("GenerateKey", linkKeyLength).Return("1234567")
-
+				mockKeyGen.On("GenerateRedisKey", linkKeyLength).Return("1234567")
 				return mockKeyGen
 			},
 
@@ -74,8 +73,8 @@ func TestService_CreateShortenLink(t *testing.T) {
 			},
 			setupKeyGen: func() *keygenMock.KeyGenerator {
 				mockKeyGen := keygenMock.NewKeyGenerator(t)
-				mockKeyGen.On("GenerateKey", linkKeyLength).Return("1234567").Once()
-				mockKeyGen.On("GenerateKey", linkKeyLength).Return("2345678").Once()
+				mockKeyGen.On("GenerateRedisKey", linkKeyLength).Return("1234567").Once()
+				mockKeyGen.On("GenerateRedisKey", linkKeyLength).Return("2345678").Once()
 
 				return mockKeyGen
 			},

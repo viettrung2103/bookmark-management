@@ -121,13 +121,13 @@ func TestRedirectEndpoint(t *testing.T) {
 			name: "normal case",
 			setupMockRedis: func() *redis.Client {
 				mock := pkgRedis.InitMockRedis(t)
-				mock.Set(ctx, "1234567", "https://test.com", testExpTime)
+				mock.Set(ctx, "a1234567", "https://test.com", testExpTime)
 				//mock.On("StoreUrl", "1234567", "https://test.com", testExpTime)
 				return mock
 			},
 
 			setupTestHTTP: func(api api.Engine) *httptest.ResponseRecorder {
-				req, _ := http.NewRequest("GET", "/v1/links/redirect/1234567", nil)
+				req, _ := http.NewRequest("GET", "/v1/links/redirect/a1234567", nil)
 				respRecorder := httptest.NewRecorder()
 				api.ServeHTTP(respRecorder, req)
 				return respRecorder
@@ -143,12 +143,12 @@ func TestRedirectEndpoint(t *testing.T) {
 			name: "wrong endpoint",
 			setupMockRedis: func() *redis.Client {
 				mock := pkgRedis.InitMockRedis(t)
-				mock.Set(ctx, "1234567", "https://test.com", testExpTime)
+				mock.Set(ctx, "a1234567", "https://test.com", testExpTime)
 				//mock.On("StoreUrl", "1234567", "https://test.com", testExpTime)
 				return mock
 			},
 			setupTestHTTP: func(api api.Engine) *httptest.ResponseRecorder {
-				req, _ := http.NewRequest("POST", "/v1/links/redirect/1234567", nil)
+				req, _ := http.NewRequest("POST", "/v1/links/redirec/a1234567", nil)
 				respRecorder := httptest.NewRecorder()
 				api.ServeHTTP(respRecorder, req)
 				return respRecorder
@@ -164,7 +164,7 @@ func TestRedirectEndpoint(t *testing.T) {
 			name: "wrong code",
 			setupMockRedis: func() *redis.Client {
 				mock := pkgRedis.InitMockRedis(t)
-				mock.Set(ctx, "1234567", "https://test.com", testExpTime)
+				mock.Set(ctx, "a1234567", "https://test.com", testExpTime)
 				//mock.On("StoreUrl", "1234567", "https://test.com", testExpTime)
 				return mock
 			},

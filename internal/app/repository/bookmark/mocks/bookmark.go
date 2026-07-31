@@ -5,7 +5,10 @@ package mocks
 import (
 	context "context"
 
+	bookmark "github.com/viettrung2103/bookmark-management/internal/app/repository/bookmark"
+
 	mock "github.com/stretchr/testify/mock"
+
 	model "github.com/viettrung2103/bookmark-management/internal/app/model"
 )
 
@@ -80,6 +83,54 @@ func (_m *Repository) EditBookmarkByID(ctx context.Context, userID string, bookm
 	return r0
 }
 
+// EditBookmarkCodeByID provides a mock function with given fields: ctx, userID, bookmarkID, newCode
+func (_m *Repository) EditBookmarkCodeByID(ctx context.Context, userID string, bookmarkID string, newCode string) error {
+	ret := _m.Called(ctx, userID, bookmarkID, newCode)
+
+	if len(ret) == 0 {
+		panic("no return value specified for EditBookmarkCodeByID")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, string, string, string) error); ok {
+		r0 = rf(ctx, userID, bookmarkID, newCode)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// GetBookmarkByCode provides a mock function with given fields: ctx, code
+func (_m *Repository) GetBookmarkByCode(ctx context.Context, code string) (*model.Bookmark, error) {
+	ret := _m.Called(ctx, code)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GetBookmarkByCode")
+	}
+
+	var r0 *model.Bookmark
+	var r1 error
+	if rf, ok := ret.Get(0).(func(context.Context, string) (*model.Bookmark, error)); ok {
+		return rf(ctx, code)
+	}
+	if rf, ok := ret.Get(0).(func(context.Context, string) *model.Bookmark); ok {
+		r0 = rf(ctx, code)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*model.Bookmark)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(context.Context, string) error); ok {
+		r1 = rf(ctx, code)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
 // GetBookmarkCount provides a mock function with given fields: ctx, userID
 func (_m *Repository) GetBookmarkCount(ctx context.Context, userID string) (int64, error) {
 	ret := _m.Called(ctx, userID)
@@ -136,6 +187,24 @@ func (_m *Repository) GetBookmarks(ctx context.Context, userID string, offset in
 	}
 
 	return r0, r1
+}
+
+// Transaction provides a mock function with given fields: ctx, fn
+func (_m *Repository) Transaction(ctx context.Context, fn func(bookmark.Repository) error) error {
+	ret := _m.Called(ctx, fn)
+
+	if len(ret) == 0 {
+		panic("no return value specified for Transaction")
+	}
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, func(bookmark.Repository) error) error); ok {
+		r0 = rf(ctx, fn)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
 }
 
 // NewRepository creates a new instance of Repository. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.

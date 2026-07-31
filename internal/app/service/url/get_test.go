@@ -7,6 +7,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	bookmarkMockRepo "github.com/viettrung2103/bookmark-management/internal/app/repository/bookmark/mocks"
+	keygenMocks "github.com/viettrung2103/bookmark-management/pkg/stringutils/mocks"
 
 	URLMockRepo "github.com/viettrung2103/bookmark-management/internal/app/repository/url/mocks"
 )
@@ -22,6 +23,7 @@ func TestService_GetLinkFromKey(t *testing.T) {
 
 		setupURLRepo      func(ctx context.Context) *URLMockRepo.URLRepository
 		setupBookmarkRepo func(ctx context.Context) *bookmarkMockRepo.Repository
+		setupKeygen       func(ctx context.Context) *keygenMocks.KeyGenerator
 		expectedUrl       string
 		expectedErr       error
 	}{
@@ -35,6 +37,11 @@ func TestService_GetLinkFromKey(t *testing.T) {
 			setupBookmarkRepo: func(ctx context.Context) *bookmarkMockRepo.Repository {
 				mock := bookmarkMockRepo.NewRepository(t)
 				//mock.On("GetURL", ctx, "test").Return("https://test.com", nil)
+				return mock
+			},
+			setupKeygen: func(ctx context.Context) *keygenMocks.KeyGenerator {
+				mock := keygenMocks.NewKeyGenerator(t)
+				mock.On("IsRedisCode", "test").Return(true)
 				return mock
 			},
 
@@ -53,6 +60,11 @@ func TestService_GetLinkFromKey(t *testing.T) {
 				//mock.On("GetURL", ctx, "test").Return("https://test.com", nil)
 				return mock
 			},
+			setupKeygen: func(ctx context.Context) *keygenMocks.KeyGenerator {
+				mock := keygenMocks.NewKeyGenerator(t)
+				mock.On("IsRedisCode", "test").Return(true)
+				return mock
+			},
 			expectedUrl: "",
 			expectedErr: redisTestErr,
 		},
@@ -68,6 +80,11 @@ func TestService_GetLinkFromKey(t *testing.T) {
 				//mock.On("GetURL", ctx, "test").Return("https://test.com", nil)
 				return mock
 			},
+			setupKeygen: func(ctx context.Context) *keygenMocks.KeyGenerator {
+				mock := keygenMocks.NewKeyGenerator(t)
+				mock.On("IsRedisCode", "test").Return(true)
+				return mock
+			},
 
 			expectedUrl: "",
 			expectedErr: redisTestErr,
@@ -81,8 +98,9 @@ func TestService_GetLinkFromKey(t *testing.T) {
 			ctx := t.Context()
 
 			urlMock := tc.setupURLRepo(ctx)
+			keygenMock := tc.setupKeygen(ctx)
 			bookmarkMock := tc.setupBookmarkRepo(ctx)
-			testService := NewService(urlMock, bookmarkMock, nil)
+			testService := NewService(urlMock, bookmarkMock, keygenMock)
 			result, err := testService.GetLinkFromCode(ctx, "test")
 			assert.Equal(t, result, tc.expectedUrl)
 			assert.ErrorIs(t, err, tc.expectedErr)
