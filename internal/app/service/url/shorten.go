@@ -10,13 +10,13 @@ import (
 )
 
 const (
-	urlCodeLength = 7
+	redisCodeLength = 7
 )
 
 // ShortenUrlWithExpiringTime shortens a url with expiring time
 func (s *shortenUrlService) ShortenUrlWithExpiringTime(ctx context.Context, url string, expireTime int) (string, error) {
 	// tao key
-	key := s.keygen.GenerateKey(urlCodeLength)
+	key := s.keygen.GenerateRedisKey(redisCodeLength)
 
 	res, err := s.urlRepo.GetURL(ctx, key)
 

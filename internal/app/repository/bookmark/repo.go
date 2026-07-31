@@ -16,7 +16,10 @@ type Repository interface {
 	GetBookmarkCount(ctx context.Context, userID string) (int64, error)
 	GetBookmarkByCode(ctx context.Context, code string) (*model.Bookmark, error)
 	EditBookmarkByID(ctx context.Context, userID, bookmarkID, newDescription, newURL string) error
+	EditBookmarkCodeByID(ctx context.Context, userID, bookmarkID string, newCode string) error
 	DeleteBookmarkByID(ctx context.Context, userID, bookmarkID string) error
+
+	Transaction(ctx context.Context, fn func(txRepo Repository) error) error
 }
 
 type bookmarkRepository struct {
