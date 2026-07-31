@@ -3,6 +3,7 @@ package link
 import (
 	"context"
 
+	bookmarkRepository "github.com/viettrung2103/bookmark-management/internal/app/repository/bookmark"
 	"github.com/viettrung2103/bookmark-management/internal/app/repository/url"
 	"github.com/viettrung2103/bookmark-management/pkg/stringutils"
 )
@@ -16,14 +17,16 @@ type URLService interface {
 }
 
 type shortenUrlService struct {
-	repo   url.URLRepository
-	keygen stringutils.KeyGenerator
+	urlRepo      url.URLRepository
+	bookmarkRepo bookmarkRepository.Repository
+	keygen       stringutils.KeyGenerator
 }
 
 // NewShortenUrl returns a new ShortenUrl
-func NewService(repo url.URLRepository, keygen stringutils.KeyGenerator) URLService {
+func NewService(urlRepo url.URLRepository, bookmarkRepo bookmarkRepository.Repository, keygen stringutils.KeyGenerator) URLService {
 	return &shortenUrlService{
-		repo:   repo,
-		keygen: keygen,
+		urlRepo:      urlRepo,
+		bookmarkRepo: bookmarkRepo,
+		keygen:       keygen,
 	}
 }

@@ -6,8 +6,9 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	//repoMocks "github.com/viettrung2103/bookmark-management/internal/app/repository/mocks"
-	repoMocks "github.com/viettrung2103/bookmark-management/internal/app/repository/url/mocks"
+	bookmarkMockRepo "github.com/viettrung2103/bookmark-management/internal/app/repository/bookmark/mocks"
+
+	URLMockRepo "github.com/viettrung2103/bookmark-management/internal/app/repository/url/mocks"
 )
 
 var redisTestErr = errors.New("test error")
@@ -19,15 +20,21 @@ func TestService_GetLinkFromKey(t *testing.T) {
 	testCases := []struct {
 		name string
 
-		setupRepo   func(ctx context.Context) *repoMocks.URLRepository
-		expectedUrl string
-		expectedErr error
+		setupURLRepo      func(ctx context.Context) *URLMockRepo.URLRepository
+		setupBookmarkRepo func(ctx context.Context) *bookmarkMockRepo.Repository
+		expectedUrl       string
+		expectedErr       error
 	}{
 		{
 			name: "normal case",
-			setupRepo: func(ctx context.Context) *repoMocks.URLRepository {
-				mock := repoMocks.NewURLRepository(t)
+			setupURLRepo: func(ctx context.Context) *URLMockRepo.URLRepository {
+				mock := URLMockRepo.NewURLRepository(t)
 				mock.On("GetURL", ctx, "test").Return("https://test.com", nil)
+				return mock
+			},
+			setupBookmarkRepo: func(ctx context.Context) *bookmarkMockRepo.Repository {
+				mock := bookmarkMockRepo.NewRepository(t)
+				//mock.On("GetURL", ctx, "test").Return("https://test.com", nil)
 				return mock
 			},
 
@@ -36,9 +43,14 @@ func TestService_GetLinkFromKey(t *testing.T) {
 		},
 		{
 			name: "empty case",
-			setupRepo: func(ctx context.Context) *repoMocks.URLRepository {
-				mock := repoMocks.NewURLRepository(t)
+			setupURLRepo: func(ctx context.Context) *URLMockRepo.URLRepository {
+				mock := URLMockRepo.NewURLRepository(t)
 				mock.On("GetURL", ctx, "test").Return("", redisTestErr)
+				return mock
+			},
+			setupBookmarkRepo: func(ctx context.Context) *bookmarkMockRepo.Repository {
+				mock := bookmarkMockRepo.NewRepository(t)
+				//mock.On("GetURL", ctx, "test").Return("https://test.com", nil)
 				return mock
 			},
 			expectedUrl: "",
@@ -46,9 +58,14 @@ func TestService_GetLinkFromKey(t *testing.T) {
 		},
 		{
 			name: "err case ",
-			setupRepo: func(ctx context.Context) *repoMocks.URLRepository {
-				mock := repoMocks.NewURLRepository(t)
+			setupURLRepo: func(ctx context.Context) *URLMockRepo.URLRepository {
+				mock := URLMockRepo.NewURLRepository(t)
 				mock.On("GetURL", ctx, "test").Return("", redisTestErr)
+				return mock
+			},
+			setupBookmarkRepo: func(ctx context.Context) *bookmarkMockRepo.Repository {
+				mock := bookmarkMockRepo.NewRepository(t)
+				//mock.On("GetURL", ctx, "test").Return("https://test.com", nil)
 				return mock
 			},
 
@@ -63,8 +80,9 @@ func TestService_GetLinkFromKey(t *testing.T) {
 			t.Parallel()
 			ctx := t.Context()
 
-			mockRepo := tc.setupRepo(ctx)
-			testService := NewService(mockRepo, nil)
+			urlMock := tc.setupURLRepo(ctx)
+			bookmarkMock := tc.setupBookmarkRepo(ctx)
+			testService := NewService(urlMock, bookmarkMock, nil)
 			result, err := testService.GetLinkFromCode(ctx, "test")
 			assert.Equal(t, result, tc.expectedUrl)
 			assert.ErrorIs(t, err, tc.expectedErr)

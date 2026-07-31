@@ -2,6 +2,7 @@ package bookmark_test
 
 import (
 	"context"
+	"errors"
 	"testing"
 
 	"github.com/redis/go-redis/v9"
@@ -133,6 +134,191 @@ func TestBookmarkCacheService_GetBookmarks(t *testing.T) {
 			bookmarkCacheService := bookmark.NewBookmarkCacheService(mockService, mockCache)
 			res, err := bookmarkCacheService.GetBookmarks(ctx, validUserID, 1, 10)
 			assert.Equal(t, tc.expectedResult, res)
+			assert.Equal(t, tc.expectedError, err)
+		})
+	}
+}
+
+func TestBookmarkCacheService_AddBookmark(t *testing.T) {
+	t.Parallel()
+
+	testBookmark := &model.Bookmark{
+		Base:        fixtures.GetTestBase("f4defa89-c5b3-4f26-8ca1-614495cdde12"),
+		Description: "New Bookmark",
+		URL:         "https://www.new.com",
+		UserID:      fixtures.GetUUID(validUserID),
+	}
+
+	testcases := []struct {
+		name string
+
+		setupService func(ctx context.Context) *mocks.Service
+		setupCache   func(ctx context.Context) *mock_cache.DB
+
+		expectedResult *model.Bookmark
+		expectedError  error
+	}{
+		{
+			name: "success - invalidates cache and calls service",
+			setupService: func(ctx context.Context) *mocks.Service {
+				mockService := mocks.NewService(t)
+				mockService.On("AddBookmark", ctx, "New Bookmark", "https://www.new.com", validUserID).Return(testBookmark, nil)
+				return mockService
+			},
+			setupCache: func(ctx context.Context) *mock_cache.DB {
+				mockCache := mock_cache.NewDB(t)
+				// Expect cache group key deletion
+				mockCache.On("DeleteCacheGroupKey", ctx, validCacheGroupKey).Return(nil)
+				return mockCache
+			},
+			expectedResult: testBookmark,
+			expectedError:  nil,
+		},
+		{
+			name: "failure - cache deletion fails, stops execution",
+			setupService: func(ctx context.Context) *mocks.Service {
+				mockService := mocks.NewService(t)
+				// Service should NOT be called because cache deletion failed
+				return mockService
+			},
+			setupCache: func(ctx context.Context) *mock_cache.DB {
+				mockCache := mock_cache.NewDB(t)
+				mockCache.On("DeleteCacheGroupKey", ctx, validCacheGroupKey).Return(errors.New("redis error"))
+				return mockCache
+			},
+			expectedResult: nil,
+			expectedError:  errors.New("redis error"),
+		},
+	}
+
+	for _, tc := range testcases {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+			ctx := t.Context()
+
+			mockService := tc.setupService(ctx)
+			mockCache := tc.setupCache(ctx)
+
+			bookmarkCacheService := bookmark.NewBookmarkCacheService(mockService, mockCache)
+			res, err := bookmarkCacheService.AddBookmark(ctx, "New Bookmark", "https://www.new.com", validUserID)
+
+			assert.Equal(t, tc.expectedResult, res)
+			assert.Equal(t, tc.expectedError, err)
+		})
+	}
+}
+
+func TestBookmarkCacheService_EditBookmarkByID(t *testing.T) {
+	t.Parallel()
+
+	targetBookmarkID := "f4defa89-c5b3-4f26-8ca1-614495cdde12"
+
+	testcases := []struct {
+		name string
+
+		setupService func(ctx context.Context) *mocks.Service
+		setupCache   func(ctx context.Context) *mock_cache.DB
+
+		expectedError error
+	}{
+		{
+			name: "success - invalidates cache and calls service",
+			setupService: func(ctx context.Context) *mocks.Service {
+				mockService := mocks.NewService(t)
+				mockService.On("EditBookmarkByID", ctx, validUserID, targetBookmarkID, "Updated Desc", "https://updated.com").Return(nil)
+				return mockService
+			},
+			setupCache: func(ctx context.Context) *mock_cache.DB {
+				mockCache := mock_cache.NewDB(t)
+				mockCache.On("DeleteCacheGroupKey", ctx, validCacheGroupKey).Return(nil)
+				return mockCache
+			},
+			expectedError: nil,
+		},
+		{
+			name: "failure - cache deletion fails, stops execution",
+			setupService: func(ctx context.Context) *mocks.Service {
+				mockService := mocks.NewService(t)
+				return mockService
+			},
+			setupCache: func(ctx context.Context) *mock_cache.DB {
+				mockCache := mock_cache.NewDB(t)
+				mockCache.On("DeleteCacheGroupKey", ctx, validCacheGroupKey).Return(errors.New("redis error"))
+				return mockCache
+			},
+			expectedError: errors.New("redis error"),
+		},
+	}
+
+	for _, tc := range testcases {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+			ctx := t.Context()
+
+			mockService := tc.setupService(ctx)
+			mockCache := tc.setupCache(ctx)
+
+			bookmarkCacheService := bookmark.NewBookmarkCacheService(mockService, mockCache)
+			err := bookmarkCacheService.EditBookmarkByID(ctx, validUserID, targetBookmarkID, "Updated Desc", "https://updated.com")
+
+			assert.Equal(t, tc.expectedError, err)
+		})
+	}
+}
+
+func TestBookmarkCacheService_DeleteBookmarkByID(t *testing.T) {
+	t.Parallel()
+
+	targetBookmarkID := "f4defa89-c5b3-4f26-8ca1-614495cdde12"
+
+	testcases := []struct {
+		name string
+
+		setupService func(ctx context.Context) *mocks.Service
+		setupCache   func(ctx context.Context) *mock_cache.DB
+
+		expectedError error
+	}{
+		{
+			name: "success - invalidates cache and calls service",
+			setupService: func(ctx context.Context) *mocks.Service {
+				mockService := mocks.NewService(t)
+				mockService.On("DeleteBookmarkByID", ctx, validUserID, targetBookmarkID).Return(nil)
+				return mockService
+			},
+			setupCache: func(ctx context.Context) *mock_cache.DB {
+				mockCache := mock_cache.NewDB(t)
+				mockCache.On("DeleteCacheGroupKey", ctx, validCacheGroupKey).Return(nil)
+				return mockCache
+			},
+			expectedError: nil,
+		},
+		{
+			name: "failure - cache deletion fails, stops execution",
+			setupService: func(ctx context.Context) *mocks.Service {
+				mockService := mocks.NewService(t)
+				return mockService
+			},
+			setupCache: func(ctx context.Context) *mock_cache.DB {
+				mockCache := mock_cache.NewDB(t)
+				mockCache.On("DeleteCacheGroupKey", ctx, validCacheGroupKey).Return(errors.New("redis error"))
+				return mockCache
+			},
+			expectedError: errors.New("redis error"),
+		},
+	}
+
+	for _, tc := range testcases {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+			ctx := t.Context()
+
+			mockService := tc.setupService(ctx)
+			mockCache := tc.setupCache(ctx)
+
+			bookmarkCacheService := bookmark.NewBookmarkCacheService(mockService, mockCache)
+			err := bookmarkCacheService.DeleteBookmarkByID(ctx, validUserID, targetBookmarkID)
+
 			assert.Equal(t, tc.expectedError, err)
 		})
 	}

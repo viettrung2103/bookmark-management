@@ -100,10 +100,8 @@ func (e *engine) initHandlers() *handlers {
 
 	keyGen := stringutils.NewKeyGenerator()
 
-	shortenUrlSvc := urlService.NewService(shortenUrlRepo, keyGen)
 	healthCheckSvc := healthCheckService.NewService(healthCheckRepo)
 
-	shortenUrlHdlr := urlHandler.NewShortenLink(shortenUrlSvc, e.cfg)
 	healthCheckHdlr := healthCheckHandler.NewHandler(healthCheckSvc)
 
 	passwordHashing := stringutils.NewPasswordHasher()
@@ -129,9 +127,12 @@ func (e *engine) initHandlers() *handlers {
 		BookmarkRepository: bookmarkRepo,
 	}
 
+	shortenUrlSvc := urlService.NewService(shortenUrlRepo, bookmarkRepo, keyGen)
+
 	bookmarkSvc := bookmarkService.NewService(bookmarkSvcOpts)
 	bookmarkCacheSvc := bookmarkService.NewBookmarkCacheService(bookmarkSvc, cacheRepo)
 
+	shortenUrlHdlr := urlHandler.NewShortenLink(shortenUrlSvc, e.cfg)
 	bookmarkHdlr := bookmarkHandler.NewHandler(bookmarkCacheSvc)
 
 	return &handlers{
