@@ -9,6 +9,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
 	"github.com/viettrung2103/bookmark-management/internal/app/repository/cache"
+	"github.com/viettrung2103/bookmark-management/pkg/common"
 )
 
 const (
@@ -82,7 +83,7 @@ func (s *bookmarkCacheService) AddBookmark(ctx context.Context, description, url
 	cacheGroupKey := fmt.Sprintf(cacheGroupKeyFormatGetBookmarks, userID)
 	err := s.cache.DeleteCacheGroupKey(ctx, cacheGroupKey)
 	if err != nil {
-		log.Err(err).Msg("Failed to delete cache")
+		log.Err(err).Msg(common.DeleteCacheError)
 		return nil, err
 	}
 	return s.s.AddBookmark(ctx, description, url, userID)
@@ -91,7 +92,7 @@ func (s *bookmarkCacheService) EditBookmarkByID(ctx context.Context, userID stri
 	cacheGroupKey := fmt.Sprintf(cacheGroupKeyFormatGetBookmarks, userID)
 	err := s.cache.DeleteCacheGroupKey(ctx, cacheGroupKey)
 	if err != nil {
-		log.Err(err).Msg("Failed to delete cache")
+		log.Err(err).Msg(common.DeleteCacheError)
 		return err
 	}
 
@@ -101,7 +102,7 @@ func (s *bookmarkCacheService) DeleteBookmarkByID(ctx context.Context, userID, b
 	cacheGroupKey := fmt.Sprintf(cacheGroupKeyFormatGetBookmarks, userID)
 	err := s.cache.DeleteCacheGroupKey(ctx, cacheGroupKey)
 	if err != nil {
-		log.Err(err).Msg("Failed to delete cache")
+		log.Err(err).Msg(common.DeleteCacheError)
 		return err
 	}
 
