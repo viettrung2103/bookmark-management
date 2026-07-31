@@ -14,6 +14,7 @@ type Repository interface {
 	CreateBookmark(ctx context.Context, bookmark *model.Bookmark) (*model.Bookmark, error)
 	GetBookmarks(ctx context.Context, userID string, offset, limit int) ([]*model.Bookmark, error)
 	GetBookmarkCount(ctx context.Context, userID string) (int64, error)
+	GetBookmarkByCode(ctx context.Context, code string) (*model.Bookmark, error)
 	EditBookmarkByID(ctx context.Context, userID, bookmarkID, newDescription, newURL string) error
 	DeleteBookmarkByID(ctx context.Context, userID, bookmarkID string) error
 }

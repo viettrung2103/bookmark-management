@@ -67,7 +67,6 @@ func (s *bookmarkCacheService) GetBookmarks(ctx context.Context, userID string, 
 		log.Err(err).Msg("Failed to marshal result data")
 	}
 	if len(resultInBytes) > 0 && err == nil {
-		println(string(resultInBytes))
 		err := s.cache.SetCacheData(ctx, cacheGroupKey, cacheKey, resultInBytes, CacheExpireDuration)
 		if err != nil {
 			log.Err(err).Msg("Failed to set cache data")
