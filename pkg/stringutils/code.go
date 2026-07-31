@@ -2,10 +2,11 @@ package stringutils
 
 import (
 	"bytes"
+	"crypto/rand"
 	"encoding/binary"
-	"math/rand"
+	"math/big"
+
 	"strings"
-	"time"
 
 	"github.com/deatil/go-encoding/base62"
 )
@@ -29,39 +30,48 @@ type KeyGenerator interface {
 }
 
 type stringGenerator struct {
-	rng *rand.Rand
 }
 
 // NewKeyGenerator creates a new key generator
 func NewKeyGenerator() KeyGenerator {
-	return &stringGenerator{
-		rng: rand.New(rand.NewSource(time.Now().UnixNano())),
-	}
+	return &stringGenerator{}
 }
 
 // GenerateKey generates a random string of the given length
 func (r *stringGenerator) GenerateKey(length int) string {
 
-	return randomString(r.rng, length)
+	return randomString(length)
 }
 
 // GenerateRandomString generates a random string of the given length
 func GenerateRandomString(length int) string {
 
-	rng := rand.New(rand.NewSource(time.Now().UnixNano()))
-	return randomString(rng, length)
+	return randomString(length)
 
 }
 
-func randomString(rng *rand.Rand, length int) string {
-	var strBuilder bytes.Buffer
-
+func randomString(length int) string {
+	b := make([]byte, length)
+	max := big.NewInt(int64(len(charset)))
 	for i := 0; i < length; i++ {
 
-		strBuilder.WriteByte(charset[rng.Intn(len(charset))])
+		n, err := rand.Int(rand.Reader, max)
+		if err != nil {
+			panic("crypto/rand failed: " + err.Error())
+		}
+		b[i] = charset[n.Int64()]
 	}
 
-	return strBuilder.String()
+	return string(b)
+}
+
+func generateRandomChar(allowedChars string) byte {
+	max := big.NewInt(int64(len(allowedChars)))
+	n, err := rand.Int(rand.Reader, max)
+	if err != nil {
+		panic("crypto/rand failed: " + err.Error())
+	}
+	return allowedChars[n.Int64()]
 }
 
 // GenerateRedisKey generates a redis-specific code with prefix (a-h)
@@ -69,18 +79,17 @@ func (r *stringGenerator) GenerateRedisKey(length int) string {
 	var strBuilder bytes.Buffer
 
 	// 1. Get the first letter randomly from the redis prefix list (a-h)
-	strBuilder.WriteByte(redisPrefixChars[r.rng.Intn(len(redisPrefixChars))])
-
+	strBuilder.WriteByte(generateRandomChar(redisPrefixChars))
 	// 2. Concat with the remaining random characters using your existing logic
 	if length > 1 {
-		strBuilder.WriteString(randomString(r.rng, length-1))
+		strBuilder.WriteString(randomString(length - 1))
 	}
 
 	return strBuilder.String()
 }
 
 func (r *stringGenerator) GenerateDBPrefix() string {
-	return string(dbPrefixChars[r.rng.Intn(len(dbPrefixChars))])
+	return string(generateRandomChar(dbPrefixChars))
 }
 
 func (r *stringGenerator) GenerateBase62Code(codeInt uint64) string {
@@ -97,9 +106,15 @@ func (r *stringGenerator) GenerateBase62Code(codeInt uint64) string {
 }
 
 func (r *stringGenerator) IsRedisCode(code string) bool {
+	if len(code) == 0 {
+		return false
+	}
 	return strings.Contains(redisPrefixChars, code[:1])
 }
 func (r *stringGenerator) IsDBCode(code string) bool {
+	if len(code) == 0 {
+		return false
+	}
 	return strings.Contains(dbPrefixChars, code[:1])
 
 }
