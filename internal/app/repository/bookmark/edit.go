@@ -16,12 +16,8 @@ type ParsedBookmarkIDs struct {
 }
 
 func (r *bookmarkRepository) EditBookmarkByID(ctx context.Context, userID, bookmarkID, newDescription, newURL string) error {
-	//parsedUserID, err := uuid.Parse(userID)
-	//common.HandleError(err)
-	//
-	//parsedBookmarkID, err := uuid.Parse(bookmarkID)
-	//common.HandleError(err)
-	parsedBookmarkID := getParsedUserIDAndParsedBookmarkID(userID, bookmarkID)
+
+	parsedBookmarkID := getParsedUserIDAndParsedBookmarkID(bookmarkID, userID)
 
 	updatedBookmark := model.Bookmark{
 		Description: newDescription,
@@ -45,7 +41,7 @@ func (r *bookmarkRepository) EditBookmarkByID(ctx context.Context, userID, bookm
 }
 
 func (r *bookmarkRepository) EditBookmarkCodeByID(ctx context.Context, bookmarkID, userID string, newCode string) error {
-	parsedBookmarkID := getParsedUserIDAndParsedBookmarkID(userID, bookmarkID)
+	parsedBookmarkID := getParsedUserIDAndParsedBookmarkID(bookmarkID, userID)
 
 	updatedBookmark := model.Bookmark{
 		Code: newCode,

@@ -121,7 +121,7 @@ func (e *engine) initHandlers() *handlers {
 
 	cacheRepo := cache.NewRedisDB(e.redis)
 
-	bookmarkRepo := bookmarkRepository.NewRepository(e.db)
+	bookmarkRepo := bookmarkRepository.NewRepository(e.db, keyGen)
 	bookmarkSvcOpts := &bookmarkService.BookmarkServiceOpts{
 		Keygen:             keyGen,
 		BookmarkRepository: bookmarkRepo,

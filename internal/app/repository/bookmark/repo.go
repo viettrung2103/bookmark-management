@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
+	"github.com/viettrung2103/bookmark-management/pkg/stringutils"
 	"gorm.io/gorm"
 )
 
@@ -23,12 +24,14 @@ type Repository interface {
 }
 
 type bookmarkRepository struct {
-	db *gorm.DB
+	db     *gorm.DB
+	keygen stringutils.KeyGenerator
 }
 
 // NewRepository create new repository
-func NewRepository(db *gorm.DB) Repository {
+func NewRepository(db *gorm.DB, keygen stringutils.KeyGenerator) Repository {
 	return &bookmarkRepository{
-		db: db,
+		db:     db,
+		keygen: keygen,
 	}
 }
