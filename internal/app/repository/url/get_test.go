@@ -20,6 +20,7 @@ func TestUrlStorage_GetURL(t *testing.T) {
 
 		code      string
 		setupMock func(ctx context.Context) *redis.Client
+		//setupDB   func(ctx context.Context) *gorm.DB
 
 		expectedVal string
 		expectedErr error
@@ -60,6 +61,7 @@ func TestUrlStorage_GetURL(t *testing.T) {
 			ctx := t.Context()
 
 			redisMock := tc.setupMock(ctx)
+
 			testRepo := NewRepository(redisMock)
 
 			val, err := testRepo.GetURL(ctx, tc.code)

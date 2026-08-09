@@ -14,6 +14,7 @@ import (
 	healthCheckHandler "github.com/viettrung2103/bookmark-management/internal/app/handler/healthcheck"
 	urlHandler "github.com/viettrung2103/bookmark-management/internal/app/handler/url"
 	userHandler "github.com/viettrung2103/bookmark-management/internal/app/handler/user"
+	"github.com/viettrung2103/bookmark-management/internal/app/repository/cache"
 
 	bookmarkRepository "github.com/viettrung2103/bookmark-management/internal/app/repository/bookmark"
 	healthCheckRepository "github.com/viettrung2103/bookmark-management/internal/app/repository/healthcheck"
@@ -99,10 +100,8 @@ func (e *engine) initHandlers() *handlers {
 
 	keyGen := stringutils.NewKeyGenerator()
 
-	shortenUrlSvc := urlService.NewService(shortenUrlRepo, keyGen)
 	healthCheckSvc := healthCheckService.NewService(healthCheckRepo)
 
-	shortenUrlHdlr := urlHandler.NewShortenLink(shortenUrlSvc, e.cfg)
 	healthCheckHdlr := healthCheckHandler.NewHandler(healthCheckSvc)
 
 	passwordHashing := stringutils.NewPasswordHasher()
@@ -120,14 +119,21 @@ func (e *engine) initHandlers() *handlers {
 	userSvc := userService.NewService(userSvcInput)
 	userHdlr := userHandler.NewHandler(userSvc)
 
-	bookmarkRepo := bookmarkRepository.NewRepository(e.db)
+	cacheRepo := cache.NewRedisDB(e.redis)
+
+	bookmarkRepo := bookmarkRepository.NewRepository(e.db, keyGen)
 	bookmarkSvcOpts := &bookmarkService.BookmarkServiceOpts{
 		Keygen:             keyGen,
 		BookmarkRepository: bookmarkRepo,
 	}
 
+	shortenUrlSvc := urlService.NewService(shortenUrlRepo, bookmarkRepo, keyGen)
+
 	bookmarkSvc := bookmarkService.NewService(bookmarkSvcOpts)
-	bookmarkHdlr := bookmarkHandler.NewHandler(bookmarkSvc)
+	bookmarkCacheSvc := bookmarkService.NewBookmarkCacheService(bookmarkSvc, cacheRepo)
+
+	shortenUrlHdlr := urlHandler.NewShortenLink(shortenUrlSvc, e.cfg)
+	bookmarkHdlr := bookmarkHandler.NewHandler(bookmarkCacheSvc)
 
 	return &handlers{
 		healthCheckHandler: healthCheckHdlr,

@@ -9,6 +9,42 @@ type KeyGenerator struct {
 	mock.Mock
 }
 
+// GenerateBase62Code provides a mock function with given fields: codeInt
+func (_m *KeyGenerator) GenerateBase62Code(codeInt uint64) string {
+	ret := _m.Called(codeInt)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GenerateBase62Code")
+	}
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func(uint64) string); ok {
+		r0 = rf(codeInt)
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	return r0
+}
+
+// GenerateDBPrefix provides a mock function with no fields
+func (_m *KeyGenerator) GenerateDBPrefix() string {
+	ret := _m.Called()
+
+	if len(ret) == 0 {
+		panic("no return value specified for GenerateDBPrefix")
+	}
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func() string); ok {
+		r0 = rf()
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	return r0
+}
+
 // GenerateKey provides a mock function with given fields: length
 func (_m *KeyGenerator) GenerateKey(length int) string {
 	ret := _m.Called(length)
@@ -22,6 +58,60 @@ func (_m *KeyGenerator) GenerateKey(length int) string {
 		r0 = rf(length)
 	} else {
 		r0 = ret.Get(0).(string)
+	}
+
+	return r0
+}
+
+// GenerateRedisKey provides a mock function with given fields: length
+func (_m *KeyGenerator) GenerateRedisKey(length int) string {
+	ret := _m.Called(length)
+
+	if len(ret) == 0 {
+		panic("no return value specified for GenerateRedisKey")
+	}
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func(int) string); ok {
+		r0 = rf(length)
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	return r0
+}
+
+// IsDBCode provides a mock function with given fields: code
+func (_m *KeyGenerator) IsDBCode(code string) bool {
+	ret := _m.Called(code)
+
+	if len(ret) == 0 {
+		panic("no return value specified for IsDBCode")
+	}
+
+	var r0 bool
+	if rf, ok := ret.Get(0).(func(string) bool); ok {
+		r0 = rf(code)
+	} else {
+		r0 = ret.Get(0).(bool)
+	}
+
+	return r0
+}
+
+// IsRedisCode provides a mock function with given fields: code
+func (_m *KeyGenerator) IsRedisCode(code string) bool {
+	ret := _m.Called(code)
+
+	if len(ret) == 0 {
+		panic("no return value specified for IsRedisCode")
+	}
+
+	var r0 bool
+	if rf, ok := ret.Get(0).(func(string) bool); ok {
+		r0 = rf(code)
+	} else {
+		r0 = ret.Get(0).(bool)
 	}
 
 	return r0

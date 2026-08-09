@@ -13,7 +13,7 @@ import (
 //go:generate mockery --name=Service --filename=bookmark.go
 type Service interface {
 	AddBookmark(ctx context.Context, description, url, userID string) (*model.Bookmark, error)
-	GetBookmarks(ctx context.Context, userID string, page, limit int) (*BookmarkResult, error)
+	GetBookmarks(ctx context.Context, userID string, page, limit int) (*GetBookmarkResult, error)
 	EditBookmarkByID(ctx context.Context, userID string, bookmarkID string, newDescription string, newURL string) error
 	DeleteBookmarkByID(ctx context.Context, userID, bookmarkID string) error
 }

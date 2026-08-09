@@ -15,6 +15,7 @@ import (
 	"github.com/viettrung2103/bookmark-management/internal/test/data/fixtures"
 	"github.com/viettrung2103/bookmark-management/pkg/jwtutils"
 	jwtMocks "github.com/viettrung2103/bookmark-management/pkg/jwtutils/mocks"
+	pkgRedis "github.com/viettrung2103/bookmark-management/pkg/redis"
 	"gorm.io/gorm"
 )
 
@@ -77,6 +78,8 @@ func TestEndpoint_Bookmark_Create(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
+			redisMocks := pkgRedis.InitMockRedis(t)
+
 			// 1. Reset database fixtures
 			db := tc.setupDB()
 
@@ -88,7 +91,7 @@ func TestEndpoint_Bookmark_Create(t *testing.T) {
 			testRouter := api.NewEngine(&api.EngineOpts{
 				Engine: gin.New(),
 				Cfg:    &config.Config{},
-				Redis:  nil,
+				Redis:  redisMocks,
 				SqlDB:  db,
 				JwtGen: nil, // Setup not required for standard resource routes
 				JwtVal: mockJwtValidator,
@@ -160,6 +163,7 @@ func TestEndpoint_Bookmark_Get(t *testing.T) {
 
 			// 1. Reset database fixtures
 			db := tc.setupDB()
+			redisMocks := pkgRedis.InitMockRedis(t)
 
 			// 2. Build mock validator for privateBase protection layers
 			mockJwtValidator := jwtMocks.NewJWTValidator(t)
@@ -169,7 +173,7 @@ func TestEndpoint_Bookmark_Get(t *testing.T) {
 			testRouter := api.NewEngine(&api.EngineOpts{
 				Engine: gin.New(),
 				Cfg:    &config.Config{},
-				Redis:  nil,
+				Redis:  redisMocks,
 				SqlDB:  db,
 				JwtGen: nil, // Setup not required for standard resource routes
 				JwtVal: mockJwtValidator,
@@ -220,13 +224,16 @@ func TestEndpoint_Bookmark_Edit(t *testing.T) {
 			},
 			setupDB: func() *gorm.DB {
 				db := fixtures.NewFixture(t, &fixtures.BookmarkCommonTestDB{})
-				db.Create(&model.Bookmark{
+				err := db.Create(&model.Bookmark{
 					Base:        model.Base{ID: targetBookmarkUUID},
 					Description: "GitHub",
 					URL:         "https://github.com",
 					Code:        "git12345",
 					UserID:      uuid.MustParse(mockAuthUserID),
-				})
+				}).Error
+				if err != nil {
+					t.Fatalf("failed to seed test bookmark: %v", err)
+				}
 				return db
 			},
 			setupMockJwt: func(mockVal *jwtMocks.JWTValidator) {
@@ -245,6 +252,8 @@ func TestEndpoint_Bookmark_Edit(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
+			redisMocks := pkgRedis.InitMockRedis(t)
+
 			// 1. Reset database fixtures
 			db := tc.setupDB()
 
@@ -256,7 +265,7 @@ func TestEndpoint_Bookmark_Edit(t *testing.T) {
 			testRouter := api.NewEngine(&api.EngineOpts{
 				Engine: gin.New(),
 				Cfg:    &config.Config{},
-				Redis:  nil,
+				Redis:  redisMocks,
 				SqlDB:  db,
 				JwtGen: nil, // Setup not required for standard resource routes
 				JwtVal: mockJwtValidator,
@@ -325,6 +334,8 @@ func TestEndpoint_Bookmark_Delete(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
+			redisMocks := pkgRedis.InitMockRedis(t)
+
 			// 1. Reset database fixtures
 			db := tc.setupDB()
 
@@ -336,7 +347,7 @@ func TestEndpoint_Bookmark_Delete(t *testing.T) {
 			testRouter := api.NewEngine(&api.EngineOpts{
 				Engine: gin.New(),
 				Cfg:    &config.Config{},
-				Redis:  nil,
+				Redis:  redisMocks,
 				SqlDB:  db,
 				JwtGen: nil, // Setup not required for standard resource routes
 				JwtVal: mockJwtValidator,

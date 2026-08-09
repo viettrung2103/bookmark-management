@@ -23,7 +23,7 @@ func TestUserHandler_Register(t *testing.T) {
 	testCases := []struct {
 		name             string
 		setupRequest     func(ctx *gin.Context)
-		setupMockService func(ctx context.Context) *userMock.UserService
+		setupMockService func(ctx context.Context) *userMock.Service
 
 		expectedStatus   int
 		expectedResponse string
@@ -42,8 +42,8 @@ func TestUserHandler_Register(t *testing.T) {
 				ctx.Request = httptest.NewRequest(http.MethodPost, "/v1/users/register", bytes.NewReader(jsonBody))
 				ctx.Request.Header.Set("Content-Type", "application/json")
 			},
-			setupMockService: func(ctx context.Context) *userMock.UserService {
-				serviceMock := userMock.NewUserService(t)
+			setupMockService: func(ctx context.Context) *userMock.Service {
+				serviceMock := userMock.NewService(t)
 
 				// Create the expected return model
 				testUUID := "12345678-1234-1234-1234-123456789012"
@@ -77,8 +77,8 @@ func TestUserHandler_Register(t *testing.T) {
 				ctx.Request = httptest.NewRequest(http.MethodPost, "/v1/users/register", bytes.NewReader(jsonBody))
 				ctx.Request.Header.Set("Content-Type", "application/json")
 			},
-			setupMockService: func(ctx context.Context) *userMock.UserService {
-				serviceMock := userMock.NewUserService(t)
+			setupMockService: func(ctx context.Context) *userMock.Service {
+				serviceMock := userMock.NewService(t)
 				// Return the dbutils.ErrDuplication error
 				serviceMock.On("CreateUser", ctx, "Test User", "duplicateuser", "validpassword123", "dup@example.com").Return((*model.User)(nil), dbutils.ErrDuplication)
 				return serviceMock
@@ -100,8 +100,8 @@ func TestUserHandler_Register(t *testing.T) {
 				ctx.Request = httptest.NewRequest(http.MethodPost, "/v1/users/register", bytes.NewReader(jsonBody))
 				ctx.Request.Header.Set("Content-Type", "application/json")
 			},
-			setupMockService: func(ctx context.Context) *userMock.UserService {
-				serviceMock := userMock.NewUserService(t)
+			setupMockService: func(ctx context.Context) *userMock.Service {
+				serviceMock := userMock.NewService(t)
 				// Return a generic error
 				serviceMock.On("CreateUser", ctx, "Test User", "testuser", "validpassword123", "test@example.com").Return((*model.User)(nil), errors.New("database connection lost"))
 				return serviceMock

@@ -84,23 +84,23 @@ func (_m *Service) EditBookmarkByID(ctx context.Context, userID string, bookmark
 }
 
 // GetBookmarks provides a mock function with given fields: ctx, userID, page, limit
-func (_m *Service) GetBookmarks(ctx context.Context, userID string, page int, limit int) (*bookmark.BookmarkResult, error) {
+func (_m *Service) GetBookmarks(ctx context.Context, userID string, page int, limit int) (*bookmark.GetBookmarkResult, error) {
 	ret := _m.Called(ctx, userID, page, limit)
 
 	if len(ret) == 0 {
 		panic("no return value specified for GetBookmarks")
 	}
 
-	var r0 *bookmark.BookmarkResult
+	var r0 *bookmark.GetBookmarkResult
 	var r1 error
-	if rf, ok := ret.Get(0).(func(context.Context, string, int, int) (*bookmark.BookmarkResult, error)); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string, int, int) (*bookmark.GetBookmarkResult, error)); ok {
 		return rf(ctx, userID, page, limit)
 	}
-	if rf, ok := ret.Get(0).(func(context.Context, string, int, int) *bookmark.BookmarkResult); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, string, int, int) *bookmark.GetBookmarkResult); ok {
 		r0 = rf(ctx, userID, page, limit)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*bookmark.BookmarkResult)
+			r0 = ret.Get(0).(*bookmark.GetBookmarkResult)
 		}
 	}
 

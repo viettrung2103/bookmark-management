@@ -6,14 +6,14 @@ import (
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
 )
 
-// BookmarkResult struct
-type BookmarkResult struct {
-	Bookmarks []*model.Bookmark
-	Count     int64
+// GetBookmarkResult struct
+type GetBookmarkResult struct {
+	Bookmarks []*model.Bookmark `json:"bookmarks,omitempty"`
+	Count     int64             `json:"count,omitempty"`
 }
 
 // GetBookmarks get lists of bookmarks of current user
-func (s *bookmarkService) GetBookmarks(ctx context.Context, userID string, page, limit int) (*BookmarkResult, error) {
+func (s *bookmarkService) GetBookmarks(ctx context.Context, userID string, page, limit int) (*GetBookmarkResult, error) {
 	offset := (page - 1) * limit
 	bookmarks, err := s.bookmarkRepo.GetBookmarks(ctx, userID, offset, limit)
 	if err != nil {
@@ -25,7 +25,7 @@ func (s *bookmarkService) GetBookmarks(ctx context.Context, userID string, page,
 		return nil, err
 	}
 
-	return &BookmarkResult{
+	return &GetBookmarkResult{
 		Bookmarks: bookmarks,
 		Count:     count,
 	}, nil

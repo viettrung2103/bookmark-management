@@ -7,14 +7,15 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 	//"github.com/stretchr/testify/mock"
 	"github.com/viettrung2103/bookmark-management/internal/api"
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
 	"github.com/viettrung2103/bookmark-management/internal/config"
 	"github.com/viettrung2103/bookmark-management/internal/test/data/fixtures"
-	"github.com/viettrung2103/bookmark-management/pkg/jwtutils"
 	jwtMocks "github.com/viettrung2103/bookmark-management/pkg/jwtutils/mocks"
 	"github.com/viettrung2103/bookmark-management/pkg/stringutils"
 	"gorm.io/gorm"
@@ -191,8 +192,11 @@ func TestEngine_Login(t *testing.T) {
 			},
 			setupMockJwt: func(mockJwt *jwtMocks.JWTGenerator) {
 				// Simulate successful token generation
-				testTokenClaim := jwtutils.GetMapClaim(mockUser.ID.String(), mockUser.Username)
-				mockJwt.On("GenerateJWT", testTokenClaim).Return(expectedToken, nil)
+				//testTokenClaim := jwtutils.GetMapClaim(mockUser.ID.String(), mockUser.Username)
+				mockJwt.On("GenerateJWT", mock.MatchedBy(func(c jwt.MapClaims) bool {
+					return c["uid"] == mockUser.ID.String() &&
+						c["username"] == mockUser.Username
+				})).Return(expectedToken, nil)
 			},
 			expectedStatusCode:   http.StatusOK,
 			expectedResponseBody: `{"data":"fake-jwt-token","message":"Logged in successfully!"}`,

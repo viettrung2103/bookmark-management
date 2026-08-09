@@ -30,7 +30,7 @@ func TestBookmarkService_GetBookmarks(t *testing.T) {
 		page           int
 		limit          int
 		setupRepo      func(ctx context.Context, repo *repoMocks.Repository)
-		expectedResult *BookmarkResult
+		expectedResult *GetBookmarkResult
 		expectedError  error
 	}{
 		{
@@ -47,7 +47,7 @@ func TestBookmarkService_GetBookmarks(t *testing.T) {
 				repo.On("GetBookmarkCount", ctx, testSvcGetUserID).
 					Return(int64(1), nil)
 			},
-			expectedResult: &BookmarkResult{
+			expectedResult: &GetBookmarkResult{
 				Bookmarks: mockedBookmarksList,
 				Count:     1,
 			},
@@ -65,7 +65,7 @@ func TestBookmarkService_GetBookmarks(t *testing.T) {
 				repo.On("GetBookmarkCount", ctx, testSvcGetUserID).
 					Return(int64(11), nil)
 			},
-			expectedResult: &BookmarkResult{
+			expectedResult: &GetBookmarkResult{
 				Bookmarks: mockedBookmarksList,
 				Count:     11,
 			},

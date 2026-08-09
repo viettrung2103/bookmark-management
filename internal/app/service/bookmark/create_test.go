@@ -16,6 +16,7 @@ import (
 const (
 	testSvcUserID     = "133b3b42-70b9-456c-82e7-bf1b570e6c51"
 	mockGeneratedCode = "abc12345"
+	mockBase62Code    = "base62xyz"
 )
 
 func TestBookmarkService_AddBookmark(t *testing.T) {
@@ -37,34 +38,30 @@ func TestBookmarkService_AddBookmark(t *testing.T) {
 			url:         "https://google.com",
 			userID:      testSvcUserID,
 			setupMocks: func(ctx context.Context, repo *repoMocks.Repository, keygen *keygenMocks.KeyGenerator) {
-				// 1. Mock Keygen to return our fixed test code
-				keygen.On("GenerateKey", shortenUrlKeyLength).Return(mockGeneratedCode)
-
-				// 2. Build expected input model passed to Repo
+				// 1. Build expected input model passed to Repo
+				// Note: Code is empty because it is commented out in your service
 				expectedInput := &model.Bookmark{
 					Description: "Google Search",
 					URL:         "https://google.com",
-					Code:        mockGeneratedCode,
 					UserID:      fixtures.GetUUID(testSvcUserID),
 				}
 
-				// 3. Prepare mocked repository output record
+				// 2. Prepare mocked repository output record
 				mockedSavedBookmark := &model.Bookmark{
 					Base: model.Base{
 						ID: uuid.New(),
 					},
 					Description: "Google Search",
 					URL:         "https://google.com",
-					Code:        mockGeneratedCode,
 					UserID:      fixtures.GetUUID(testSvcUserID),
 				}
 
+				// 3. Mock the repository call
 				repo.On("CreateBookmark", ctx, expectedInput).Return(mockedSavedBookmark, nil)
 			},
 			expectedOut: &model.Bookmark{
 				Description: "Google Search",
 				URL:         "https://google.com",
-				Code:        mockGeneratedCode,
 			},
 			expectedErr: nil,
 		},
@@ -74,15 +71,13 @@ func TestBookmarkService_AddBookmark(t *testing.T) {
 			url:         "https://google.com",
 			userID:      testSvcUserID,
 			setupMocks: func(ctx context.Context, repo *repoMocks.Repository, keygen *keygenMocks.KeyGenerator) {
-				keygen.On("GenerateKey", shortenUrlKeyLength).Return(mockGeneratedCode)
-
 				expectedInput := &model.Bookmark{
 					Description: "Google Search",
 					URL:         "https://google.com",
-					Code:        mockGeneratedCode,
 					UserID:      fixtures.GetUUID(testSvcUserID),
 				}
 
+				// Mock the repository call to return an error
 				repo.On("CreateBookmark", ctx, expectedInput).
 					Return((*model.Bookmark)(nil), errors.New("database connectivity error"))
 			},

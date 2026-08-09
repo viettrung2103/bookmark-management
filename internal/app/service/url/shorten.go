@@ -10,15 +10,15 @@ import (
 )
 
 const (
-	urlCodeLength = 7
+	redisCodeLength = 7
 )
 
 // ShortenUrlWithExpiringTime shortens a url with expiring time
 func (s *shortenUrlService) ShortenUrlWithExpiringTime(ctx context.Context, url string, expireTime int) (string, error) {
 	// tao key
-	key := s.keygen.GenerateKey(urlCodeLength)
+	key := s.keygen.GenerateRedisKey(redisCodeLength)
 
-	res, err := s.repo.GetURL(ctx, key)
+	res, err := s.urlRepo.GetURL(ctx, key)
 
 	if err != nil && !errors.Is(err, redis.Nil) {
 		return "", err
@@ -30,7 +30,7 @@ func (s *shortenUrlService) ShortenUrlWithExpiringTime(ctx context.Context, url 
 	}
 
 	// put key into redis
-	err = s.repo.StoreURL(ctx, key, url, time.Duration(expireTime)*time.Second)
+	err = s.urlRepo.StoreURL(ctx, key, url, time.Duration(expireTime)*time.Second)
 	if err != nil {
 		log.Error().Err(err).Str("from", "service.shortenUrlService.ShortenUrlWithExpiringTime").Msg("failed to store url")
 

@@ -29,7 +29,7 @@ func TestUserHandler_Login(t *testing.T) {
 	testCases := []struct {
 		name             string
 		setupRequest     func(ctx *gin.Context)
-		setupMockService func(ctx context.Context) *userMock.UserService
+		setupMockService func(ctx context.Context) *userMock.Service
 
 		expectedStatus   int
 		expectedResponse string
@@ -47,8 +47,8 @@ func TestUserHandler_Login(t *testing.T) {
 				// CRITICAL: Gin requires the Content-Type header to bind JSON properly
 				ctx.Request.Header.Set("Content-Type", "application/json")
 			},
-			setupMockService: func(ctx context.Context) *userMock.UserService {
-				serviceMock := userMock.NewUserService(t)
+			setupMockService: func(ctx context.Context) *userMock.Service {
+				serviceMock := userMock.NewService(t)
 				// Return a fake token and no error
 				serviceMock.On("Login", ctx, "testuser", "validpassword123").Return("fake-jwt-token-123", nil)
 				return serviceMock
@@ -67,8 +67,8 @@ func TestUserHandler_Login(t *testing.T) {
 				ctx.Request = httptest.NewRequest(http.MethodPost, "/v1/users/login", bytes.NewReader(jsonBody))
 				ctx.Request.Header.Set("Content-Type", "application/json")
 			},
-			setupMockService: func(ctx context.Context) *userMock.UserService {
-				serviceMock := userMock.NewUserService(t)
+			setupMockService: func(ctx context.Context) *userMock.Service {
+				serviceMock := userMock.NewService(t)
 				// Simulate the service returning ErrInvalidCreditials
 				serviceMock.On("Login", ctx, "testuser", "wrongpassword").Return("", user.ErrInvalidCreditials)
 				return serviceMock
@@ -87,8 +87,8 @@ func TestUserHandler_Login(t *testing.T) {
 				ctx.Request = httptest.NewRequest(http.MethodPost, "/v1/users/login", bytes.NewReader(jsonBody))
 				ctx.Request.Header.Set("Content-Type", "application/json")
 			},
-			setupMockService: func(ctx context.Context) *userMock.UserService {
-				serviceMock := userMock.NewUserService(t)
+			setupMockService: func(ctx context.Context) *userMock.Service {
+				serviceMock := userMock.NewService(t)
 				// Simulate the DB not finding the user
 				serviceMock.On("Login", ctx, "nonexistentuser", "somepassword").Return("", dbutils.ErrRecordNotFound)
 				return serviceMock
@@ -107,8 +107,8 @@ func TestUserHandler_Login(t *testing.T) {
 				ctx.Request = httptest.NewRequest(http.MethodPost, "/v1/users/login", bytes.NewReader(jsonBody))
 				ctx.Request.Header.Set("Content-Type", "application/json")
 			},
-			setupMockService: func(ctx context.Context) *userMock.UserService {
-				serviceMock := userMock.NewUserService(t)
+			setupMockService: func(ctx context.Context) *userMock.Service {
+				serviceMock := userMock.NewService(t)
 				// Simulate an unexpected error (like a DB connection failure)
 				serviceMock.On("Login", ctx, "testuser", "validpassword123").Return("", errors.New("database connection refused"))
 				return serviceMock

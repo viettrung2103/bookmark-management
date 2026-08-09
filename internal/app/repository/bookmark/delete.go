@@ -23,7 +23,7 @@ func (r *bookmarkRepository) DeleteBookmarkByID(ctx context.Context, userID, boo
 		Model(&model.Bookmark{}).
 		Where("id=? AND user_id=?", parsedBookmarkID, parsedUserID).
 		Delete(&model.Bookmark{})
-	
+
 	if result.Error != nil {
 		return dbutils.CatchDBError(result.Error)
 	}

@@ -34,12 +34,12 @@ func TestShortenLinkHandler_RedirectUrl(t *testing.T) {
 		{
 			name: "success - redirect to original url",
 			setupRequest: func(ctx *gin.Context) {
-				ctx.Request = httptest.NewRequest(http.MethodGet, "/v1/links/redirect/1234567", nil)
-				ctx.Params = gin.Params{{Key: "code", Value: "1234567"}}
+				ctx.Request = httptest.NewRequest(http.MethodGet, "/v1/links/redirect/a123456", nil)
+				ctx.Params = gin.Params{{Key: "code", Value: "a123456"}}
 			},
 			setupMockSvc: func(ctx context.Context) *urlMock.URLService {
 				serviceMock := urlMock.NewURLService(t)
-				serviceMock.On("GetLinkFromCode", ctx, "1234567").Return("https://google.com", nil)
+				serviceMock.On("GetLinkFromCode", ctx, "a123456").Return("https://google.com", nil)
 				return serviceMock
 			},
 			expectedStatus: http.StatusFound,
