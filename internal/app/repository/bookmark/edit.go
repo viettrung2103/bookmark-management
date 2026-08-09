@@ -2,6 +2,7 @@ package bookmark
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/google/uuid"
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
@@ -17,7 +18,9 @@ type ParsedBookmarkIDs struct {
 
 func (r *bookmarkRepository) EditBookmarkByID(ctx context.Context, userID, bookmarkID, newDescription, newURL string) error {
 
-	parsedBookmarkID := getParsedUserIDAndParsedBookmarkID(bookmarkID, userID)
+	parsedBookmarkID := GetParsedUserIDAndParsedBookmarkID(userID, bookmarkID)
+
+	fmt.Printf("Attempting update for BookmarkID: %s, UserID: %s\n", parsedBookmarkID.ID, parsedBookmarkID.UserID)
 
 	updatedBookmark := model.Bookmark{
 		Description: newDescription,
@@ -41,7 +44,7 @@ func (r *bookmarkRepository) EditBookmarkByID(ctx context.Context, userID, bookm
 }
 
 func (r *bookmarkRepository) EditBookmarkCodeByID(ctx context.Context, bookmarkID, userID string, newCode string) error {
-	parsedBookmarkID := getParsedUserIDAndParsedBookmarkID(bookmarkID, userID)
+	parsedBookmarkID := GetParsedUserIDAndParsedBookmarkID(bookmarkID, userID)
 
 	updatedBookmark := model.Bookmark{
 		Code: newCode,
@@ -63,7 +66,7 @@ func (r *bookmarkRepository) EditBookmarkCodeByID(ctx context.Context, bookmarkI
 	return nil
 }
 
-func getParsedUserIDAndParsedBookmarkID(userID, bookmarkID string) ParsedBookmarkIDs {
+func GetParsedUserIDAndParsedBookmarkID(userID, bookmarkID string) ParsedBookmarkIDs {
 
 	parsedUserID, err := uuid.Parse(userID)
 	common.HandleError(err)

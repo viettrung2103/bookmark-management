@@ -5,10 +5,7 @@ package mocks
 import (
 	context "context"
 
-	bookmark "github.com/viettrung2103/bookmark-management/internal/app/repository/bookmark"
-
 	mock "github.com/stretchr/testify/mock"
-
 	model "github.com/viettrung2103/bookmark-management/internal/app/model"
 )
 
@@ -187,24 +184,6 @@ func (_m *Repository) GetBookmarks(ctx context.Context, userID string, offset in
 	}
 
 	return r0, r1
-}
-
-// Transaction provides a mock function with given fields: ctx, fn
-func (_m *Repository) Transaction(ctx context.Context, fn func(bookmark.Repository) error) error {
-	ret := _m.Called(ctx, fn)
-
-	if len(ret) == 0 {
-		panic("no return value specified for Transaction")
-	}
-
-	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, func(bookmark.Repository) error) error); ok {
-		r0 = rf(ctx, fn)
-	} else {
-		r0 = ret.Error(0)
-	}
-
-	return r0
 }
 
 // NewRepository creates a new instance of Repository. It also registers a testing interface on the mock and a cleanup function to assert the mocks expectations.

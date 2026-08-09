@@ -19,8 +19,6 @@ type Repository interface {
 	EditBookmarkByID(ctx context.Context, userID, bookmarkID, newDescription, newURL string) error
 	EditBookmarkCodeByID(ctx context.Context, userID, bookmarkID string, newCode string) error
 	DeleteBookmarkByID(ctx context.Context, userID, bookmarkID string) error
-
-	Transaction(ctx context.Context, fn func(txRepo Repository) error) error
 }
 
 type bookmarkRepository struct {

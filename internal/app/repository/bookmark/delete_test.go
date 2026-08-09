@@ -6,6 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/viettrung2103/bookmark-management/internal/test/data/fixtures"
 	"github.com/viettrung2103/bookmark-management/pkg/dbutils"
+	MockKeygenPkg "github.com/viettrung2103/bookmark-management/pkg/stringutils/mocks"
 	"gorm.io/gorm"
 )
 
@@ -64,7 +65,8 @@ func TestBookmarkRepository_DeleteBookmarkByID(t *testing.T) {
 
 			ctx := t.Context()
 			db := tc.setupDB(t)
-			repo := NewRepository(db)
+			mockKeygen := MockKeygenPkg.NewKeyGenerator(t)
+			repo := NewRepository(db, mockKeygen)
 
 			err := repo.DeleteBookmarkByID(ctx, tc.userID, tc.bookmarkID)
 

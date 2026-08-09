@@ -5,6 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/viettrung2103/bookmark-management/internal/test/data/fixtures"
+	"github.com/viettrung2103/bookmark-management/pkg/stringutils/mocks"
 	"gorm.io/gorm"
 )
 
@@ -81,7 +82,8 @@ func TestBookmarkRepository_GetBookmarks(t *testing.T) {
 
 			ctx := t.Context()
 			db := tc.setupDB(t)
-			repo := NewRepository(db)
+			mockKeygen := mocks.NewKeyGenerator(t)
+			repo := NewRepository(db, mockKeygen)
 
 			bookmarks, err := repo.GetBookmarks(ctx, tc.userID, tc.offset, tc.limit)
 
@@ -141,7 +143,9 @@ func TestBookmarkRepository_GetBookmarkCount(t *testing.T) {
 
 			ctx := t.Context()
 			db := tc.setupDB(t)
-			repo := NewRepository(db)
+			mockKeygen := mocks.NewKeyGenerator(t)
+
+			repo := NewRepository(db, mockKeygen)
 
 			count, err := repo.GetBookmarkCount(ctx, tc.userID)
 

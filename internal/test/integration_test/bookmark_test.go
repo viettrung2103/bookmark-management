@@ -224,13 +224,16 @@ func TestEndpoint_Bookmark_Edit(t *testing.T) {
 			},
 			setupDB: func() *gorm.DB {
 				db := fixtures.NewFixture(t, &fixtures.BookmarkCommonTestDB{})
-				db.Create(&model.Bookmark{
+				err := db.Create(&model.Bookmark{
 					Base:        model.Base{ID: targetBookmarkUUID},
 					Description: "GitHub",
 					URL:         "https://github.com",
 					Code:        "git12345",
 					UserID:      uuid.MustParse(mockAuthUserID),
-				})
+				}).Error
+				if err != nil {
+					t.Fatalf("failed to seed test bookmark: %v", err)
+				}
 				return db
 			},
 			setupMockJwt: func(mockVal *jwtMocks.JWTValidator) {

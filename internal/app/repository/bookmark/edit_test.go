@@ -7,6 +7,7 @@ import (
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
 	"github.com/viettrung2103/bookmark-management/internal/test/data/fixtures"
 	"github.com/viettrung2103/bookmark-management/pkg/dbutils"
+	"github.com/viettrung2103/bookmark-management/pkg/stringutils/mocks"
 	"gorm.io/gorm"
 )
 
@@ -72,7 +73,8 @@ func TestBookmarkRepository_EditBookmarkByID(t *testing.T) {
 
 			ctx := t.Context()
 			db := tc.setupDB(t)
-			repo := NewRepository(db)
+			mockKeygen := mocks.NewKeyGenerator(t)
+			repo := NewRepository(db, mockKeygen)
 
 			err := repo.EditBookmarkByID(ctx, tc.userID, tc.bookmarkID, tc.newDescription, tc.newURL)
 
