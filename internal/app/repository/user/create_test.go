@@ -5,9 +5,9 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
+	"github.com/viettrung2103/bookmark-lib/pkg/dbutils"
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
 	"github.com/viettrung2103/bookmark-management/internal/test/data/fixtures"
-	"github.com/viettrung2103/bookmark-management/pkg/dbutils"
 	"gorm.io/gorm"
 )
 

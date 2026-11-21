@@ -6,7 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/viettrung2103/bookmark-management/pkg/response"
+	"github.com/viettrung2103/bookmark-lib/pkg/response"
 )
 
 var (

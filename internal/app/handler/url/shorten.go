@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/viettrung2103/bookmark-management/pkg/requestutils"
+	"github.com/viettrung2103/bookmark-lib/pkg/requestutils"
 )
 
 // shortenUrlRequest represents the shorten url request

@@ -12,12 +12,12 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	//"github.com/stretchr/testify/mock"
+	jwtMocks "github.com/viettrung2103/bookmark-lib/pkg/jwtutils/mocks"
+	"github.com/viettrung2103/bookmark-lib/pkg/stringutils"
 	"github.com/viettrung2103/bookmark-management/internal/api"
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
 	"github.com/viettrung2103/bookmark-management/internal/config"
 	"github.com/viettrung2103/bookmark-management/internal/test/data/fixtures"
-	jwtMocks "github.com/viettrung2103/bookmark-management/pkg/jwtutils/mocks"
-	"github.com/viettrung2103/bookmark-management/pkg/stringutils"
 	"gorm.io/gorm"
 )
 

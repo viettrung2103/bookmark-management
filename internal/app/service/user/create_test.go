@@ -9,8 +9,8 @@ import (
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
 	repoMocks "github.com/viettrung2103/bookmark-management/internal/app/repository/user/mocks"
 	//serviceMocks"github.com/viettrung2103/bookmark-management/internal/app/service/mocks"
-	"github.com/viettrung2103/bookmark-management/pkg/dbutils"
-	hashingMocks "github.com/viettrung2103/bookmark-management/pkg/stringutils/mocks"
+	"github.com/viettrung2103/bookmark-lib/pkg/dbutils"
+	hashingMocks "github.com/viettrung2103/bookmark-lib/pkg/stringutils/mocks"
 )
 
 var testUUID = "12345678-1234-1234-1234-123456789012"

@@ -1,8 +1,8 @@
 package infrastructure
 
 import (
-	"github.com/viettrung2103/bookmark-management/pkg/common"
-	"github.com/viettrung2103/bookmark-management/pkg/jwtutils"
+	"github.com/viettrung2103/bookmark-lib/pkg/common"
+	"github.com/viettrung2103/bookmark-lib/pkg/jwtutils"
 )
 
 // CreateJWTProvider creates a new JWT generator and validator

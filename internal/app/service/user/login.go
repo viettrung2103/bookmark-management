@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 
-	"github.com/viettrung2103/bookmark-management/pkg/dbutils"
-	"github.com/viettrung2103/bookmark-management/pkg/jwtutils"
+	"github.com/viettrung2103/bookmark-lib/pkg/dbutils"
+	"github.com/viettrung2103/bookmark-lib/pkg/jwtutils"
 )
 
 // const jwtExpireDuration = 1 * time.Hour

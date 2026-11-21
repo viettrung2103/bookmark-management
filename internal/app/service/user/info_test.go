@@ -8,9 +8,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
 	//"github.com/viettrung2103/bookmark-management/internal/app/repository/user"
+	"github.com/viettrung2103/bookmark-lib/pkg/dbutils"
 	repoMocks "github.com/viettrung2103/bookmark-management/internal/app/repository/user/mocks"
-	"github.com/viettrung2103/bookmark-management/pkg/dbutils"
-	//hashingMocks"github.com/viettrung2103/bookmark-management/pkg/stringutils/mocks"
+	//hashingMocks"github.com/viettrung2103/bookmark-lib/pkg/stringutils/mocks"
 )
 
 func TestUserService_SelfInfo(t *testing.T) {

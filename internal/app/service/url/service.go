@@ -3,9 +3,9 @@ package link
 import (
 	"context"
 
+	"github.com/viettrung2103/bookmark-lib/pkg/stringutils"
 	bookmarkRepository "github.com/viettrung2103/bookmark-management/internal/app/repository/bookmark"
 	"github.com/viettrung2103/bookmark-management/internal/app/repository/url"
-	"github.com/viettrung2103/bookmark-management/pkg/stringutils"
 )
 
 // ShortenUrl represents the shorten url service

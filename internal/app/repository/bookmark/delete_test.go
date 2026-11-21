@@ -4,9 +4,9 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/viettrung2103/bookmark-lib/pkg/dbutils"
+	MockKeygenPkg "github.com/viettrung2103/bookmark-lib/pkg/stringutils/mocks"
 	"github.com/viettrung2103/bookmark-management/internal/test/data/fixtures"
-	"github.com/viettrung2103/bookmark-management/pkg/dbutils"
-	MockKeygenPkg "github.com/viettrung2103/bookmark-management/pkg/stringutils/mocks"
 	"gorm.io/gorm"
 )
 

@@ -7,7 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
-	"github.com/viettrung2103/bookmark-management/pkg/response"
+	"github.com/viettrung2103/bookmark-lib/pkg/response"
 )
 
 var (

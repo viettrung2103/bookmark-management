@@ -6,7 +6,7 @@ import (
 
 	"github.com/redis/go-redis/v9"
 	"github.com/stretchr/testify/assert"
-	redisPkg "github.com/viettrung2103/bookmark-management/pkg/redis"
+	redisPkg "github.com/viettrung2103/bookmark-lib/pkg/redis"
 )
 
 // TestUrlStorage_StoreUrl tests the StoreUrl method

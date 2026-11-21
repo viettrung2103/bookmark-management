@@ -3,8 +3,8 @@ package bookmark
 import (
 	"context"
 
+	"github.com/viettrung2103/bookmark-lib/pkg/stringutils"
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
-	"github.com/viettrung2103/bookmark-management/pkg/stringutils"
 	"gorm.io/gorm"
 )
 

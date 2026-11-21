@@ -4,9 +4,9 @@ import (
 	"context"
 
 	"github.com/google/uuid"
+	"github.com/viettrung2103/bookmark-lib/pkg/common"
+	"github.com/viettrung2103/bookmark-lib/pkg/dbutils"
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
-	"github.com/viettrung2103/bookmark-management/pkg/common"
-	"github.com/viettrung2103/bookmark-management/pkg/dbutils"
 )
 
 // DeleteBookmarkByID delete bookmark of id of current user

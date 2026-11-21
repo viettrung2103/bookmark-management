@@ -2,9 +2,9 @@ package infrastructure
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/viettrung2103/bookmark-lib/pkg/common"
 	"github.com/viettrung2103/bookmark-management/internal/api"
 	"github.com/viettrung2103/bookmark-management/internal/config"
-	"github.com/viettrung2103/bookmark-management/pkg/common"
 )
 
 func createAPIConfig() *config.Config {

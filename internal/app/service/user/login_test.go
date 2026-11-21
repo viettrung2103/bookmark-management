@@ -7,14 +7,14 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
+	"github.com/viettrung2103/bookmark-lib/pkg/jwtutils"
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
-	"github.com/viettrung2103/bookmark-management/pkg/jwtutils"
 
 	//repoMocks "github.com/viettrung2103/bookmark-management/internal/app/repository/mocks"
+	"github.com/viettrung2103/bookmark-lib/pkg/dbutils"
+	jwtMocks "github.com/viettrung2103/bookmark-lib/pkg/jwtutils/mocks"
+	hashingMocks "github.com/viettrung2103/bookmark-lib/pkg/stringutils/mocks"
 	userMocks "github.com/viettrung2103/bookmark-management/internal/app/repository/user/mocks"
-	"github.com/viettrung2103/bookmark-management/pkg/dbutils"
-	jwtMocks "github.com/viettrung2103/bookmark-management/pkg/jwtutils/mocks"
-	hashingMocks "github.com/viettrung2103/bookmark-management/pkg/stringutils/mocks"
 )
 
 func TestUserService_Login(t *testing.T) {

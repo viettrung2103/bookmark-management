@@ -10,11 +10,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/stretchr/testify/assert"
+	jwtMocks "github.com/viettrung2103/bookmark-lib/pkg/jwtutils/mocks"
 	"github.com/viettrung2103/bookmark-management/internal/api"
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
 	"github.com/viettrung2103/bookmark-management/internal/config"
 	"github.com/viettrung2103/bookmark-management/internal/test/data/fixtures"
-	jwtMocks "github.com/viettrung2103/bookmark-management/pkg/jwtutils/mocks"
 	"gorm.io/gorm"
 )
 

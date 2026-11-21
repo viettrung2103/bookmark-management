@@ -6,7 +6,7 @@ import (
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
-	"github.com/viettrung2103/bookmark-management/pkg/common"
+	"github.com/viettrung2103/bookmark-lib/pkg/common"
 	"gorm.io/gorm"
 
 	_ "github.com/golang-migrate/migrate/v4/source/file"

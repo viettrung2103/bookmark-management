@@ -5,8 +5,8 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/viettrung2103/bookmark-management/pkg/jwtutils"
-	"github.com/viettrung2103/bookmark-management/pkg/response"
+	"github.com/viettrung2103/bookmark-lib/pkg/jwtutils"
+	"github.com/viettrung2103/bookmark-lib/pkg/response"
 )
 
 // JWTAuth interface

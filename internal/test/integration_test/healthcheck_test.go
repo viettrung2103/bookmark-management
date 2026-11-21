@@ -7,10 +7,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
+	pkgRedis "github.com/viettrung2103/bookmark-lib/pkg/redis"
 	"github.com/viettrung2103/bookmark-management/internal/api"
 	"github.com/viettrung2103/bookmark-management/internal/config"
 	"github.com/viettrung2103/bookmark-management/internal/test/data/fixtures"
-	pkgRedis "github.com/viettrung2103/bookmark-management/pkg/redis"
 	"gorm.io/gorm"
 )
 

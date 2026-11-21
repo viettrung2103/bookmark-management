@@ -11,7 +11,7 @@ import (
 	urlMockRepo "github.com/viettrung2103/bookmark-management/internal/app/repository/url/mocks"
 	//keygenMock"github.com/viettrung2103/bookmark-management/internal/app/service/bookmark/mocks"
 
-	keygenMock "github.com/viettrung2103/bookmark-management/pkg/stringutils/mocks"
+	keygenMock "github.com/viettrung2103/bookmark-lib/pkg/stringutils/mocks"
 )
 
 const testExpTime = 60 * time.Second

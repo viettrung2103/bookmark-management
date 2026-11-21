@@ -6,10 +6,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
+	"github.com/viettrung2103/bookmark-lib/pkg/dbutils"
+	"github.com/viettrung2103/bookmark-lib/pkg/requestutils"
+	"github.com/viettrung2103/bookmark-lib/pkg/response"
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
-	"github.com/viettrung2103/bookmark-management/pkg/dbutils"
-	"github.com/viettrung2103/bookmark-management/pkg/requestutils"
-	"github.com/viettrung2103/bookmark-management/pkg/response"
 )
 
 type registerInput struct {

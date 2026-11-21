@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/viettrung2103/bookmark-lib/pkg/dbutils"
 	repoMocks "github.com/viettrung2103/bookmark-management/internal/app/repository/bookmark/mocks"
-	"github.com/viettrung2103/bookmark-management/pkg/dbutils"
 )
 
 const (

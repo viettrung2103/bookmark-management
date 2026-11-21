@@ -14,8 +14,8 @@ import (
 	userMock "github.com/viettrung2103/bookmark-management/internal/app/service/user/mocks"
 
 	//userMocks"github.com/viettrung2103/bookmark-management/internal/app/service/user/mocks"
+	"github.com/viettrung2103/bookmark-lib/pkg/dbutils"
 	"github.com/viettrung2103/bookmark-management/internal/app/service/user"
-	"github.com/viettrung2103/bookmark-management/pkg/dbutils"
 )
 
 // TestUserHandler_Login tests the Login function

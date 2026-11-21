@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	keygenMocks "github.com/viettrung2103/bookmark-lib/pkg/stringutils/mocks"
 	bookmarkMockRepo "github.com/viettrung2103/bookmark-management/internal/app/repository/bookmark/mocks"
-	keygenMocks "github.com/viettrung2103/bookmark-management/pkg/stringutils/mocks"
 
 	URLMockRepo "github.com/viettrung2103/bookmark-management/internal/app/repository/url/mocks"
 )

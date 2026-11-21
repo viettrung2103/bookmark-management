@@ -3,7 +3,7 @@ package fixtures
 import (
 	"testing"
 
-	"github.com/viettrung2103/bookmark-management/pkg/db"
+	"github.com/viettrung2103/bookmark-lib/pkg/db"
 	"gorm.io/gorm"
 )
 

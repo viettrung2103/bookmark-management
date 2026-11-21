@@ -9,13 +9,13 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
+	"github.com/viettrung2103/bookmark-lib/pkg/jwtutils"
+	jwtMocks "github.com/viettrung2103/bookmark-lib/pkg/jwtutils/mocks"
+	pkgRedis "github.com/viettrung2103/bookmark-lib/pkg/redis"
 	"github.com/viettrung2103/bookmark-management/internal/api"
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
 	"github.com/viettrung2103/bookmark-management/internal/config"
 	"github.com/viettrung2103/bookmark-management/internal/test/data/fixtures"
-	"github.com/viettrung2103/bookmark-management/pkg/jwtutils"
-	jwtMocks "github.com/viettrung2103/bookmark-management/pkg/jwtutils/mocks"
-	pkgRedis "github.com/viettrung2103/bookmark-management/pkg/redis"
 	"gorm.io/gorm"
 )
 

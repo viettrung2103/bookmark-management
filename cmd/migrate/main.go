@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/viettrung2103/bookmark-management/pkg/common"
-	"github.com/viettrung2103/bookmark-management/pkg/db"
+	"github.com/viettrung2103/bookmark-lib/pkg/common"
+	"github.com/viettrung2103/bookmark-lib/pkg/db"
 )
 
 func main() {

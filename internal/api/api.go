@@ -14,6 +14,7 @@ import (
 	healthCheckHandler "github.com/viettrung2103/bookmark-management/internal/app/handler/healthcheck"
 	urlHandler "github.com/viettrung2103/bookmark-management/internal/app/handler/url"
 	userHandler "github.com/viettrung2103/bookmark-management/internal/app/handler/user"
+	"github.com/viettrung2103/bookmark-management/internal/app/ratelimit"
 	"github.com/viettrung2103/bookmark-management/internal/app/repository/cache"
 
 	bookmarkRepository "github.com/viettrung2103/bookmark-management/internal/app/repository/bookmark"
@@ -26,8 +27,8 @@ import (
 	urlService "github.com/viettrung2103/bookmark-management/internal/app/service/url"
 	userService "github.com/viettrung2103/bookmark-management/internal/app/service/user"
 
-	"github.com/viettrung2103/bookmark-management/pkg/jwtutils"
-	"github.com/viettrung2103/bookmark-management/pkg/stringutils"
+	"github.com/viettrung2103/bookmark-lib/pkg/jwtutils"
+	"github.com/viettrung2103/bookmark-lib/pkg/stringutils"
 	"gorm.io/gorm"
 
 	"github.com/viettrung2103/bookmark-management/internal/config"
@@ -144,11 +145,27 @@ func (e *engine) initHandlers() *handlers {
 
 }
 
+type middlewares struct {
+	jwtAuth   middleware.JWTAuth
+	rateLimit middleware.RateLimit
+}
+
+func (e *engine) initMiddlewares() middlewares {
+	rateLimitRepo := ratelimit.NewRepository(e.redis)
+	rateLimitMld := middleware.NewRateLimit(rateLimitRepo)
+
+	return middlewares{
+		jwtAuth:   middleware.NewJWTAuth(e.jwtVal),
+		rateLimit: rateLimitMld,
+	}
+}
+
 // initRoutes initializes the routes
 func (e *engine) InitRoutes() {
 
 	allHandlers := e.initHandlers()
-	jwtAuth := middleware.NewJWTAuth(e.jwtVal)
+	//jwtAuth := middleware.NewJWTAuth(e.jwtVal)
+	allMiddlewares := e.initMiddlewares()
 
 	e.eng.GET("/health-check", allHandlers.healthCheckHandler.HealthCheck)
 
@@ -158,35 +175,54 @@ func (e *engine) InitRoutes() {
 
 	apiRoute := fmt.Sprintf("/v%d", version)
 
-	OpenBase := e.eng.Group(apiRoute)
+	publicV1Routes := e.eng.Group(apiRoute)
+	publicV1Routes.Use(allMiddlewares.rateLimit.RateLimitPublic())
 	{
 		// url route
-		linkBase := OpenBase.Group("/links")
+		linkBase := publicV1Routes.Group("/links")
 
 		linkBase.POST("/shorten", allHandlers.linkHandler.ShortenUrlLink)
 		linkBase.GET("/redirect/:code", allHandlers.linkHandler.RedirectUrl)
 
 		//user route
-		userBase := OpenBase.Group("/users")
+		userBase := publicV1Routes.Group("/users")
 		userBase.POST("/register", allHandlers.userHandler.Register)
 		userBase.POST("/login", allHandlers.userHandler.Login)
 
 	}
 
-	privateBase := e.eng.Group(apiRoute) // /v1
-	privateBase.Use(jwtAuth.JWTAuthMiddleWare())
+	//privateBase := e.eng.Group(apiRoute) // /v1
+	//privateBase.Use(jwtAuth.JWTAuthMiddleWare())
+	privateBase := e.eng.Group("")
+	//privateBase.Use(allMiddlewares.jwtAuth.JWTAuthMiddleWare())
+	privateBase.Use(allMiddlewares.jwtAuth.JWTAuthMiddleWare())
+	privateBase.Use(allMiddlewares.rateLimit.RateLimitPrivate())
 	{
-		// user-related
-		privateBase.GET("/self/info", allHandlers.userHandler.SelfInfo)
-		privateBase.PUT("/self/info", allHandlers.userHandler.EditSelfInfo)
+		privateV1Routes := privateBase.Group(apiRoute)
+		{
+			// user-related
+			privateV1Routes.GET("/self/info", allHandlers.userHandler.SelfInfo)
+			privateV1Routes.PUT("/self/info", allHandlers.userHandler.EditSelfInfo)
 
-		//bookmark
-		privateBase.POST("/bookmarks", allHandlers.bookmarkHandler.AddBookmark)
-		privateBase.GET("/bookmarks", allHandlers.bookmarkHandler.GetBookmarks)
-		privateBase.PUT("/bookmarks/:id", allHandlers.bookmarkHandler.EditBookmark)
-		privateBase.DELETE("/bookmarks/:id", allHandlers.bookmarkHandler.DeleteBookmark)
+			//bookmark
+			privateV1Routes.POST("/bookmarks", allHandlers.bookmarkHandler.AddBookmark)
+			privateV1Routes.GET("/bookmarks", allHandlers.bookmarkHandler.GetBookmarks)
+			privateV1Routes.PUT("/bookmarks/:id", allHandlers.bookmarkHandler.EditBookmark)
+			privateV1Routes.DELETE("/bookmarks/:id", allHandlers.bookmarkHandler.DeleteBookmark)
+		}
+		//{
+		//	// user-related
+		//	privateBase.GET("/self/info", allHandlers.userHandler.SelfInfo)
+		//	privateBase.PUT("/self/info", allHandlers.userHandler.EditSelfInfo)
+		//
+		//	//bookmark
+		//	privateBase.POST("/bookmarks", allHandlers.bookmarkHandler.AddBookmark)
+		//	privateBase.GET("/bookmarks", allHandlers.bookmarkHandler.GetBookmarks)
+		//	privateBase.PUT("/bookmarks/:id", allHandlers.bookmarkHandler.EditBookmark)
+		//	privateBase.DELETE("/bookmarks/:id", allHandlers.bookmarkHandler.DeleteBookmark)
+		//}
 	}
 
 	//test
-	OpenBase.GET("/test/:id/blah/:uid", userHandler.Test)
+	publicV1Routes.GET("/test/:id/blah/:uid", userHandler.Test)
 }

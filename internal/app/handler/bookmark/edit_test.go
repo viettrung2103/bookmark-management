@@ -11,8 +11,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
+	"github.com/viettrung2103/bookmark-lib/pkg/dbutils"
 	bookmarkMock "github.com/viettrung2103/bookmark-management/internal/app/service/bookmark/mocks"
-	"github.com/viettrung2103/bookmark-management/pkg/dbutils"
 )
 
 const (

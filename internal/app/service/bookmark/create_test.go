@@ -7,10 +7,10 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
+	keygenMocks "github.com/viettrung2103/bookmark-lib/pkg/stringutils/mocks"
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
 	repoMocks "github.com/viettrung2103/bookmark-management/internal/app/repository/bookmark/mocks"
 	"github.com/viettrung2103/bookmark-management/internal/test/data/fixtures"
-	keygenMocks "github.com/viettrung2103/bookmark-management/pkg/stringutils/mocks"
 )
 
 const (
