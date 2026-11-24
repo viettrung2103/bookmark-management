@@ -11,6 +11,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/stretchr/testify/assert"
 	jwtMocks "github.com/viettrung2103/bookmark-lib/pkg/jwtutils/mocks"
+	redistest "github.com/viettrung2103/bookmark-lib/pkg/redis"
 	"github.com/viettrung2103/bookmark-management/internal/api"
 	"github.com/viettrung2103/bookmark-management/internal/app/model"
 	"github.com/viettrung2103/bookmark-management/internal/config"
@@ -137,8 +138,8 @@ func TestEndpoint_SelfInfo(t *testing.T) {
 			testRouter := api.NewEngine(&api.EngineOpts{
 				Engine: gin.New(),
 				Cfg:    &config.Config{},
-				//Redis:  nil,
-				SqlDB: db,
+				Redis:  redistest.InitMockRedis(t),
+				SqlDB:  db,
 				//JwtGen: nil,        // Not needed for fetching profiles
 				JwtVal: mockJwtVal, // Injected mock to bypass the authentication barrier
 			})
@@ -304,8 +305,8 @@ func TestEndpoint_EditSelfInfo(t *testing.T) {
 			testRouter := api.NewEngine(&api.EngineOpts{
 				Engine: gin.New(),
 				Cfg:    &config.Config{},
-				//Redis:  nil,
-				SqlDB: db,
+				Redis:  redistest.InitMockRedis(t),
+				SqlDB:  db,
 				//JwtGen: nil,        // Not needed for fetching profiles
 				JwtVal: mockJwtVal, // Injected mock to bypass the authentication barrier
 			})

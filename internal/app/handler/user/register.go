@@ -9,7 +9,6 @@ import (
 	"github.com/viettrung2103/bookmark-lib/pkg/dbutils"
 	"github.com/viettrung2103/bookmark-lib/pkg/requestutils"
 	"github.com/viettrung2103/bookmark-lib/pkg/response"
-	"github.com/viettrung2103/bookmark-management/internal/app/model"
 )
 
 type registerInput struct {
@@ -19,10 +18,10 @@ type registerInput struct {
 	Email       string `json:"email" binding:"required,email"`
 }
 
-type createUser struct {
-	Data    *model.User `json:"data"`
-	Message string      `json:"message"`
-}
+//type createUser struct {
+//	Data    *model.User `json:"data"`
+//	Message string      `json:"message"`
+//}
 
 // Register handles user registration
 //
