@@ -11,6 +11,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+	redistest "github.com/viettrung2103/bookmark-lib/pkg/redis"
 	//"github.com/stretchr/testify/mock"
 	jwtMocks "github.com/viettrung2103/bookmark-lib/pkg/jwtutils/mocks"
 	"github.com/viettrung2103/bookmark-lib/pkg/stringutils"
@@ -113,7 +114,7 @@ func TestRegisterEndpoint(t *testing.T) {
 			testRouter := api.NewEngine(&api.EngineOpts{
 				Engine: gin.New(),
 				Cfg:    &config.Config{},
-				Redis:  nil,
+				Redis:  redistest.InitMockRedis(t),
 				SqlDB:  fixtures,
 			})
 
@@ -262,7 +263,7 @@ func TestEngine_Login(t *testing.T) {
 			testRouter := api.NewEngine(&api.EngineOpts{
 				Engine: gin.New(),
 				Cfg:    &config.Config{},
-				Redis:  nil,
+				Redis:  redistest.InitMockRedis(t),
 				SqlDB:  db,
 				JwtGen: mockJwt, // Inject the mock so token generation doesn't panic
 				JwtVal: nil,     // Not needed for Login endpoint
